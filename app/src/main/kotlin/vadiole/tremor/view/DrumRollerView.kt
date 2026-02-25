@@ -117,13 +117,13 @@ class DrumRollerView(
                     scrollOffset -= 1f
                     currentStep--
                     updateValue()
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
                 }
                 while (scrollOffset <= -1f && currentStep < totalSteps) {
                     scrollOffset += 1f
                     currentStep++
                     updateValue()
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
                 }
 
                 if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
