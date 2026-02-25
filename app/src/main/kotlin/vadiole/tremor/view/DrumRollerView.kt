@@ -211,10 +211,4 @@ class DrumRollerView(
         removeCallbacks(flingRunnable)
     }
 
-    fun setValue(newValue: Float) {
-        currentStep = ((newValue - minValue) / step).roundToInt().coerceIn(0, totalSteps)
-        value = minValue + currentStep * step
-        scrollOffset = 0f
-        invalidate()
-    }
 }
