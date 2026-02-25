@@ -64,20 +64,8 @@ class DragThresholdView(context: Context) : View(context), Density {
         style = Paint.Style.FILL
     }
 
-    private val ghostPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.foreground)
-        style = Paint.Style.FILL
-    }
-
     private val rect = RectF()
     private val handleRect = RectF()
-    private val ghostRect = RectF()
-
-    // trail ring buffer
-    private val trailSize = 6
-    private val trailX = FloatArray(trailSize)
-    private val trailY = FloatArray(trailSize)
-    private var trailIndex = 0
 
     private var handleX = 0f
     private var handleY = 0f
@@ -113,7 +101,6 @@ class DragThresholdView(context: Context) : View(context), Density {
             springVelocityY += accelY * dt
             handleX += springVelocityX * dt
             handleY += springVelocityY * dt
-            recordTrail()
 
             val totalEnergy = dxSpring * dxSpring + dySpring * dySpring +
                 springVelocityX * springVelocityX + springVelocityY * springVelocityY
@@ -169,22 +156,6 @@ class DragThresholdView(context: Context) : View(context), Density {
         val lineBottom = height - 12f.dp()
         canvas.drawLine(thresholdX, lineTop, thresholdX, lineBottom, thresholdPaint)
 
-        // trail afterimages
-        if (isDragging || isAnimating) {
-            for (i in 0 until trailSize) {
-                val idx = (trailIndex - 1 - i + trailSize * 2) % trailSize
-                val tx = trailX[idx]
-                val ty = trailY[idx]
-                if (tx == 0f && ty == 0f && i > 0) continue
-                val ghostAlpha = (0.12f * (1f - i.toFloat() / trailSize) * 255).toInt().coerceIn(0, 255)
-                ghostPaint.alpha = ghostAlpha
-                val gCy = height / 2f + ty
-                val gTop = gCy - handleHeight / 2f
-                ghostRect.set(tx, gTop, tx + handleWidth, gTop + handleHeight)
-                canvas.drawRoundRect(ghostRect, handleCorner, handleCorner, ghostPaint)
-            }
-        }
-
         // handle
         val centerY = height / 2f + handleY
         val handleLeft = handleX
@@ -221,7 +192,6 @@ class DragThresholdView(context: Context) : View(context), Density {
                     handleStartX = handleX
                     gestureStarted = false
                     activated = false
-                    clearTrail()
                     parent?.requestDisallowInterceptTouchEvent(true)
                 }
             }
@@ -238,7 +208,6 @@ class DragThresholdView(context: Context) : View(context), Density {
 
                 handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
                 handleY = dy * verticalResistance
-                recordTrail()
 
                 val thresholdX = width * thresholdFraction
                 val handleCenter = handleX + handleWidth / 2f
@@ -269,18 +238,6 @@ class DragThresholdView(context: Context) : View(context), Density {
             }
         }
         return true
-    }
-
-    private fun recordTrail() {
-        trailX[trailIndex] = handleX
-        trailY[trailIndex] = handleY
-        trailIndex = (trailIndex + 1) % trailSize
-    }
-
-    private fun clearTrail() {
-        trailX.fill(0f)
-        trailY.fill(0f)
-        trailIndex = 0
     }
 
     override fun onDetachedFromWindow() {
