@@ -390,10 +390,15 @@ class TremorActivity : Activity(), Density {
     private fun updateBanner() {
         val banner = bannerView ?: return
         banner.removeCallbacks(hideBannerRunnable)
-        val enabled = hapticEngine.isHapticEnabled(banner)
-        banner.visibility = if (enabled) View.GONE else View.VISIBLE
-        if (!enabled && Build.VERSION.SDK_INT >= 35) {
-            banner.postDelayed(hideBannerRunnable, 10_000)
+        if (Build.VERSION.SDK_INT >= 35) {
+            // Can't reliably detect disabled vibration — show as temporary hint
+            banner.visibility = View.VISIBLE
+            if (!hapticEngine.isDndActive()) {
+                banner.postDelayed(hideBannerRunnable, 10_000)
+            }
+        } else {
+            val enabled = hapticEngine.isHapticEnabled(banner)
+            banner.visibility = if (enabled) View.GONE else View.VISIBLE
         }
     }
 

@@ -30,7 +30,7 @@ class HapticEngine(context: Context) {
         return view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
     }
 
-    private fun isDndActive(): Boolean {
+    fun isDndActive(): Boolean {
         val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         return nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
     }
