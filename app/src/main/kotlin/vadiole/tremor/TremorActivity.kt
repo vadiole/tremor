@@ -317,13 +317,11 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun buildFooter(parent: LinearLayout) {
-        val byText = getString(R.string.footer_by)
         val vadioleText = getString(R.string.footer_vadiole)
-        val heartText = getString(R.string.footer_with_heart)
-        val full = "$byText$vadioleText$heartText"
+        val full = getString(R.string.footer_template, vadioleText)
 
         val spannable = android.text.SpannableString(full)
-        val linkStart = byText.length
+        val linkStart = full.indexOf(vadioleText)
         val linkEnd = linkStart + vadioleText.length
 
         spannable.setSpan(
@@ -463,7 +461,7 @@ class TremorActivity : Activity(), Density {
             setTextColor(getColor(R.color.text_muted))
             textSize = 11f
             typeface = Typeface.MONOSPACE
-            letterSpacing = 0.15f
+            letterSpacing = 0.05f
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,

@@ -8,22 +8,28 @@
 
 ## Ticket 1: UX-UI
 
-**Status**: Pending
+**Status**: Done
 
-Review the footer text. The intended rendering is: `by vadiole with <3` where "vadiole" is underlined and clickable. Confirm the fix approach: either use `\u0020` for spaces, or use `translatable="false"` with `xml:space="preserve"`, or hardcode the full template as one string with a placeholder.
+**Analysis**: Android XML trims leading/trailing whitespace from `<string>` resources. The three separate strings `"by "`, `"vadiole"`, `" with <3"` lose their spaces when concatenated.
+
+**Recommended fix**: Replace the three separate strings with one template string: `"by %s with \u0026lt;3"` with a `%s` placeholder for "vadiole". The spaces are now interior to the string (not leading/trailing) so they survive trimming. Use `String.format()` to insert the link text, then apply spans at the known offset. This is the cleanest approach — no `\u0020` hacks, no extra strings.
 
 ---
 
 ## Ticket 2: Development
 
-**Status**: Pending
+**Status**: Done
 
-Fix the string resources so spaces are preserved. Build and verify the footer renders correctly.
+- Replaced 3 separate strings (`footer_by`, `footer_vadiole`, `footer_with_heart`) with 2: `footer_template` ("by %s with <3") and `footer_vadiole`.
+- Updated `buildFooter()` to use `getString(R.string.footer_template, vadioleText)` and `indexOf()` to find span positions.
 
 ---
 
 ## Ticket 3: Review
 
-**Status**: Pending
+**Status**: Done
 
-Verify the footer renders as "by vadiole with <3" with proper spacing, underline on "vadiole", and clickable link. Check both light and dark mode.
+- Template string has spaces as interior characters — won't be trimmed.
+- `indexOf(vadioleText)` correctly finds position 3 in "by vadiole with <3".
+- No references to removed `footer_by` or `footer_with_heart` resources remain.
+- Build passes clean.
