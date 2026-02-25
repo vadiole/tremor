@@ -24,6 +24,12 @@ class FooterView(
     private val linkColor = context.getColor(R.color.text_disabled)
     private val textColor = context.getColor(R.color.text_disabled)
 
+    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.border)
+        style = Paint.Style.STROKE
+        strokeWidth = 1f.dp()
+    }
+
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = textColor
         textSize = 10f.dp()
@@ -62,6 +68,9 @@ class FooterView(
     }
 
     override fun onDraw(canvas: Canvas) {
+        val borderY = borderPaint.strokeWidth / 2f
+        canvas.drawLine(0f, borderY, width.toFloat(), borderY, borderPaint)
+
         val cx = width / 2f
         val cy = height / 2f
         val fm = textPaint.fontMetrics
