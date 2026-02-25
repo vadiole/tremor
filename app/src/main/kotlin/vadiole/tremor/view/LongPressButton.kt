@@ -10,9 +10,10 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.LinearInterpolator
-import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.animatePress
+import vadiole.tremor.animateRelease
 
 class LongPressButton(context: Context) : View(context), Density {
 
@@ -92,15 +93,14 @@ class LongPressButton(context: Context) : View(context), Density {
                 triggered = false
                 progress = 0f
                 bgPaint.color = pressedColor
-                animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                animatePress()
                 startProgressAnimation()
                 invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
                 bgPaint.color = normalColor
-                animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(OvershootInterpolator(2f)).start()
+                animateRelease()
                 cancelProgressAnimation()
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)

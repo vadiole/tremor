@@ -8,8 +8,9 @@ import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
-import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
+import vadiole.tremor.animatePress
+import vadiole.tremor.animateRelease
 import vadiole.tremor.R
 
 class KeyButton(
@@ -65,14 +66,13 @@ class KeyButton(
             MotionEvent.ACTION_DOWN -> {
                 bgPaint.color = pressedColor
                 invalidate()
-                animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                animatePress()
                 performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
-                animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(OvershootInterpolator(2f)).start()
+                animateRelease()
                 if (event.action == MotionEvent.ACTION_UP) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                 }
