@@ -5,6 +5,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.text.TextPaint
+import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.R
@@ -19,7 +21,8 @@ class HapticButton(
     private val density = resources.displayMetrics.density
 
     private val cornerRadius = 6f * density
-    private val minHeight = (48 * density).toInt()
+    private val minHeight = (56 * density).toInt()
+    private val horizontalPadding = 8f * density
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -32,16 +35,16 @@ class HapticButton(
         strokeWidth = 1f * density
     }
 
-    private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
         textSize = 13f * density
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
 
-    private val constantPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+    private val constantPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 9f * density
+        textSize = 8f * density
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
@@ -63,16 +66,21 @@ class HapticButton(
     }
 
     override fun onDraw(canvas: Canvas) {
-        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        val halfStroke = borderPaint.strokeWidth / 2f
+        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val centerX = width / 2f
-        val labelY = height / 2f - 2f * density
-        val constantY = labelY + 12f * density
+        val maxTextWidth = width - horizontalPadding * 2
+        val labelY = height / 2f - 3f * density
+        val constantY = labelY + 13f * density
 
-        canvas.drawText(label, centerX, labelY, labelPaint)
-        canvas.drawText(constantName, centerX, constantY, constantPaint)
+        val truncatedLabel = TextUtils.ellipsize(label, labelPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()
+        val truncatedConstant = TextUtils.ellipsize(constantName, constantPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()
+
+        canvas.drawText(truncatedLabel, centerX, labelY, labelPaint)
+        canvas.drawText(truncatedConstant, centerX, constantY, constantPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

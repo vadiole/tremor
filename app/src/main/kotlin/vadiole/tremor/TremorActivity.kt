@@ -107,7 +107,7 @@ class TremorActivity : Activity() {
 
         parent.addView(createSectionLabel("HAPTIC FEEDBACK", density))
 
-        val flow = FlowLayout(this, columns = 3, horizontalGap = itemSpacing, verticalGap = itemSpacing)
+        val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
             val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
                 performHapticFeedback(info.value)
@@ -136,7 +136,7 @@ class TremorActivity : Activity() {
 
         parent.addView(createSectionLabel("PREDEFINED EFFECTS", density))
 
-        val flow = FlowLayout(this, columns = 3, horizontalGap = itemSpacing, verticalGap = itemSpacing)
+        val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
             val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
