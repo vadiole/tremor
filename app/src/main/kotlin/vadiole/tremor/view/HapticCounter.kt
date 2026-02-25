@@ -48,7 +48,14 @@ class HapticCounter(context: Context) : View(context), Density {
         strokeWidth = 1f.dp()
     }
 
+    private val pressedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.surface_pressed)
+        style = Paint.Style.FILL
+    }
+
     private val rect = RectF()
+    private val pressedRect = RectF()
+    private var pressedZone = 0 // -1 = minus, 1 = plus, 0 = none
 
     init {
         isClickable = true
@@ -63,6 +70,22 @@ class HapticCounter(context: Context) : View(context), Density {
         val halfStroke = borderPaint.strokeWidth / 2f
         rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
+
+        if (pressedZone != 0) {
+            val thirdW = width / 3f
+            canvas.save()
+            val clipPath = android.graphics.Path()
+            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, android.graphics.Path.Direction.CW)
+            canvas.clipPath(clipPath)
+            if (pressedZone == -1) {
+                pressedRect.set(halfStroke, halfStroke, thirdW, height - halfStroke)
+            } else {
+                pressedRect.set(thirdW * 2, halfStroke, width - halfStroke, height - halfStroke)
+            }
+            canvas.drawRect(pressedRect, pressedPaint)
+            canvas.restore()
+        }
+
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val thirdW = width / 3f
@@ -78,19 +101,33 @@ class HapticCounter(context: Context) : View(context), Density {
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            val thirdW = width / 3f
-            when {
-                event.x < thirdW -> {
-                    count--
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                    invalidate()
+        when (event.action) {
+            MotionEvent.ACTION_DOWN -> {
+                val thirdW = width / 3f
+                when {
+                    event.x < thirdW -> {
+                        count--
+                        pressedZone = -1
+                        performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                        animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                        invalidate()
+                    }
+                    event.x > thirdW * 2 -> {
+                        count++
+                        pressedZone = 1
+                        performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                        animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                        invalidate()
+                    }
                 }
-                event.x > thirdW * 2 -> {
-                    count++
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                    invalidate()
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                if (pressedZone != 0) {
+                    animate().scaleX(1f).scaleY(1f).setDuration(150)
+                        .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 }
+                pressedZone = 0
+                invalidate()
             }
         }
         return true
