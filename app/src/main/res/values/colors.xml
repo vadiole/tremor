@@ -8,4 +8,5 @@
     <color name="text_secondary">#FF777777</color>
     <color name="text_muted">#FF999999</color>
     <color name="text_disabled">#FFAAAAAA</color>
+    <color name="ic_launcher_background">#FF0F0F0F</color>
 </resources>
