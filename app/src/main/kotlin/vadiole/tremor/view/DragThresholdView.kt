@@ -21,7 +21,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handleCorner = 4f.dp()
     private val thresholdFraction = 0.6f
     private val handlePadding = 8f.dp()
-    private val verticalResistance = 0.15f
+    private val verticalResistance = 0.04f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -80,8 +80,8 @@ class DragThresholdView(context: Context) : View(context), Density {
     private var springVelocityX = 0f
     private var springVelocityY = 0f
     private var isAnimating = false
-    private val springStiffness = 800f
-    private val springDamping = 30f
+    private val springStiffness = 560f
+    private val springDamping = 25f
 
     private val springRunnable = object : Runnable {
         override fun run() {
