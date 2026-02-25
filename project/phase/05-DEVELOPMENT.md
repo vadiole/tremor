@@ -9,7 +9,7 @@
 | DEV-03 | FlowLayout | Done |
 | DEV-04 | HapticButton | Done |
 | DEV-05 | DrumRollerView | Done |
-| DEV-06 | PrimitiveRow | Pending |
+| DEV-06 | PrimitiveRow | Done |
 | DEV-07 | PatternBuilderView | Pending |
 | DEV-08 | WaveOverlayView | Pending |
 | DEV-09 | TremorActivity — Assembly & Wiring | Pending |
