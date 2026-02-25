@@ -108,7 +108,13 @@ class TremorActivity : Activity(), Density {
 
     override fun onResume() {
         super.onResume()
-        updateBanner()
+    }
+
+    override fun onWindowFocusChanged(hasFocus: Boolean) {
+        super.onWindowFocusChanged(hasFocus)
+        if (hasFocus) {
+            updateBanner()
+        }
     }
 
     override fun onPause() {
