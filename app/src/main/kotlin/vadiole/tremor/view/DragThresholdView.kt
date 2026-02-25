@@ -6,6 +6,7 @@ import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
@@ -215,7 +216,9 @@ class DragThresholdView(context: Context) : View(context), Density {
 
                 if (!gestureStarted) {
                     gestureStarted = true
-                    performHapticFeedback(HapticFeedbackConstants.GESTURE_START)
+                    val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.DRAG_START
+                            else HapticFeedbackConstants.GESTURE_START
+                    performHapticFeedback(c)
                 }
 
                 val dx = event.x - dragStartX
@@ -230,9 +233,13 @@ class DragThresholdView(context: Context) : View(context), Density {
                 activated = handleCenter >= thresholdX
 
                 if (activated && !wasActivated) {
-                    performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+                    val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE
+                            else HapticFeedbackConstants.CONFIRM
+                    performHapticFeedback(c)
                 } else if (!activated && wasActivated) {
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE
+                            else HapticFeedbackConstants.CLOCK_TICK
+                    performHapticFeedback(c)
                 }
 
                 invalidate()
@@ -259,4 +266,5 @@ class DragThresholdView(context: Context) : View(context), Density {
         super.onDetachedFromWindow()
         removeCallbacks(springRunnable)
     }
+
 }

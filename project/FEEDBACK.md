@@ -1,6 +1,6 @@
-# Iteration 4 – Feedback Items
+# Iteration 5 – Feedback Items
 
-> **General note from user**: Focus on quality. There are bugs — catch them proactively, don't wait for the user.
+> **General note**: Focus on quality. Proactively catch bugs.
 
 ## Workflow
 
@@ -16,11 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | Fix footer spacing | `feedback/01-footer-spacing.md` | Done |
-| 2 | Fix toggle animation | `feedback/02-toggle-animation.md` | Done |
-| 3 | Rollback bad feedback (hold me arc, drag trail, ambient noise) | `feedback/03-rollback-bad-feedback.md` | Done |
-| 4 | Harder vertical drag resistance + softer spring | `feedback/04-drag-resistance.md` | Done |
-| 5 | DrumRollerView inertia + button touch feedback | `feedback/05-drum-roller-inertia.md` | Done |
-| 6 | Double click dispatches two waves | `feedback/06-double-click-waves.md` | Done |
-| 7 | Improve draggable handle appearance | `feedback/07-drag-handle-look.md` | Done |
-| 8 | Scale-down on touch for all clickable elements | `feedback/08-scale-on-touch.md` | Done |
+| 1 | Correct haptics for all example elements | `feedback/09-correct-haptics.md` | Pending |
+| 2 | Subpixel text on all text paints | `feedback/10-subpixel-text.md` | Pending |
+| 3 | QWERTY buttons scale-down press effect | `feedback/11-qwerty-scale.md` | Pending |
+| 4 | More scroll wheel inertia | `feedback/12-scroll-inertia.md` | Pending |
+| 5 | Improve DragThresholdView | `feedback/13-drag-threshold.md` | Pending |

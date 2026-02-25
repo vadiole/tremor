@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -52,11 +53,12 @@ class HapticToggle(context: Context) : View(context), Density {
 
     fun toggle() {
         isOn = !isOn
-        if (isOn) {
-            performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+        val constant = if (Build.VERSION.SDK_INT >= 34) {
+            if (isOn) HapticFeedbackConstants.TOGGLE_ON else HapticFeedbackConstants.TOGGLE_OFF
         } else {
-            performHapticFeedback(HapticFeedbackConstants.REJECT)
+            if (isOn) HapticFeedbackConstants.CONFIRM else HapticFeedbackConstants.REJECT
         }
+        performHapticFeedback(constant)
         animateThumb()
     }
 
