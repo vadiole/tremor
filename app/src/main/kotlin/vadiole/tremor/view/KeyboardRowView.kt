@@ -1,5 +1,6 @@
 package vadiole.tremor.view
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -8,6 +9,7 @@ import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
@@ -42,6 +44,9 @@ class KeyboardRowView(context: Context) : View(context), Density {
     private val rect = RectF()
     private var pressedIndex = -1
 
+    private val keyScales = FloatArray(keys.size) { 1f }
+    private val keyAnimators = arrayOfNulls<ValueAnimator>(keys.size)
+
     init {
         isClickable = true
     }
@@ -58,14 +63,21 @@ class KeyboardRowView(context: Context) : View(context), Density {
 
         for (i in keys.indices) {
             val left = i * (keyWidth + keyGap)
+            val cx = left + keyWidth / 2f
+            val cy = height / 2f
+
+            canvas.save()
+            canvas.scale(keyScales[i], keyScales[i], cx, cy)
+
             bgPaint.color = if (i == pressedIndex) pressedColor else normalColor
             rect.set(left + halfStroke, halfStroke, left + keyWidth - halfStroke, height - halfStroke)
             canvas.drawRoundRect(rect, keyCorner, keyCorner, bgPaint)
             canvas.drawRoundRect(rect, keyCorner, keyCorner, borderPaint)
 
-            val cx = left + keyWidth / 2f
-            val cy = height / 2f + textPaint.textSize / 3f
-            canvas.drawText(keys[i].toString(), cx, cy, textPaint)
+            val textY = cy + textPaint.textSize / 3f
+            canvas.drawText(keys[i].toString(), cx, textY, textPaint)
+
+            canvas.restore()
         }
     }
 
@@ -75,7 +87,7 @@ class KeyboardRowView(context: Context) : View(context), Density {
                 pressedIndex = keyIndexAt(event.x)
                 if (pressedIndex >= 0) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
-                    animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                    animateKeyDown(pressedIndex)
                 }
                 invalidate()
             }
@@ -84,10 +96,12 @@ class KeyboardRowView(context: Context) : View(context), Density {
                 if (newIndex != pressedIndex) {
                     if (pressedIndex >= 0) {
                         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
+                        animateKeyUp(pressedIndex)
                     }
                     pressedIndex = newIndex
                     if (pressedIndex >= 0) {
                         performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
+                        animateKeyDown(pressedIndex)
                     }
                     invalidate()
                 }
@@ -95,20 +109,45 @@ class KeyboardRowView(context: Context) : View(context), Density {
             MotionEvent.ACTION_UP -> {
                 if (pressedIndex >= 0) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
+                    animateKeyUp(pressedIndex)
                 }
                 pressedIndex = -1
-                animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 invalidate()
             }
             MotionEvent.ACTION_CANCEL -> {
+                if (pressedIndex >= 0) animateKeyUp(pressedIndex)
                 pressedIndex = -1
-                animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 invalidate()
             }
         }
         return true
+    }
+
+    private fun animateKeyDown(index: Int) {
+        if (index < 0 || index >= keys.size) return
+        keyAnimators[index]?.cancel()
+        keyAnimators[index] = ValueAnimator.ofFloat(keyScales[index], 0.85f).apply {
+            duration = 80
+            addUpdateListener {
+                keyScales[index] = it.animatedValue as Float
+                invalidate()
+            }
+            start()
+        }
+    }
+
+    private fun animateKeyUp(index: Int) {
+        if (index < 0 || index >= keys.size) return
+        keyAnimators[index]?.cancel()
+        keyAnimators[index] = ValueAnimator.ofFloat(keyScales[index], 1f).apply {
+            duration = 150
+            interpolator = OvershootInterpolator(2f)
+            addUpdateListener {
+                keyScales[index] = it.animatedValue as Float
+                invalidate()
+            }
+            start()
+        }
     }
 
     private fun keyIndexAt(x: Float): Int {
@@ -119,5 +158,10 @@ class KeyboardRowView(context: Context) : View(context), Density {
             if (x >= left && x <= left + keyWidth) return i
         }
         return -1
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        keyAnimators.forEach { it?.cancel() }
     }
 }
