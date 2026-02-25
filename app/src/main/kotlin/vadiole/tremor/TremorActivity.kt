@@ -16,15 +16,16 @@ import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.DragThresholdView
 import vadiole.tremor.view.FlowLayout
+import vadiole.tremor.view.FooterView
 import vadiole.tremor.view.HapticButton
 import vadiole.tremor.view.HapticCounter
 import vadiole.tremor.view.HapticToggle
+import vadiole.tremor.view.HeartParticleView
 import vadiole.tremor.view.KeyboardRowView
 import vadiole.tremor.view.LongPressButton
 import vadiole.tremor.view.PrimitiveRow
 import vadiole.tremor.view.RiseFallButton
 import vadiole.tremor.view.ScrollWheelView
-import vadiole.tremor.view.HeartParticleView
 import vadiole.tremor.view.WaveOverlayView
 
 class TremorActivity : Activity(), Density {
@@ -329,90 +330,14 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun buildFooter(parent: LinearLayout) {
-        val vadioleText = getString(R.string.footer_vadiole)
-        val full = getString(R.string.footer_template, vadioleText)
-        val linkColor = getColor(R.color.text_disabled)
-        val linkStart = full.indexOf(vadioleText)
-        val linkEnd = linkStart + vadioleText.length
-        var isVadiolePressed = false
-
-        val spannable = android.text.SpannableString(full)
-        spannable.setSpan(
-            object : android.text.style.CharacterStyle() {
-                override fun updateDrawState(tp: android.text.TextPaint) {
-                    tp.isUnderlineText = true
-                    tp.color = linkColor
-                    if (isVadiolePressed) tp.alpha = 128
-                }
-            },
-            linkStart, linkEnd,
-            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-        )
-
-        val footerPadding = 8.dp()
-        val footer = TextView(this).apply {
-            text = spannable
-            setTextColor(getColor(R.color.text_disabled))
-            highlightColor = 0
-            textSize = 10f
-            typeface = Typeface.MONOSPACE
-            gravity = Gravity.CENTER
-            setPadding(0, footerPadding, 0, footerPadding)
+        val footer = FooterView(this) { screenX, screenY ->
+            heartOverlay.launchHearts(screenX, screenY)
         }
-
-        val handler = android.os.Handler(android.os.Looper.getMainLooper())
-        val longPressDelay = 500L
-        var longPressTriggered = false
-        var downX = 0f
-        var downY = 0f
-
-        footer.setOnTouchListener { v, event ->
-            when (event.action) {
-                android.view.MotionEvent.ACTION_DOWN -> {
-                    isVadiolePressed = true
-                    longPressTriggered = false
-                    downX = event.x
-                    downY = event.y
-                    v.invalidate()
-                    handler.postDelayed({
-                        if (isVadiolePressed) {
-                            longPressTriggered = true
-                            val loc = IntArray(2)
-                            v.getLocationOnScreen(loc)
-                            heartOverlay.launchHearts(loc[0] + downX, loc[1] + downY)
-                        }
-                    }, longPressDelay)
-                }
-                android.view.MotionEvent.ACTION_UP -> {
-                    isVadiolePressed = false
-                    v.invalidate()
-                    handler.removeCallbacksAndMessages(null)
-                    if (!longPressTriggered) {
-                        try {
-                            val intent = android.content.Intent(
-                                android.content.Intent.ACTION_VIEW,
-                                android.net.Uri.parse("https://play.google.com/store/apps/dev?id=4763171503902347202"),
-                            )
-                            startActivity(intent)
-                        } catch (_: Exception) {
-                        }
-                    }
-                }
-                android.view.MotionEvent.ACTION_CANCEL -> {
-                    isVadiolePressed = false
-                    v.invalidate()
-                    handler.removeCallbacksAndMessages(null)
-                }
-            }
-            true
-        }
-
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         )
-        lp.topMargin = 16.dp() - footerPadding
-        lp.bottomMargin = 8.dp() - footerPadding
+        lp.topMargin = 8.dp()
         parent.addView(footer, lp)
     }
 
@@ -453,8 +378,9 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun updateBanner() {
-        val enabled = hapticEngine.isHapticEnabled(this)
-        bannerView?.visibility = if (enabled) View.GONE else View.VISIBLE
+        val banner = bannerView ?: return
+        val enabled = hapticEngine.isHapticEnabled(banner)
+        banner.visibility = if (enabled) View.GONE else View.VISIBLE
     }
 
     private fun performHapticFeedback(constant: Int) {
