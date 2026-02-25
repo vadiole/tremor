@@ -23,7 +23,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handleWidth = 36f.dp()
     private val handlePadding = 6f.dp()
     private val handleCornerRadius = 8f.dp()
-    private val thresholdFraction = 0.5f
+    private val thresholdFraction = 0.75f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -130,9 +130,11 @@ class DragThresholdView(context: Context) : View(context), Density {
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
-        // threshold line
+        // threshold line (centered vertically)
         val thresholdX = width * thresholdFraction
-        canvas.drawLine(thresholdX, halfStroke, thresholdX, height - halfStroke, thresholdPaint)
+        val lineHeight = (height - halfStroke * 2) * 0.5f
+        val centerY = height / 2f
+        canvas.drawLine(thresholdX, centerY - lineHeight / 2f, thresholdX, centerY + lineHeight / 2f, thresholdPaint)
 
         // handle
         val handleLeft = handleX
