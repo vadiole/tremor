@@ -8,7 +8,7 @@
 | DEV-02 | HapticEngine | Done |
 | DEV-03 | FlowLayout | Done |
 | DEV-04 | HapticButton | Done |
-| DEV-05 | DrumRollerView | Pending |
+| DEV-05 | DrumRollerView | Done |
 | DEV-06 | PrimitiveRow | Pending |
 | DEV-07 | PatternBuilderView | Pending |
 | DEV-08 | WaveOverlayView | Pending |
