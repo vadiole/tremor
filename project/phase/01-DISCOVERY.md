@@ -5,7 +5,7 @@
 | ID | Title | Status |
 |---|---|---|
 | DISC-01 | Catalog Android Haptic APIs | Done |
-| DISC-02 | Competitive Analysis | Pending |
+| DISC-02 | Competitive Analysis | Done |
 | DISC-03 | Propose Feature Set & Grouping | Pending |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
@@ -155,3 +155,42 @@ Required for all `Vibrator.vibrate()` calls. Not required for `View.performHapti
 | Composition Primitives | `VibrationEffect.Composition` | 30 | 8 primitives | VIBRATE |
 | One-Shot | `VibrationEffect.createOneShot()` | 26 | duration + amplitude | VIBRATE |
 | Waveform | `VibrationEffect.createWaveform()` | 26 | timings + amplitudes | VIBRATE |
+
+---
+
+## Competitive Analysis (DISC-02 Output)
+
+### Play Store Apps
+
+| App | Coverage | Strengths | Weaknesses |
+|---|---|---|---|
+| **Haptic Feedback Checker** (janeproject) | HapticFeedbackConstants only | Developer-focused, shows code snippets | Outdated (targets ~API 26), no VibrationEffect/Composition, no visual feedback |
+| **Custom Vibrator / Haptic Test** (hannepps) | Custom waveform patterns only | Custom pattern creation & saving | No HapticFeedbackConstants, no predefined effects, no primitives, "dull sensations" |
+| **Phone Vibration Tester** (myprorock) | Basic vibrator (amplitude slider, presets) | Clean diagnostic UI, amplitude slider, favorites | Motor diagnostic tool only, no haptic API coverage, no visual feedback |
+| **Hapticlabs: Design Haptics** | Proprietary .HLA format | Professional haptic design, audio-haptic sync | Requires desktop companion app, not a standalone API tester |
+
+### Open-Source Projects
+
+| Project | Coverage | Strengths | Weaknesses |
+|---|---|---|---|
+| **AndroidHapticFeedbackTest** (GitHub, PBBB) | All 3 major surfaces (HapticFeedbackConstants, VibrationEffect, Composition) | Broadest coverage found, exposes hidden haptic IDs | Crashes on bad input, no visual feedback, no capability reporting, unpolished |
+| **Google Platform Samples — Haptics** | Composition primitives only (4 demos) | Excellent visual-haptic pairing, authoritative | Only 4 primitives, educational sample not a tester, Compose-based |
+
+### Key Gaps Across All Competitors
+
+1. **No app covers all API surfaces** — HapticFeedbackConstants + Predefined Effects + Composition Primitives in one place
+2. **No visual feedback** — haptics are invisible; no app clearly shows what fired
+3. **No device capability reporting** — no app tells you what your device supports vs. doesn't
+4. **No modern API 34 constants** — TOGGLE_ON/OFF, SEGMENT_TICK, DRAG_START etc. uncovered
+5. **No clean single-screen UX** — all use tabs/navigation or are unpolished
+6. **No parameter exploration** — no sliders for primitive scale/intensity
+7. **No support-aware UI** — no app hides unsupported effects dynamically
+
+### tremor Differentiation
+
+- Only app covering all 5 API surfaces on one screen
+- Visual feedback for every haptic trigger
+- Device-aware: hide unsupported, note unavailable at bottom
+- Minimal black-and-white lab aesthetic — unoccupied design space
+- Primitive scale sliders for parameter exploration
+- Modern API 34 constants included
