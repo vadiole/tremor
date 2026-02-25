@@ -53,6 +53,7 @@ class RiseFallButton(
     }
 
     private val foregroundColor = context.getColor(R.color.foreground)
+    private val labelText = context.getString(R.string.example_rise_fall)
 
     private val rect = RectF()
     private val fillRect = RectF()
@@ -100,10 +101,9 @@ class RiseFallButton(
 
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
-        val label = context.getString(R.string.example_rise_fall)
         val cx = width / 2f
         val cy = height / 2f + textPaint.textSize / 3f
-        canvas.drawText(label, cx, cy, textPaint)
+        canvas.drawText(labelText, cx, cy, textPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
