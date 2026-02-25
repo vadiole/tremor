@@ -98,11 +98,13 @@ class TremorActivity : Activity(), Density {
     override fun onResume() {
         super.onResume()
         updateBanner()
+        waveOverlay.startAmbient()
     }
 
     override fun onPause() {
         super.onPause()
         hapticEngine.cancel()
+        waveOverlay.stopAmbient()
         waveOverlay.clearWaves()
     }
 
