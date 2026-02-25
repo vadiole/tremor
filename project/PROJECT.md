@@ -40,10 +40,11 @@ A single-screen Android app that lets users explore and test every available hap
 | # | Phase | Purpose | Output | Status |
 |---|---|---|---|---|
 | 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | Done |
-| 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | In progress |
+| 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | Done |
 | 3 | Requirements | Formalize what the app must do | Product requirements document | Done |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Done |
 | 5 | Development | Build the app | Working APK | Done |
+| 6 | Iteration 2 | Polish UI, improve features, add example components | Polished APK v2 | In progress |
 
 ---
 
@@ -64,3 +65,14 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Requirements | minSdkVersion = 31 (Android 12) | All core APIs available at minimum, simplifies codebase |
 | 2026-02-25 | Requirements | Buttons show API constant name in small grey text below human-readable label | Developer audience needs to see the actual constant names |
 | 2026-02-25 | Spec | Wave overlay uses AGSL RuntimeShader, soft Gaussian ring profile via smoothstep, no hard gradient transitions | Smooth natural wave look, GPU-native performance |
+| 2026-02-25 | Iteration 2 | Switch haptic buttons to 2-column layout for better text fitting | Text was clipping in 3-column layout |
+| 2026-02-25 | Iteration 2 | Rename section "HAPTIC FEEDBACK" → "HAPTIC FEEDBACK CONSTANTS" | More accurate API name |
+| 2026-02-25 | Iteration 2 | Remove pattern builder feature entirely | Not needed |
+| 2026-02-25 | Iteration 2 | Support proper dark/light themes | Better system integration |
+| 2026-02-25 | Iteration 2 | Extract all strings to strings.xml (English) | Localization readiness |
+| 2026-02-25 | Iteration 2 | DrumRollerView: same visual, larger touch area filling the row | Easier to use |
+| 2026-02-25 | Iteration 2 | WaveOverlayView responsive to effect type (short/long) and strength | Better visual-haptic correlation |
+| 2026-02-25 | Iteration 2 | New "Example Components" section at bottom showcasing haptics in real UI patterns | Educational, practical demos |
+| 2026-02-25 | Iteration 2 | Fix haptics disabled banner — deep link to correct settings toggle, show toast | User must be able to fix quickly |
+| 2026-02-25 | Iteration 2 | Add edge fading on top/bottom per edge-to-edge guidelines | Polish, follows platform guidelines |
+| 2026-02-25 | Iteration 2 | Footer "by vadiole with <3" linking to Play Store dev page | Attribution |
