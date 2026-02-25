@@ -92,7 +92,7 @@ class TremorActivity : Activity(), Density {
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
 
-        heartOverlay = HeartParticleView(this).apply {
+        heartOverlay = HeartParticleView(this, hapticEngine::playPrimitive).apply {
             isClickable = false
             isFocusable = false
         }
@@ -277,7 +277,7 @@ class TremorActivity : Activity(), Density {
             LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
         ))
 
-        parent.addView(RiseFallButton(this), LinearLayout.LayoutParams(
+        parent.addView(RiseFallButton(this, hapticEngine::playPrimitive), LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         ))

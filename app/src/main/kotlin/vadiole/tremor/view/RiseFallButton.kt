@@ -9,8 +9,6 @@ import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
 import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
@@ -19,17 +17,15 @@ import vadiole.tremor.R
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
-class RiseFallButton(context: Context) : View(context), Density {
+class RiseFallButton(
+    context: Context,
+    private val playPrimitive: (primitiveId: Int, scale: Float) -> Unit,
+) : View(context), Density {
 
     private val viewHeight = 72.dp()
     private val cornerRadius = 6f.dp()
     private val riseDurationMs = 400L
     private val fallDurationMs = 300L
-
-    private val vibrator: Vibrator = run {
-        val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-        manager.defaultVibrator
-    }
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -149,16 +145,6 @@ class RiseFallButton(context: Context) : View(context), Density {
                 invalidate()
             }
             start()
-        }
-    }
-
-    private fun playPrimitive(primitiveId: Int, scale: Float) {
-        try {
-            val effect = VibrationEffect.startComposition()
-                .addPrimitive(primitiveId, scale)
-                .compose()
-            vibrator.vibrate(effect)
-        } catch (_: Exception) {
         }
     }
 
