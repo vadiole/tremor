@@ -200,9 +200,13 @@ class TremorActivity : Activity(), Density {
     ) {
         parent.addView(createSectionLabel(getString(R.string.section_examples)))
 
+        val toggle = HapticToggle(this)
         val toggleRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
+            isClickable = true
+            isFocusable = true
+            setOnClickListener { toggle.toggle() }
         }
         val toggleLabel = TextView(this).apply {
             text = getString(R.string.example_toggle)
@@ -213,7 +217,7 @@ class TremorActivity : Activity(), Density {
         toggleRow.addView(toggleLabel, LinearLayout.LayoutParams(
             0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
         ))
-        toggleRow.addView(HapticToggle(this))
+        toggleRow.addView(toggle)
         parent.addView(toggleRow, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,

@@ -2,13 +2,13 @@
 
 | # | Title | Type | Status |
 |---|---|---|---|
-| 1 | Density interface for dp calculations | dev | Pending |
-| 2 | More example elements (top 7) | research + validate + dev | Pending |
-| 3 | Improve WaveOverlayView per-primitive character | research + dev | Pending |
-| 4 | Fix DrumRollerView haptics to SEGMENT_FREQUENT_TICK | dev | Pending |
-| 5 | Fix Play Store link, underline, press effect | dev | Pending |
-| 6 | Fix system bar colors in light mode | dev | Pending |
-| 7 | Improve toggle: animation, taller, full-row tap | dev | Pending |
+| 1 | Density interface for dp calculations | dev | Done |
+| 2 | More example elements (top 7) | research + validate + dev | Done |
+| 3 | Improve WaveOverlayView per-primitive character | research + dev | Done |
+| 4 | Fix DrumRollerView haptics to SEGMENT_FREQUENT_TICK | dev | Done |
+| 5 | Fix Play Store link, underline, press effect | dev | Done |
+| 6 | Fix system bar colors in light mode | dev | Done |
+| 7 | Improve toggle: animation, taller, full-row tap | dev | Done |
 | 8 | Fix wave colors in light mode | dev | Pending |
 | 9 | Research subtle ambient wave effect | research + dev (optional) | Pending |
 | 10 | Research additional visual feedback ideas | research + validate | Pending |
