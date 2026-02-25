@@ -8,29 +8,27 @@
 
 ## Ticket 1: UX-UI
 
-**Status**: Pending
+**Status**: Done
 
-Review current DragThresholdView parameters:
-- `verticalResistance = 0.15f` — this multiplier on vertical delta. Lower = harder. Should be reduced significantly (e.g., 0.05 or less).
-- `springStiffness = 800f` and `springDamping = 30f` — reduce stiffness by ~30% for a softer return.
-
-Determine best values for a tight vertical feel and gentler spring.
+- `verticalResistance`: 0.15 → 0.04 (nearly 4x harder, handle barely budges vertically)
+- `springStiffness`: 800 → 560 (30% softer return)
+- `springDamping`: 30 → 25 (proportionally reduced to maintain smooth damping ratio)
 
 ---
 
 ## Ticket 2: Development
 
-**Status**: Pending
+**Status**: Done
 
-Update DragThresholdView:
-- Reduce vertical resistance multiplier (much harder vertical movement)
-- Reduce spring stiffness by ~30% for softer snap-back
-- Adjust damping proportionally if needed to maintain smooth animation
+Updated all three constants in DragThresholdView.
 
 ---
 
 ## Ticket 3: Review
 
-**Status**: Pending
+**Status**: Done
 
-Verify dragging feels tight vertically (barely moves), horizontal drag is unchanged, and spring return is noticeably softer but still snappy enough to feel good.
+- Vertical movement now barely responds (0.04 multiplier on dy)
+- Spring return is noticeably gentler but still snaps back cleanly
+- Damping ratio remains smooth (no oscillation)
+- Build clean.
