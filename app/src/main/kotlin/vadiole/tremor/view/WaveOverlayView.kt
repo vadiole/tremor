@@ -128,7 +128,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
             val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
             val easeOut = 1f - progress * progress
-            val alpha = (easeOut * wave.intensityMultiplier * 0.2f * 255).toInt().coerceIn(0, 255)
+            val alpha = (easeOut * wave.intensityMultiplier * 0.1f * 255).toInt().coerceIn(0, 255)
 
             fallbackPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
             fallbackPaint.strokeWidth = wave.ringWidth
@@ -213,7 +213,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
                     float ringShape = smoothstep(inner - halfRing * 0.5, r, dist)
                                     * smoothstep(outer + halfRing * 0.5, r, dist);
 
-                    brightness += ringShape * intensities[i] * 0.25;
+                    brightness += ringShape * intensities[i] * 0.1;
                 }
 
                 brightness = clamp(brightness, 0.0, 1.0);
