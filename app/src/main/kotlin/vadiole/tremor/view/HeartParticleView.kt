@@ -92,10 +92,6 @@ class HeartParticleView(
         val localX = screenX - loc[0]
         val localY = screenY - loc[1]
 
-        hearts.clear()
-        isRunning = false
-        removeCallbacks(animRunnable)
-
         playPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 0.3f)
 
         // build emoji list: 1 in 3 chance of themed set
@@ -132,9 +128,11 @@ class HeartParticleView(
             )
         }
 
-        lastFrameTime = System.nanoTime()
-        isRunning = true
-        postOnAnimation(animRunnable)
+        if (!isRunning) {
+            lastFrameTime = System.nanoTime()
+            isRunning = true
+            postOnAnimation(animRunnable)
+        }
     }
 
     override fun onDraw(canvas: Canvas) {
