@@ -41,8 +41,8 @@ A single-screen Android app that lets users explore and test every available hap
 |---|---|---|---|---|
 | 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | Done |
 | 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | In progress |
-| 3 | Requirements | Formalize what the app must do | Product requirements document | In progress |
-| 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Not started |
+| 3 | Requirements | Formalize what the app must do | Product requirements document | Done |
+| 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | In progress |
 | 5 | Development | Build the app | Working APK | Not started |
 
 ---
