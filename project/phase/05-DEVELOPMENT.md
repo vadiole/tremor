@@ -7,7 +7,7 @@
 | DEV-01 | Manifest, Colors & Build Config | Done |
 | DEV-02 | HapticEngine | Done |
 | DEV-03 | FlowLayout | Done |
-| DEV-04 | HapticButton | Pending |
+| DEV-04 | HapticButton | Done |
 | DEV-05 | DrumRollerView | Pending |
 | DEV-06 | PrimitiveRow | Pending |
 | DEV-07 | PatternBuilderView | Pending |
