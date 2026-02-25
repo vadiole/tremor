@@ -2,6 +2,7 @@ package vadiole.tremor
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.view.Gravity
@@ -382,10 +383,18 @@ class TremorActivity : Activity(), Density {
         root.addView(bannerView, lp)
     }
 
+    private val hideBannerRunnable = Runnable {
+        bannerView?.visibility = View.GONE
+    }
+
     private fun updateBanner() {
         val banner = bannerView ?: return
+        banner.removeCallbacks(hideBannerRunnable)
         val enabled = hapticEngine.isHapticEnabled(banner)
         banner.visibility = if (enabled) View.GONE else View.VISIBLE
+        if (!enabled && Build.VERSION.SDK_INT >= 35) {
+            banner.postDelayed(hideBannerRunnable, 10_000)
+        }
     }
 
     private fun performHapticFeedback(constant: Int) {
