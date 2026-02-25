@@ -22,6 +22,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
 
+    private val shaderOrigins = FloatArray(maxWaves * 2)
+    private val shaderRadii = FloatArray(maxWaves)
+    private val shaderIntensities = FloatArray(maxWaves)
+    private val shaderRingWidths = FloatArray(maxWaves)
+
     private val waveColor = context.getColor(R.color.foreground)
 
     private val fallbackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -86,30 +91,25 @@ class WaveOverlayView(context: Context) : View(context), Density {
         val count = waves.size.coerceAtMost(maxWaves)
         s.setIntUniform("waveCount", count)
 
-        val origins = FloatArray(maxWaves * 2)
-        val radii = FloatArray(maxWaves)
-        val intensities = FloatArray(maxWaves)
-        val ringWidths = FloatArray(maxWaves)
-
         for (i in 0 until count) {
             val wave = waves[i]
             val elapsed = (now - wave.startTime).toFloat()
             val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
             val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
 
-            origins[i * 2] = wave.x
-            origins[i * 2 + 1] = wave.y
-            radii[i] = progress * wave.expandSpeed * (wave.durationMs / 1000f)
-            ringWidths[i] = wave.ringWidth
+            shaderOrigins[i * 2] = wave.x
+            shaderOrigins[i * 2 + 1] = wave.y
+            shaderRadii[i] = progress * wave.expandSpeed * (wave.durationMs / 1000f)
+            shaderRingWidths[i] = wave.ringWidth
 
             val easeOut = 1f - progress * progress
-            intensities[i] = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
+            shaderIntensities[i] = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
         }
 
-        s.setFloatUniform("origins", origins)
-        s.setFloatUniform("radii", radii)
-        s.setFloatUniform("intensities", intensities)
-        s.setFloatUniform("ringWidths", ringWidths)
+        s.setFloatUniform("origins", shaderOrigins)
+        s.setFloatUniform("radii", shaderRadii)
+        s.setFloatUniform("intensities", shaderIntensities)
+        s.setFloatUniform("ringWidths", shaderRingWidths)
         s.setFloatUniform("waveColor",
             ((waveColor shr 16) and 0xFF) / 255f,
             ((waveColor shr 8) and 0xFF) / 255f,

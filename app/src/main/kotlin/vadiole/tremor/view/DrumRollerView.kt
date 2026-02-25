@@ -2,6 +2,7 @@ package vadiole.tremor.view
 
 import android.content.Context
 import android.graphics.Canvas
+import android.os.SystemClock
 import android.graphics.Paint
 import android.graphics.RectF
 import android.view.HapticFeedbackConstants
@@ -57,6 +58,7 @@ class DrumRollerView(
     private var isFlung = false
     private val friction = 0.90f
     private val minVelocity = 0.3f
+    private val maxVelocity = 15f
     private var currentStep = totalSteps
 
     private val flingRunnable = object : Runnable {
@@ -146,15 +148,15 @@ class DrumRollerView(
                 isFlung = false
                 removeCallbacks(flingRunnable)
                 lastTouchY = event.y
-                lastMoveTime = System.currentTimeMillis()
+                lastMoveTime = SystemClock.uptimeMillis()
                 velocity = 0f
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
                 val dy = event.y - lastTouchY
-                val now = System.currentTimeMillis()
+                val now = SystemClock.uptimeMillis()
                 val dt = (now - lastMoveTime).coerceAtLeast(1)
-                velocity = (dy / lineSpacing) / dt * 16f
+                velocity = ((dy / lineSpacing) / dt * 16f).coerceIn(-maxVelocity, maxVelocity)
                 lastMoveTime = now
                 lastTouchY = event.y
 
