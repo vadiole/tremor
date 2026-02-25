@@ -349,6 +349,7 @@ class TremorActivity : Activity(), Density {
             android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
         )
 
+        val footerPadding = 8.dp()
         val footer = TextView(this).apply {
             text = spannable
             setTextColor(getColor(R.color.text_disabled))
@@ -356,6 +357,7 @@ class TremorActivity : Activity(), Density {
             textSize = 10f
             typeface = Typeface.MONOSPACE
             gravity = Gravity.CENTER
+            setPadding(0, footerPadding, 0, footerPadding)
         }
 
         val handler = android.os.Handler(android.os.Looper.getMainLooper())
@@ -409,8 +411,8 @@ class TremorActivity : Activity(), Density {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         )
-        lp.topMargin = 16.dp()
-        lp.bottomMargin = 8.dp()
+        lp.topMargin = 16.dp() - footerPadding
+        lp.bottomMargin = 8.dp() - footerPadding
         parent.addView(footer, lp)
     }
 
