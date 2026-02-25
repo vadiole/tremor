@@ -20,7 +20,7 @@ class HeartParticleView(
     private val themedSets = arrayOf(
         arrayOf("\uD83D\uDC99", "\uD83D\uDC9B"),                       // 💙💛 Ukraine
         arrayOf("\uD83D\uDC97", "\uD83D\uDC9C", "\uD83D\uDC99"),       // 💗💜💙 Bi flag
-        arrayOf("\uD83E\uDD0D", "\uD83E\uDD0D"),                       // 🤍🤍 Polish
+        arrayOf("\uD83E\uDD0D", "\uD83E\uDD0D"),                       // 🤍❤️ Polish
         arrayOf("\uD83D\uDC1E"),                                        // 🐞 Ladybug
         arrayOf("\uD83C\uDF38", "\uD83C\uDF38", "\uD83C\uDF38"),       // 🌸🌸🌸 Cherry blossom
         arrayOf("\uD83C\uDF08"),                                        // 🌈 Rainbow
@@ -68,7 +68,7 @@ class HeartParticleView(
 
                 if (!h.passedBottom && h.y > height) {
                     h.passedBottom = true
-                    playPrimitive(VibrationEffect.Composition.PRIMITIVE_LOW_TICK, 1.0f)
+                    playPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 0.75f)
                 }
 
                 if (h.y > height + 100f.dp()) {
