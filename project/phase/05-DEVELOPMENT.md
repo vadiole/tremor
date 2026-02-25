@@ -11,7 +11,7 @@
 | DEV-05 | DrumRollerView | Done |
 | DEV-06 | PrimitiveRow | Done |
 | DEV-07 | PatternBuilderView | Done |
-| DEV-08 | WaveOverlayView | Pending |
+| DEV-08 | WaveOverlayView | Done |
 | DEV-09 | TremorActivity — Assembly & Wiring | Pending |
 | DEV-10 | Edge Cases & Polish | Pending |
 
