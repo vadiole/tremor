@@ -16,9 +16,9 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     private val viewHeight = 72.dp()
     private val cornerRadius = 6f.dp()
-    private val handleWidth = 48f.dp()
-    private val handleHeight = 40f.dp()
-    private val handleCorner = 4f.dp()
+    private val handleWidth = 44f.dp()
+    private val handleHeight = 36f.dp()
+    private val handleCorner = 18f.dp()
     private val thresholdFraction = 0.6f
     private val handlePadding = 8f.dp()
     private val verticalResistance = 0.04f
@@ -42,21 +42,29 @@ class DragThresholdView(context: Context) : View(context), Density {
     }
 
     private val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.foreground)
+        color = context.getColor(R.color.surface_pressed)
         style = Paint.Style.FILL
     }
 
     private val handleBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
+        color = context.getColor(R.color.foreground)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1.5f.dp()
     }
 
     private val gripPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.background)
+        color = context.getColor(R.color.text_secondary)
+        strokeWidth = 1f.dp()
+        style = Paint.Style.STROKE
+        strokeCap = Paint.Cap.ROUND
+    }
+
+    private val chevronPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.text_muted)
         strokeWidth = 1.5f.dp()
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
+        strokeJoin = Paint.Join.ROUND
     }
 
     private val activatedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -164,14 +172,21 @@ class DragThresholdView(context: Context) : View(context), Density {
         canvas.drawRoundRect(handleRect, handleCorner, handleCorner, handlePaint)
         canvas.drawRoundRect(handleRect, handleCorner, handleCorner, handleBorderPaint)
 
-        // grip lines on handle
-        val gripCx = handleLeft + handleWidth / 2f
+        // horizontal grip lines
+        val gripCx = handleLeft + handleWidth * 0.38f
         val gripCy = centerY
-        val gripSpacing = 4f.dp()
+        val gripSpacing = 3.5f.dp()
+        val gripHalfW = 6f.dp()
         for (i in -1..1) {
-            val gx = gripCx + i * gripSpacing
-            canvas.drawLine(gx, gripCy - 6f.dp(), gx, gripCy + 6f.dp(), gripPaint)
+            val gy = gripCy + i * gripSpacing
+            canvas.drawLine(gripCx - gripHalfW, gy, gripCx + gripHalfW, gy, gripPaint)
         }
+
+        // right chevron
+        val chevronX = handleLeft + handleWidth * 0.72f
+        val chevronSize = 4f.dp()
+        canvas.drawLine(chevronX - chevronSize, gripCy - chevronSize, chevronX, gripCy, chevronPaint)
+        canvas.drawLine(chevronX, gripCy, chevronX - chevronSize, gripCy + chevronSize, chevronPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

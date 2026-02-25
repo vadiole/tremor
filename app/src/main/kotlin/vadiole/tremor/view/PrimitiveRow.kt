@@ -110,6 +110,7 @@ class PrimitiveRow(
             MotionEvent.ACTION_DOWN -> {
                 bgPaint.color = pressedColor
                 invalidate()
+                animate().scaleX(0.98f).scaleY(0.98f).setDuration(80).start()
                 getLocationOnScreen(location)
                 val screenX = location[0] + event.x
                 val screenY = location[1] + event.y
@@ -118,6 +119,8 @@ class PrimitiveRow(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
+                animate().scaleX(1f).scaleY(1f).setDuration(150)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
             }
         }
         return true

@@ -52,7 +52,45 @@ class DrumRollerView(
     private val totalSteps = ((maxValue - minValue) / step).roundToInt()
     private var scrollOffset = 0f
     private var lastTouchY = 0f
+    private var lastMoveTime = 0L
+    private var velocity = 0f
+    private var isFlung = false
+    private val friction = 0.90f
+    private val minVelocity = 0.3f
     private var currentStep = totalSteps
+
+    private val flingRunnable = object : Runnable {
+        override fun run() {
+            if (!isFlung) return
+            velocity *= friction
+            scrollOffset += velocity
+
+            while (scrollOffset >= 1f && currentStep > 0) {
+                scrollOffset -= 1f
+                currentStep--
+                updateValue()
+                performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+            }
+            while (scrollOffset <= -1f && currentStep < totalSteps) {
+                scrollOffset += 1f
+                currentStep++
+                updateValue()
+                performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+            }
+
+            if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
+            if (currentStep == totalSteps && scrollOffset < 0f) scrollOffset = 0f
+
+            invalidate()
+            if (abs(velocity) > minVelocity) {
+                postOnAnimation(this)
+            } else {
+                isFlung = false
+                scrollOffset = 0f
+                invalidate()
+            }
+        }
+    }
 
     init {
         isClickable = true
@@ -105,13 +143,22 @@ class DrumRollerView(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                isFlung = false
+                removeCallbacks(flingRunnable)
                 lastTouchY = event.y
+                lastMoveTime = System.currentTimeMillis()
+                velocity = 0f
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
                 val dy = event.y - lastTouchY
-                scrollOffset += dy / lineSpacing
+                val now = System.currentTimeMillis()
+                val dt = (now - lastMoveTime).coerceAtLeast(1)
+                velocity = (dy / lineSpacing) / dt * 16f
+                lastMoveTime = now
                 lastTouchY = event.y
+
+                scrollOffset += dy / lineSpacing
 
                 while (scrollOffset >= 1f && currentStep > 0) {
                     scrollOffset -= 1f
@@ -131,7 +178,18 @@ class DrumRollerView(
 
                 invalidate()
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_UP -> {
+                if (abs(velocity) > minVelocity) {
+                    isFlung = true
+                    postOnAnimation(flingRunnable)
+                } else {
+                    scrollOffset = 0f
+                    invalidate()
+                }
+                parent?.requestDisallowInterceptTouchEvent(false)
+            }
+            MotionEvent.ACTION_CANCEL -> {
+                isFlung = false
                 scrollOffset = 0f
                 invalidate()
                 parent?.requestDisallowInterceptTouchEvent(false)
@@ -144,6 +202,11 @@ class DrumRollerView(
         val newValue = minValue + currentStep * step
         value = newValue.coerceIn(minValue, maxValue)
         onValueChanged?.invoke(value)
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        removeCallbacks(flingRunnable)
     }
 
     fun setValue(newValue: Float) {

@@ -100,6 +100,7 @@ class LongPressButton(context: Context) : View(context), Density {
                 triggered = false
                 pressStartTime = System.currentTimeMillis()
                 bgPaint.color = pressedColor
+                animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
                 handler.postDelayed(progressRunnable, 16)
                 handler.postDelayed({
                     if (isPressed && !triggered) {
@@ -113,6 +114,8 @@ class LongPressButton(context: Context) : View(context), Density {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
                 bgPaint.color = normalColor
+                animate().scaleX(1f).scaleY(1f).setDuration(150)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 handler.removeCallbacksAndMessages(null)
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)

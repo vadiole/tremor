@@ -19,7 +19,21 @@ class HapticEngine(context: Context) {
 
     fun isHapticEnabled(context: Context): Boolean {
         return try {
-            Settings.System.getInt(context.contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) == 1
+            val feedbackEnabled = Settings.System.getInt(
+                context.contentResolver,
+                @Suppress("DEPRECATION") Settings.System.HAPTIC_FEEDBACK_ENABLED,
+                1,
+            ) == 1
+            if (!feedbackEnabled) return false
+
+            val intensity = Settings.System.getInt(
+                context.contentResolver,
+                "haptic_feedback_intensity",
+                -1,
+            )
+            if (intensity == 0) return false
+
+            true
         } catch (_: Exception) {
             true
         }

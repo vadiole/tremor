@@ -151,6 +151,9 @@ class TremorActivity : Activity(), Density {
             val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
                 waveOverlay.spawnWave(screenX, screenY, strength)
+                if (info.effectId == VibrationEffect.EFFECT_DOUBLE_CLICK) {
+                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, 100)
+                }
             }
             flow.addView(button)
         }
@@ -385,20 +388,15 @@ class TremorActivity : Activity(), Density {
             }
             setOnClickListener {
                 try {
-                    val intent = android.content.Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
                     startActivity(intent)
                 } catch (_: Exception) {
                     try {
-                        val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
+                        val intent = android.content.Intent(android.provider.Settings.ACTION_SETTINGS)
                         startActivity(intent)
                     } catch (_: Exception) {
                     }
                 }
-                android.widget.Toast.makeText(
-                    this@TremorActivity,
-                    getString(R.string.haptic_disabled_message),
-                    android.widget.Toast.LENGTH_SHORT,
-                ).show()
             }
             visibility = View.GONE
         }
