@@ -43,7 +43,7 @@ A single-screen Android app that lets users explore and test every available hap
 | 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | In progress |
 | 3 | Requirements | Formalize what the app must do | Product requirements document | Done |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Done |
-| 5 | Development | Build the app | Working APK | In progress |
+| 5 | Development | Build the app | Working APK | Done |
 
 ---
 
