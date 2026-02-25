@@ -110,7 +110,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("radii", shaderRadii)
         s.setFloatUniform("intensities", shaderIntensities)
         s.setFloatUniform("ringWidths", shaderRingWidths)
-        s.setFloatUniform("waveColor",
+        s.setFloatUniform(
+            "waveColor",
             ((waveColor shr 16) and 0xFF) / 255f,
             ((waveColor shr 8) and 0xFF) / 255f,
             (waveColor and 0xFF) / 255f,
@@ -153,7 +154,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         val intensityMultiplier = (0.4f + strength * 0.6f) * style.intensityMultiplier
     }
 
-    data class WaveStyle(
+    class WaveStyle(
         val durationMultiplier: Float = 1f,
         val speedMultiplier: Float = 1f,
         val ringWidthMultiplier: Float = 1f,
@@ -179,7 +180,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val RISE = WaveStyle(durationMultiplier = 1.1f, speedMultiplier = 1.3f, ringWidthMultiplier = 1.4f, intensityMultiplier = 1.2f)
 
             // slow rise: delayed start, slow expand, thick
-            val SLOW_RISE = WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f)
+            val SLOW_RISE =
+                WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f)
 
             // quick fall: fast shrink feel
             val FALL = WaveStyle(durationMultiplier = 0.8f, speedMultiplier = 1.4f, ringWidthMultiplier = 1.2f, intensityMultiplier = 0.9f)

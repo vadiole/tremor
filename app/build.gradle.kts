@@ -15,19 +15,30 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+    androidResources {
+        localeFilters += "en"
+    }
 
     buildTypes {
         release {
             isMinifyEnabled = true
-            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            isShrinkResources = true
+            vcsInfo.include = false
+            proguardFiles("proguard-rules.pro")
         }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-}
-
-dependencies {
-    implementation(libs.androidx.core.ktx)
+    packaging {
+        resources {
+            excludes += "kotlin/**"
+            excludes += "DebugProbesKt.bin"
+            excludes += "META-INF/*.version"
+            excludes += "META-INF/services/**"
+            excludes += "META-INF/version-control-info.textproto"
+            excludes += "META-INF/com/**"
+        }
+    }
 }

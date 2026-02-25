@@ -18,8 +18,6 @@ class HapticEngine(context: Context) {
         manager.defaultVibrator
     }
 
-    val hasVibrator: Boolean = vibrator.hasVibrator()
-
     fun isHapticEnabled(view: View): Boolean {
         if (isDndActive()) return false
         // On API 35+ ViewRootImpl uses async haptic feedback which always returns true,
@@ -100,20 +98,20 @@ class HapticEngine(context: Context) {
         vibrator.cancel()
     }
 
-    data class HapticConstantInfo(
+    class HapticConstantInfo(
         val nameResId: Int,
         val constantName: String,
         val value: Int,
         val minApi: Int,
     )
 
-    data class EffectInfo(
+    class EffectInfo(
         val nameResId: Int,
         val constantName: String,
         val effectId: Int,
     )
 
-    data class PrimitiveInfo(
+    class PrimitiveInfo(
         val nameResId: Int,
         val constantName: String,
         val primitiveId: Int,
