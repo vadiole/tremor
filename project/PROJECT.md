@@ -44,7 +44,7 @@ A single-screen Android app that lets users explore and test every available hap
 | 3 | Requirements | Formalize what the app must do | Product requirements document | Done |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Done |
 | 5 | Development | Build the app | Working APK | Done |
-| 6 | Iteration 2 | Polish UI, improve features, add example components | Polished APK v2 | In progress |
+| 6 | Iteration 2 | Polish UI, improve features, add example components | Polished APK v2 | Done |
 
 ---
 
