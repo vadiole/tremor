@@ -4,12 +4,13 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
 import android.view.View
 import vadiole.tremor.Density
 
-class HeartParticleView(context: Context) : View(context), Density {
+class HeartParticleView(
+    context: Context,
+    private val playPrimitive: (primitiveId: Int, scale: Float) -> Unit,
+) : View(context), Density {
 
     private val gravity = 900f
     private val heartCount = 10
@@ -27,11 +28,6 @@ class HeartParticleView(context: Context) : View(context), Density {
         arrayOf("\uD83E\uDD8B", "\uD83E\uDD8B"),                       // 🦋🦋 Butterfly
         arrayOf("\u2728", "\u2728"),                                     // ✨✨ Sparkles
     )
-
-    private val vibrator: Vibrator = run {
-        val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-        manager.defaultVibrator
-    }
 
     private val heartPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = 20f.dp()
@@ -149,16 +145,6 @@ class HeartParticleView(context: Context) : View(context), Density {
             heartPaint.textSize = h.size
             canvas.drawText(h.emoji, 0f, heartPaint.textSize / 3f, heartPaint)
             canvas.restore()
-        }
-    }
-
-    private fun playPrimitive(primitiveId: Int, scale: Float) {
-        try {
-            val effect = VibrationEffect.startComposition()
-                .addPrimitive(primitiveId, scale)
-                .compose()
-            vibrator.vibrate(effect)
-        } catch (_: Exception) {
         }
     }
 

@@ -91,10 +91,13 @@ class HapticEngine(context: Context) {
     }
 
     fun playPrimitive(primitiveId: Int, scale: Float) {
-        val effect = VibrationEffect.startComposition()
-            .addPrimitive(primitiveId, scale)
-            .compose()
-        vibrator.vibrate(effect)
+        try {
+            val effect = VibrationEffect.startComposition()
+                .addPrimitive(primitiveId, scale)
+                .compose()
+            vibrator.vibrate(effect)
+        } catch (_: Exception) {
+        }
     }
 
     fun cancel() {
