@@ -6,7 +6,7 @@
 |---|---|---|
 | DISC-01 | Catalog Android Haptic APIs | Done |
 | DISC-02 | Competitive Analysis | Done |
-| DISC-03 | Propose Feature Set & Grouping | Pending |
+| DISC-03 | Propose Feature Set & Grouping | Done |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 
@@ -194,3 +194,102 @@ Required for all `Vibrator.vibrate()` calls. Not required for `View.performHapti
 - Minimal black-and-white lab aesthetic — unoccupied design space
 - Primitive scale sliders for parameter exploration
 - Modern API 34 constants included
+
+---
+
+## Proposed Feature Set & Grouping (DISC-03 Output)
+
+### MVP Scope — What Appears on Screen
+
+The single screen is a vertical scrollable list of sections. Each section is a category of haptic APIs. Within each section, each effect is a tappable element. Unsupported effects are hidden; a small text at the bottom lists what's unavailable.
+
+### Section 1: Haptic Feedback
+
+Source: `View.performHapticFeedback(constant)`
+Permission: None
+UI: Grid/list of tappable items, one per constant. Tap → feel + visual feedback.
+
+Items (filtered at runtime by API level):
+
+| Item Label | Constant | Min API |
+|---|---|---|
+| Confirm | `CONFIRM` | 30 |
+| Reject | `REJECT` | 30 |
+| Toggle On | `TOGGLE_ON` | 34 |
+| Toggle Off | `TOGGLE_OFF` | 34 |
+| Long Press | `LONG_PRESS` | 3 |
+| Keyboard Press | `KEYBOARD_PRESS` | 27 |
+| Keyboard Release | `KEYBOARD_RELEASE` | 27 |
+| Clock Tick | `CLOCK_TICK` | 21 |
+| Context Click | `CONTEXT_CLICK` | 23 |
+| Gesture Start | `GESTURE_START` | 30 |
+| Gesture End | `GESTURE_END` | 30 |
+| Gesture Threshold Activate | `GESTURE_THRESHOLD_ACTIVATE` | 34 |
+| Gesture Threshold Deactivate | `GESTURE_THRESHOLD_DEACTIVATE` | 34 |
+| Text Handle Move | `TEXT_HANDLE_MOVE` | 27 |
+| Virtual Key | `VIRTUAL_KEY` | 3 |
+| Virtual Key Release | `VIRTUAL_KEY_RELEASE` | 27 |
+| Drag Start | `DRAG_START` | 34 |
+| Segment Tick | `SEGMENT_TICK` | 34 |
+| Segment Frequent Tick | `SEGMENT_FREQUENT_TICK` | 34 |
+
+Note: `KEYBOARD_TAP` excluded (same int value as `KEYBOARD_PRESS`). `NO_HAPTICS` excluded (produces nothing).
+
+### Section 2: Predefined Effects
+
+Source: `VibrationEffect.createPredefined(effectId)` → `vibrator.vibrate(effect)`
+Permission: VIBRATE
+Min API: 29
+UI: Tappable items, one per effect. Tap → feel + visual feedback.
+
+| Item Label | Constant | Min API |
+|---|---|---|
+| Click | `EFFECT_CLICK` | 29 |
+| Double Click | `EFFECT_DOUBLE_CLICK` | 29 |
+| Tick | `EFFECT_TICK` | 29 |
+| Heavy Click | `EFFECT_HEAVY_CLICK` | 29 |
+
+Runtime filter: check `vibrator.areEffectsSupported()` — hide effects returning NO.
+
+### Section 3: Composition Primitives
+
+Source: `VibrationEffect.startComposition().addPrimitive(id, scale).compose()` → `vibrator.vibrate(effect)`
+Permission: VIBRATE
+Min API: 30
+UI: Each primitive is a tappable item. Additionally, each has a scale slider (0.0–1.0) to explore intensity.
+
+| Item Label | Constant | Min API |
+|---|---|---|
+| Click | `PRIMITIVE_CLICK` | 30 |
+| Tick | `PRIMITIVE_TICK` | 30 |
+| Low Tick | `PRIMITIVE_LOW_TICK` | 31 |
+| Quick Rise | `PRIMITIVE_QUICK_RISE` | 30 |
+| Slow Rise | `PRIMITIVE_SLOW_RISE` | 30 |
+| Quick Fall | `PRIMITIVE_QUICK_FALL` | 30 |
+| Spin | `PRIMITIVE_SPIN` | 31 |
+| Thud | `PRIMITIVE_THUD` | 31 |
+
+Runtime filter: check `vibrator.arePrimitivesSupported()` — hide unsupported.
+
+### Section 4: Composition Pattern Builder
+
+Source: Same Composition API, but chaining multiple primitives.
+Permission: VIBRATE
+Min API: 30
+UI: Simple builder — user picks 2–5 primitives from a list of supported ones, sets scale and delay for each, then plays the composed pattern. Minimal — not a full sequencer.
+
+### Section 5: Device Info (Bottom)
+
+Small text at the bottom of the screen:
+- Device name / Android version / API level
+- List of features not available on this device (hidden effects/primitives with their names)
+
+### Excluded from MVP
+
+| API | Reason |
+|---|---|
+| `VibrationEffect.createOneShot()` | Raw vibration, not haptic — out of scope per decisions |
+| `VibrationEffect.createWaveform()` | Raw vibration patterns — out of scope per decisions |
+| `VibratorManager` multi-vibrator | Niche, most devices have one vibrator |
+| `VibrationAttributes` usage types | Internal implementation detail, not user-facing |
+| Envelope effects (API 36) | Not yet stable |
