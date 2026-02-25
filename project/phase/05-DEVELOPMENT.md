@@ -4,7 +4,16 @@
 
 | ID | Title | Status |
 |---|---|---|
-| – | – | – |
+| DEV-01 | Manifest, Colors & Build Config | Done |
+| DEV-02 | HapticEngine | Pending |
+| DEV-03 | FlowLayout | Pending |
+| DEV-04 | HapticButton | Pending |
+| DEV-05 | DrumRollerView | Pending |
+| DEV-06 | PrimitiveRow | Pending |
+| DEV-07 | PatternBuilderView | Pending |
+| DEV-08 | WaveOverlayView | Pending |
+| DEV-09 | TremorActivity — Assembly & Wiring | Pending |
+| DEV-10 | Edge Cases & Polish | Pending |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 
