@@ -44,6 +44,8 @@ class TremorActivity : Activity() {
         val scrollView = ScrollView(this).apply {
             isVerticalScrollBarEnabled = false
             clipToPadding = false
+            isVerticalFadingEdgeEnabled = true
+            setFadingEdgeLength((48 * density).toInt())
         }
 
         val content = LinearLayout(this).apply {
