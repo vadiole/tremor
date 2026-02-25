@@ -24,12 +24,14 @@ import vadiole.tremor.view.LongPressButton
 import vadiole.tremor.view.PrimitiveRow
 import vadiole.tremor.view.RiseFallButton
 import vadiole.tremor.view.ScrollWheelView
+import vadiole.tremor.view.HeartParticleView
 import vadiole.tremor.view.WaveOverlayView
 
 class TremorActivity : Activity(), Density {
 
     private lateinit var hapticEngine: HapticEngine
     private lateinit var waveOverlay: WaveOverlayView
+    private lateinit var heartOverlay: HeartParticleView
     private var bannerView: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,6 +88,15 @@ class TremorActivity : Activity(), Density {
             isFocusable = false
         }
         root.addView(waveOverlay, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+        ))
+
+        heartOverlay = HeartParticleView(this).apply {
+            isClickable = false
+            isFocusable = false
+        }
+        root.addView(heartOverlay, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
@@ -320,34 +331,18 @@ class TremorActivity : Activity(), Density {
     private fun buildFooter(parent: LinearLayout) {
         val vadioleText = getString(R.string.footer_vadiole)
         val full = getString(R.string.footer_template, vadioleText)
-
-        val spannable = android.text.SpannableString(full)
+        val linkColor = getColor(R.color.text_disabled)
         val linkStart = full.indexOf(vadioleText)
         val linkEnd = linkStart + vadioleText.length
+        var isVadiolePressed = false
 
+        val spannable = android.text.SpannableString(full)
         spannable.setSpan(
-            android.text.style.UnderlineSpan(),
-            linkStart, linkEnd,
-            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-        )
-
-        val linkColor = getColor(R.color.text_disabled)
-        spannable.setSpan(
-            object : android.text.style.ClickableSpan() {
-                override fun onClick(widget: View) {
-                    try {
-                        val intent = android.content.Intent(
-                            android.content.Intent.ACTION_VIEW,
-                            android.net.Uri.parse("https://play.google.com/store/apps/dev?id=4763171503902347202"),
-                        )
-                        startActivity(intent)
-                    } catch (_: Exception) {
-                    }
-                }
-
-                override fun updateDrawState(ds: android.text.TextPaint) {
-                    ds.isUnderlineText = true
-                    ds.color = linkColor
+            object : android.text.style.CharacterStyle() {
+                override fun updateDrawState(tp: android.text.TextPaint) {
+                    tp.isUnderlineText = true
+                    tp.color = linkColor
+                    if (isVadiolePressed) tp.alpha = 128
                 }
             },
             linkStart, linkEnd,
@@ -356,13 +351,60 @@ class TremorActivity : Activity(), Density {
 
         val footer = TextView(this).apply {
             text = spannable
-            movementMethod = android.text.method.LinkMovementMethod.getInstance()
             setTextColor(getColor(R.color.text_disabled))
-            highlightColor = (linkColor and 0x00FFFFFF) or 0x80000000.toInt()
+            highlightColor = 0
             textSize = 10f
             typeface = Typeface.MONOSPACE
             gravity = Gravity.CENTER
         }
+
+        val handler = android.os.Handler(android.os.Looper.getMainLooper())
+        val longPressDelay = 500L
+        var longPressTriggered = false
+        var downX = 0f
+        var downY = 0f
+
+        footer.setOnTouchListener { v, event ->
+            when (event.action) {
+                android.view.MotionEvent.ACTION_DOWN -> {
+                    isVadiolePressed = true
+                    longPressTriggered = false
+                    downX = event.x
+                    downY = event.y
+                    v.invalidate()
+                    handler.postDelayed({
+                        if (isVadiolePressed) {
+                            longPressTriggered = true
+                            val loc = IntArray(2)
+                            v.getLocationOnScreen(loc)
+                            heartOverlay.launchHearts(loc[0] + downX, loc[1] + downY)
+                        }
+                    }, longPressDelay)
+                }
+                android.view.MotionEvent.ACTION_UP -> {
+                    isVadiolePressed = false
+                    v.invalidate()
+                    handler.removeCallbacksAndMessages(null)
+                    if (!longPressTriggered) {
+                        try {
+                            val intent = android.content.Intent(
+                                android.content.Intent.ACTION_VIEW,
+                                android.net.Uri.parse("https://play.google.com/store/apps/dev?id=4763171503902347202"),
+                            )
+                            startActivity(intent)
+                        } catch (_: Exception) {
+                        }
+                    }
+                }
+                android.view.MotionEvent.ACTION_CANCEL -> {
+                    isVadiolePressed = false
+                    v.invalidate()
+                    handler.removeCallbacksAndMessages(null)
+                }
+            }
+            true
+        }
+
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
