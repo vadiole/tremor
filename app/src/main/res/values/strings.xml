@@ -12,7 +12,6 @@
     <string name="example_hold_me">HOLD ME</string>
     <string name="example_triggered">TRIGGERED</string>
     <string name="example_rise_fall">RISE &amp; FALL</string>
-    <string name="example_drag_threshold">DRAG TO THRESHOLD</string>
 
     <!-- Haptic feedback constants -->
     <string name="haptic_confirm">Confirm</string>
