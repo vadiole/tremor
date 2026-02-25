@@ -5,8 +5,8 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.provider.Settings
 import android.view.HapticFeedbackConstants
+import android.view.View
 
 class HapticEngine(context: Context) {
 
@@ -17,26 +17,10 @@ class HapticEngine(context: Context) {
 
     val hasVibrator: Boolean = vibrator.hasVibrator()
 
-    fun isHapticEnabled(context: Context): Boolean {
-        return try {
-            val feedbackEnabled = Settings.System.getInt(
-                context.contentResolver,
-                @Suppress("DEPRECATION") Settings.System.HAPTIC_FEEDBACK_ENABLED,
-                1,
-            ) == 1
-            if (!feedbackEnabled) return false
-
-            val intensity = Settings.System.getInt(
-                context.contentResolver,
-                "haptic_feedback_intensity",
-                -1,
-            )
-            if (intensity == 0) return false
-
-            true
-        } catch (_: Exception) {
-            true
-        }
+    fun isHapticEnabled(view: View): Boolean {
+        // Primary: performHapticFeedback returns false when system haptics are disabled.
+        // This is the only reliable method on API 34+ where Settings.System values may be stale.
+        return view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
     }
 
     fun getAvailableHapticConstants(): List<HapticConstantInfo> {
