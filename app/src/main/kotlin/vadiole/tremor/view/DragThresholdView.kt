@@ -23,7 +23,6 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handlePadding = 6f.dp()
     private val handleCornerRadius = 8f.dp()
     private val thresholdFraction = 0.6f
-    private val verticalResistance = 0.04f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -64,24 +63,23 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     private val rect = RectF()
     private val handleRect = RectF()
+    private val clipPath = Path()
 
     private var handleX = 0f
-    private var handleY = 0f
     private var isDragging = false
     private var dragStartX = 0f
-    private var dragStartY = 0f
     private var handleStartX = 0f
     private var activated = false
     private var gestureStarted = false
 
-    // handle wobble animation on threshold crossing
+    // handle scale animation on threshold crossing
     private var handleScale = 1f
-    private var wobbleAnimator: ValueAnimator? = null
+    private var scaleAnimator: ValueAnimator? = null
 
-    // spring animation
-    private var springVelocityX = 0f
-    private var springVelocityY = 0f
+    // spring return animation
+    private var springVelocity = 0f
     private var isAnimating = false
+    private var lastSpringTime = 0L
     private val springStiffness = 560f
     private val springDamping = 25f
 
@@ -89,27 +87,21 @@ class DragThresholdView(context: Context) : View(context), Density {
         override fun run() {
             if (!isAnimating) return
 
-            val dt = 1f / 60f
+            val now = System.nanoTime()
+            val dt = ((now - lastSpringTime) / 1_000_000_000f).coerceAtMost(0.05f)
+            lastSpringTime = now
+
             val restX = handlePadding
-            val restY = 0f
+            val dx = handleX - restX
+            val accel = -springStiffness * dx - springDamping * springVelocity
 
-            val dxSpring = handleX - restX
-            val dySpring = handleY - restY
+            springVelocity += accel * dt
+            handleX += springVelocity * dt
 
-            val accelX = -springStiffness * dxSpring - springDamping * springVelocityX
-            val accelY = -springStiffness * dySpring - springDamping * springVelocityY
+            val energy = dx * dx + springVelocity * springVelocity
 
-            springVelocityX += accelX * dt
-            springVelocityY += accelY * dt
-            handleX += springVelocityX * dt
-            handleY += springVelocityY * dt
-
-            val totalEnergy = dxSpring * dxSpring + dySpring * dySpring +
-                springVelocityX * springVelocityX + springVelocityY * springVelocityY
-
-            if (totalEnergy < 0.5f) {
+            if (energy < 0.5f) {
                 handleX = restX
-                handleY = restY
                 isAnimating = false
             } else {
                 postOnAnimation(this)
@@ -129,7 +121,6 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         handleX = handlePadding
-        handleY = 0f
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -144,19 +135,19 @@ class DragThresholdView(context: Context) : View(context), Density {
         val lineBottom = height - 12f.dp()
         canvas.drawLine(thresholdX, lineTop, thresholdX, lineBottom, thresholdPaint)
 
-        // handle with padding from all sides
+        // handle
         val handleLeft = handleX
-        val handleTop = handlePadding + handleY
-        val handleBottom = height.toFloat() - handlePadding + handleY
+        val handleTop = handlePadding
+        val handleBottom = height.toFloat() - handlePadding
         handleRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleBottom)
 
         // clip to container bounds
         canvas.save()
-        val clipPath = Path()
+        clipPath.reset()
         clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
         canvas.clipPath(clipPath)
 
-        // apply wobble scale around handle center
+        // apply scale around handle center
         if (handleScale != 1f) {
             canvas.scale(handleScale, handleScale, handleRect.centerX(), handleRect.centerY())
         }
@@ -175,9 +166,9 @@ class DragThresholdView(context: Context) : View(context), Density {
         canvas.restore()
     }
 
-    private fun wobbleTo(targetScale: Float) {
-        wobbleAnimator?.cancel()
-        wobbleAnimator = ValueAnimator.ofFloat(handleScale, targetScale).apply {
+    private fun animateScaleTo(targetScale: Float) {
+        scaleAnimator?.cancel()
+        scaleAnimator = ValueAnimator.ofFloat(handleScale, targetScale).apply {
             duration = 250
             interpolator = OvershootInterpolator(3f)
             addUpdateListener {
@@ -191,14 +182,12 @@ class DragThresholdView(context: Context) : View(context), Density {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                // touch zone: full height, left side up to handle right edge + padding
                 val touchRight = handleX + handleWidth + 16f.dp()
                 if (event.x <= touchRight) {
                     isDragging = true
                     isAnimating = false
                     removeCallbacks(springRunnable)
                     dragStartX = event.x
-                    dragStartY = event.y
                     handleStartX = handleX
                     gestureStarted = false
                     activated = false
@@ -216,10 +205,7 @@ class DragThresholdView(context: Context) : View(context), Density {
                 }
 
                 val dx = event.x - dragStartX
-                val dy = event.y - dragStartY
-
                 handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
-                handleY = dy * verticalResistance
 
                 val thresholdX = width * thresholdFraction
                 val handleCenter = handleX + handleWidth / 2f
@@ -230,12 +216,12 @@ class DragThresholdView(context: Context) : View(context), Density {
                     val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE
                             else HapticFeedbackConstants.CONFIRM
                     performHapticFeedback(c)
-                    wobbleTo(1.1f)
+                    animateScaleTo(1.1f)
                 } else if (!activated && wasActivated) {
                     val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE
                             else HapticFeedbackConstants.CLOCK_TICK
                     performHapticFeedback(c)
-                    wobbleTo(1.0f)
+                    animateScaleTo(1.0f)
                 }
 
                 invalidate()
@@ -247,9 +233,13 @@ class DragThresholdView(context: Context) : View(context), Density {
                         performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
                     }
                     activated = false
-                    handleScale = 1f
-                    springVelocityX = 0f
-                    springVelocityY = 0f
+
+                    // animate scale back smoothly
+                    animateScaleTo(1.0f)
+
+                    // spring return to rest position
+                    springVelocity = 0f
+                    lastSpringTime = System.nanoTime()
                     isAnimating = true
                     postOnAnimation(springRunnable)
                     parent?.requestDisallowInterceptTouchEvent(false)
@@ -262,6 +252,6 @@ class DragThresholdView(context: Context) : View(context), Density {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         removeCallbacks(springRunnable)
-        wobbleAnimator?.cancel()
+        scaleAnimator?.cancel()
     }
 }
