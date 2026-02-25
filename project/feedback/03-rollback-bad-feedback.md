@@ -9,15 +9,15 @@
 
 ## Ticket 1: UX-UI
 
-**Status**: Pending
+**Status**: Done
 
-Identify all code added for these three features so rollback is clean and complete. List exact code blocks and files affected.
+Identified all code to remove across 4 files: LongPressButton (arc), DragThresholdView (trail), WaveOverlayView (ambient noise + uniforms + shader functions), TremorActivity (ambient lifecycle).
 
 ---
 
 ## Ticket 2: Development
 
-**Status**: Pending
+**Status**: Done
 
 Remove:
 - LongPressButton: remove `arcPaint`, `arcRect`, and the `drawArc` block in `onDraw`
@@ -29,6 +29,10 @@ Remove:
 
 ## Ticket 3: Review
 
-**Status**: Pending
+**Status**: Done
 
-Verify all three features are fully removed. Build clean. No leftover dead code, unused variables, or orphaned uniforms in the shader. Wave overlay still works for haptic-triggered waves. Long press and drag threshold still function correctly without the removed visuals.
+- Build clean, no warnings.
+- Grep for all removed identifiers (ambient, ghost, trail, arc, vnoise, hash2) returns zero hits.
+- Shader has no orphaned uniforms — `time` and `ambientEnabled` removed.
+- Wave overlay still handles haptic-triggered waves and touch dots correctly.
+- LongPressButton retains its progress bar. DragThresholdView retains spring animation.

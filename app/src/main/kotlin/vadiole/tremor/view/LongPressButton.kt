@@ -45,14 +45,7 @@ class LongPressButton(context: Context) : View(context), Density {
     private val pressedColor = context.getColor(R.color.surface_pressed)
     private val normalColor = context.getColor(R.color.surface)
 
-    private val arcPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.foreground)
-        style = Paint.Style.STROKE
-        strokeWidth = 2f.dp()
-    }
-
     private val rect = RectF()
-    private val arcRect = RectF()
     private val progressRect = RectF()
     private var pressStartTime = 0L
     private var isPressed = false
@@ -90,11 +83,6 @@ class LongPressButton(context: Context) : View(context), Density {
             progressRect.set(halfStroke, halfStroke, halfStroke + (width - 2 * halfStroke) * progress, height - halfStroke)
             canvas.drawRoundRect(progressRect, cornerRadius, cornerRadius, progressPaint)
             progressPaint.alpha = 255
-
-            val arcInset = arcPaint.strokeWidth / 2f
-            arcRect.set(arcInset, arcInset, width - arcInset, height - arcInset)
-            arcPaint.alpha = (255 * 0.4f).toInt()
-            canvas.drawArc(arcRect, -90f, 360f * progress, false, arcPaint)
         }
 
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
