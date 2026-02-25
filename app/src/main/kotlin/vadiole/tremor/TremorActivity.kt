@@ -175,9 +175,10 @@ class TremorActivity : Activity(), Density {
         parent.addView(createSectionLabel(getString(R.string.section_primitives)))
 
         for ((index, info) in primitives.withIndex()) {
+            val waveStyle = primitiveWaveStyle(info.primitiveId)
             val row = PrimitiveRow(this, info.name, info.constantName) { scale, screenX, screenY ->
                 hapticEngine.playPrimitive(info.primitiveId, scale)
-                waveOverlay.spawnWave(screenX, screenY, scale)
+                waveOverlay.spawnWave(screenX, screenY, scale, waveStyle)
             }
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -406,6 +407,18 @@ class TremorActivity : Activity(), Density {
         VibrationEffect.EFFECT_CLICK -> 0.5f
         VibrationEffect.EFFECT_TICK -> 0.3f
         else -> 0.5f
+    }
+
+    private fun primitiveWaveStyle(primitiveId: Int): WaveOverlayView.WaveStyle = when (primitiveId) {
+        VibrationEffect.Composition.PRIMITIVE_CLICK -> WaveOverlayView.WaveStyle.CLICK
+        VibrationEffect.Composition.PRIMITIVE_TICK,
+        VibrationEffect.Composition.PRIMITIVE_LOW_TICK -> WaveOverlayView.WaveStyle.TICK
+        VibrationEffect.Composition.PRIMITIVE_QUICK_RISE -> WaveOverlayView.WaveStyle.RISE
+        VibrationEffect.Composition.PRIMITIVE_SLOW_RISE -> WaveOverlayView.WaveStyle.SLOW_RISE
+        VibrationEffect.Composition.PRIMITIVE_QUICK_FALL -> WaveOverlayView.WaveStyle.FALL
+        VibrationEffect.Composition.PRIMITIVE_SPIN -> WaveOverlayView.WaveStyle.SPIN
+        VibrationEffect.Composition.PRIMITIVE_THUD -> WaveOverlayView.WaveStyle.THUD
+        else -> WaveOverlayView.WaveStyle.DEFAULT
     }
 
     private fun createSectionLabel(text: String): TextView {
