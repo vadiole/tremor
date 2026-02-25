@@ -14,4 +14,41 @@
     <string name="example_triggered">TRIGGERED</string>
     <string name="example_rise_fall">RISE &amp; FALL</string>
     <string name="example_drag_threshold">DRAG TO THRESHOLD</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">Confirm</string>
+    <string name="haptic_reject">Reject</string>
+    <string name="haptic_toggle_on">Toggle On</string>
+    <string name="haptic_toggle_off">Toggle Off</string>
+    <string name="haptic_long_press">Long Press</string>
+    <string name="haptic_keyboard_press">Keyboard Press</string>
+    <string name="haptic_keyboard_release">Keyboard Release</string>
+    <string name="haptic_clock_tick">Clock Tick</string>
+    <string name="haptic_context_click">Context Click</string>
+    <string name="haptic_gesture_start">Gesture Start</string>
+    <string name="haptic_gesture_end">Gesture End</string>
+    <string name="haptic_gesture_threshold_activate">Gesture Threshold Activate</string>
+    <string name="haptic_gesture_threshold_deactivate">Gesture Threshold Deactivate</string>
+    <string name="haptic_text_handle_move">Text Handle Move</string>
+    <string name="haptic_virtual_key">Virtual Key</string>
+    <string name="haptic_virtual_key_release">Virtual Key Release</string>
+    <string name="haptic_drag_start">Drag Start</string>
+    <string name="haptic_segment_tick">Segment Tick</string>
+    <string name="haptic_segment_frequent_tick">Segment Frequent Tick</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">Click</string>
+    <string name="effect_double_click">Double Click</string>
+    <string name="effect_tick">Tick</string>
+    <string name="effect_heavy_click">Heavy Click</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">Click</string>
+    <string name="primitive_tick">Tick</string>
+    <string name="primitive_low_tick">Low Tick</string>
+    <string name="primitive_quick_rise">Quick Rise</string>
+    <string name="primitive_slow_rise">Slow Rise</string>
+    <string name="primitive_quick_fall">Quick Fall</string>
+    <string name="primitive_spin">Spin</string>
+    <string name="primitive_thud">Thud</string>
 </resources>
