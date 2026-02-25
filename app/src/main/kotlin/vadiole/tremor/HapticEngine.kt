@@ -5,6 +5,7 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
 import android.view.View
 
@@ -18,8 +19,17 @@ class HapticEngine(context: Context) {
     val hasVibrator: Boolean = vibrator.hasVibrator()
 
     fun isHapticEnabled(view: View): Boolean {
-        // Primary: performHapticFeedback returns false when system haptics are disabled.
-        // This is the only reliable method on API 34+ where Settings.System values may be stale.
+        // Fast path: Settings.System check is non-intrusive (no vibration side effect).
+        // If it says disabled, trust it — avoids unwanted tick on every onResume.
+        val settingValue = try {
+            Settings.System.getInt(view.context.contentResolver, Settings.System.HAPTIC_FEEDBACK_ENABLED)
+        } catch (_: Settings.SettingNotFoundException) {
+            1 // assume enabled if setting doesn't exist
+        }
+        if (settingValue == 0) return false
+
+        // Settings.System may be stale on API 34+, so verify with performHapticFeedback.
+        // This causes a CLOCK_TICK vibration, but only when haptics appear to be enabled.
         return view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
     }
 
