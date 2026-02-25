@@ -11,13 +11,14 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
 class HapticCounter(context: Context) : View(context), Density {
 
     private val viewHeight = 56.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
 
     private val prefs = context.getSharedPreferences("tremor", Context.MODE_PRIVATE)
     private var count = prefs.getInt("counter", 0)

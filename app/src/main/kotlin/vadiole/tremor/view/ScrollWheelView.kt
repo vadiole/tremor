@@ -10,12 +10,13 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import kotlin.math.abs
 
 class ScrollWheelView(context: Context) : View(context), Density {
 
     private val viewHeight = 56.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val tickSpacing = 12f.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

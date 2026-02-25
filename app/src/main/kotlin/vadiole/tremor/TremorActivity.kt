@@ -42,9 +42,9 @@ class TremorActivity : Activity(), Density {
 
         hapticEngine = HapticEngine(this)
 
-        val padding = 16.dp()
-        val sectionSpacing = 24.dp()
-        val itemSpacing = 8.dp()
+        val padding = UiConstants.CONTENT_PADDING_DP.dp()
+        val sectionSpacing = UiConstants.SECTION_SPACING_DP.dp()
+        val itemSpacing = UiConstants.ITEM_SPACING_DP.dp()
 
         val root = FrameLayout(this).apply {
             setBackgroundColor(getColor(R.color.background))

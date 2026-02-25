@@ -9,6 +9,7 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
@@ -20,7 +21,7 @@ class PrimitiveRow(
 ) : ViewGroup(context), Density {
 
     private val rowHeight = 64.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val padding = 12.dp()
     private val drumMarginStart = 8.dp()
 

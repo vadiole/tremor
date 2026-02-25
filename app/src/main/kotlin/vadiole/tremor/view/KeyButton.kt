@@ -9,6 +9,7 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 import vadiole.tremor.R
@@ -20,7 +21,7 @@ class KeyButton(
     private val onRelease: () -> Unit = {},
 ) : View(context), Density {
 
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
