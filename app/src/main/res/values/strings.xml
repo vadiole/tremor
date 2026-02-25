@@ -10,4 +10,6 @@
     <string name="example_toggle">Toggle</string>
     <string name="example_hold_me">HOLD ME</string>
     <string name="example_triggered">TRIGGERED</string>
+    <string name="example_rise_fall">RISE &amp; FALL</string>
+    <string name="example_drag_threshold">DRAG TO THRESHOLD</string>
 </resources>
