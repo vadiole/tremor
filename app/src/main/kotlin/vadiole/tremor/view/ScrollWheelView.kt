@@ -35,6 +35,14 @@ class ScrollWheelView(context: Context) : View(context), Density {
         style = Paint.Style.STROKE
     }
 
+    private val streakPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.foreground)
+        strokeWidth = 1f.dp()
+        style = Paint.Style.STROKE
+    }
+
+    private val streakThreshold = 2f.dp()
+
     private val rect = RectF()
     private var scrollOffset = 0f
     private var lastTouchX = 0f
@@ -88,6 +96,12 @@ class ScrollWheelView(context: Context) : View(context), Density {
         val bottomY = height - 8f.dp()
         val halfWidth = width / 2f
 
+        val absVelocity = abs(velocity)
+        val streakLength = if (absVelocity > streakThreshold) {
+            (absVelocity * 0.3f).coerceAtMost(8f.dp())
+        } else 0f
+        val streakDir = if (velocity > 0) -1f else 1f
+
         while (x < width + tickSpacing) {
             val distFromCenter = abs(x - centerX)
             val alpha = if (distFromCenter < halfWidth) {
@@ -99,6 +113,13 @@ class ScrollWheelView(context: Context) : View(context), Density {
             }
             tickPaint.alpha = alpha
             canvas.drawLine(x, topY, x, bottomY, tickPaint)
+
+            if (streakLength > 0f) {
+                streakPaint.alpha = (alpha * 0.4f).toInt().coerceIn(0, 255)
+                val streakEnd = x + streakLength * streakDir
+                canvas.drawLine(streakEnd, topY, streakEnd, bottomY, streakPaint)
+            }
+
             x += tickSpacing
         }
 
