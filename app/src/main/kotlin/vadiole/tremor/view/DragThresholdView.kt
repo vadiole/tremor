@@ -23,7 +23,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handleWidth = 36f.dp()
     private val handlePadding = 6f.dp()
     private val handleCornerRadius = 8f.dp()
-    private val thresholdFraction = 0.75f
+    private val thresholdFraction = 0.5f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -132,9 +132,7 @@ class DragThresholdView(context: Context) : View(context), Density {
 
         // threshold line
         val thresholdX = width * thresholdFraction
-        val lineTop = 12f.dp()
-        val lineBottom = height - 12f.dp()
-        canvas.drawLine(thresholdX, lineTop, thresholdX, lineBottom, thresholdPaint)
+        canvas.drawLine(thresholdX, halfStroke, thresholdX, height - halfStroke, thresholdPaint)
 
         // handle
         val handleLeft = handleX
@@ -209,9 +207,9 @@ class DragThresholdView(context: Context) : View(context), Density {
                 handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
 
                 val thresholdX = width * thresholdFraction
-                val handleCenter = handleX + handleWidth / 2f
+                val handleRight = handleX + handleWidth
                 val wasActivated = activated
-                activated = handleCenter >= thresholdX
+                activated = handleRight >= thresholdX
 
                 if (activated && !wasActivated) {
                     val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE
