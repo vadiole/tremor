@@ -3,8 +3,6 @@ package vadiole.tremor.view
 import android.content.Context
 import android.view.ViewGroup
 import vadiole.tremor.Density
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
 
 class KeyboardRowView(context: Context) : ViewGroup(context), Density {
 
@@ -16,7 +14,7 @@ class KeyboardRowView(context: Context) : ViewGroup(context), Density {
         clipChildren = false
         clipToPadding = false
         for (key in keys) {
-            addView(KeyButton(context, key, onPress = ::animatePress, onRelease = ::animateRelease))
+            addView(KeyButton(context, key))
         }
     }
 

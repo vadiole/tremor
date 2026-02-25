@@ -9,16 +9,13 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
+import vadiole.tremor.ScaleFeedback
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
 import vadiole.tremor.R
 
 class KeyButton(
     context: Context,
     private val letter: Char,
-    private val onPress: () -> Unit = {},
-    private val onRelease: () -> Unit = {},
 ) : View(context), Density {
 
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
@@ -50,6 +47,7 @@ class KeyButton(
 
     init {
         isClickable = true
+        setOnTouchListener(ScaleFeedback())
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -69,15 +67,11 @@ class KeyButton(
             MotionEvent.ACTION_DOWN -> {
                 bgPaint.color = pressedColor
                 invalidate()
-                animatePress()
-                onPress()
                 performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
-                animateRelease()
-                onRelease()
                 if (event.action == MotionEvent.ACTION_UP) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                 }

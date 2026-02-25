@@ -10,8 +10,7 @@ import android.view.ViewGroup
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
+import vadiole.tremor.ScaleFeedback
 
 class PrimitiveRow(
     context: Context,
@@ -70,6 +69,7 @@ class PrimitiveRow(
 
     init {
         setWillNotDraw(false)
+        setOnTouchListener(ScaleFeedback(0.98f))
         drum.onValueChanged = {
             cachedValueText = String.format("%.2f", it)
             invalidate()
@@ -120,7 +120,6 @@ class PrimitiveRow(
             MotionEvent.ACTION_DOWN -> {
                 bgPaint.color = pressedColor
                 invalidate()
-                animatePress(0.98f)
                 getLocationOnScreen(location)
                 val screenX = location[0] + event.x
                 val screenY = location[1] + event.y
@@ -129,7 +128,6 @@ class PrimitiveRow(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
-                animateRelease()
             }
         }
         return true

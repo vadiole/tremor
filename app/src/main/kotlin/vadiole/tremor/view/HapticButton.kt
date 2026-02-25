@@ -14,8 +14,7 @@ import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
+import vadiole.tremor.ScaleFeedback
 
 class HapticButton(
     context: Context,
@@ -70,6 +69,7 @@ class HapticButton(
     init {
         isClickable = true
         isFocusable = true
+        setOnTouchListener(ScaleFeedback())
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -120,7 +120,6 @@ class HapticButton(
             MotionEvent.ACTION_DOWN -> {
                 bgPaint.color = pressedColor
                 invalidate()
-                animatePress()
                 getLocationOnScreen(location)
                 val screenX = location[0] + event.x
                 val screenY = location[1] + event.y
@@ -129,7 +128,6 @@ class HapticButton(
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
-                animateRelease()
             }
         }
         return true
