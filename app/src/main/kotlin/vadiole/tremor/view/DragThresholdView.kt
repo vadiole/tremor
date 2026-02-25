@@ -132,9 +132,14 @@ class DragThresholdView(context: Context) : View(context), Density {
 
         // threshold line (centered vertically)
         val thresholdX = width * thresholdFraction
-        val lineHeight = (height - halfStroke * 2) * 0.5f
-        val centerY = height / 2f
-        canvas.drawLine(thresholdX, centerY - lineHeight / 2f, thresholdX, centerY + lineHeight / 2f, thresholdPaint)
+        val dashLen = 4f.dp()
+        val gapLen = 4f.dp()
+        val cycle = dashLen + gapLen
+        val lineLength = height - halfStroke * 2
+        val n = ((lineLength + gapLen) / cycle).toInt()
+        val patternLen = n * dashLen + (n - 1) * gapLen
+        val padding = (lineLength - patternLen) / 2f
+        canvas.drawLine(thresholdX, halfStroke + padding, thresholdX, halfStroke + padding + patternLen, thresholdPaint)
 
         // handle
         val handleLeft = handleX

@@ -15,6 +15,7 @@ import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.DragThresholdView
+import vadiole.tremor.view.TutorialView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.FooterView
 import vadiole.tremor.view.HapticButton
@@ -33,7 +34,7 @@ class TremorActivity : Activity(), Density {
     private lateinit var hapticEngine: HapticEngine
     private lateinit var waveOverlay: WaveOverlayView
     private lateinit var heartOverlay: HeartParticleView
-    private var bannerView: TextView? = null
+    private var bannerView: TutorialView? = null
     private var bannerShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,10 +61,10 @@ class TremorActivity : Activity(), Density {
 
         val content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
-            setPadding(padding, padding, padding, padding)
+            setPadding(padding, padding, padding, 0)
             setOnApplyWindowInsetsListener { v, insets ->
                 val systemBars = insets.getInsets(WindowInsets.Type.systemBars())
-                v.setPadding(padding, padding + systemBars.top, padding, padding + systemBars.bottom)
+                v.setPadding(padding, padding + systemBars.top, padding, systemBars.bottom)
                 insets
             }
         }
@@ -341,42 +342,14 @@ class TremorActivity : Activity(), Density {
         val footer = FooterView(this) { screenX, screenY ->
             heartOverlay.launchHearts(screenX, screenY)
         }
-        val lp = LinearLayout.LayoutParams(
+        parent.addView(footer, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
-        )
-        lp.topMargin = 8.dp()
-        parent.addView(footer, lp)
+        ))
     }
 
     private fun buildBanner(root: FrameLayout) {
-        bannerView = TextView(this).apply {
-            text = getString(R.string.haptic_disabled_message)
-            setTextColor(getColor(R.color.foreground))
-            textSize = 12f
-            typeface = Typeface.MONOSPACE
-            gravity = Gravity.CENTER
-            setBackgroundColor(getColor(R.color.surface))
-            setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp())
-            setOnApplyWindowInsetsListener { v, insets ->
-                val navBar = insets.getInsets(WindowInsets.Type.systemBars()).bottom
-                v.setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp() + navBar)
-                insets
-            }
-            setOnClickListener {
-                try {
-                    val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
-                    startActivity(intent)
-                } catch (_: Exception) {
-                    try {
-                        val intent = android.content.Intent(android.provider.Settings.ACTION_SETTINGS)
-                        startActivity(intent)
-                    } catch (_: Exception) {
-                    }
-                }
-            }
-            visibility = View.GONE
-        }
+        bannerView = TutorialView(this)
         val lp = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,

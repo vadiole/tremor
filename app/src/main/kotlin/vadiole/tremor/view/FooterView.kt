@@ -19,16 +19,11 @@ class FooterView(
     private val onLongPress: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
-    private val viewPadding = 8.dp()
+    private val topPadding = 16.dp()
+    private val bottomPadding = 8.dp()
     private val longPressDelay = 500L
     private val linkColor = context.getColor(R.color.text_disabled)
     private val textColor = context.getColor(R.color.text_disabled)
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
-    }
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = textColor
@@ -64,17 +59,13 @@ class FooterView(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val w = MeasureSpec.getSize(widthMeasureSpec)
         val textHeight = (textPaint.descent() - textPaint.ascent()).toInt()
-        setMeasuredDimension(w, textHeight + viewPadding * 2)
+        setMeasuredDimension(w, textHeight + topPadding + bottomPadding)
     }
 
     override fun onDraw(canvas: Canvas) {
-        val borderY = borderPaint.strokeWidth / 2f
-        canvas.drawLine(0f, borderY, width.toFloat(), borderY, borderPaint)
-
         val cx = width / 2f
-        val cy = height / 2f
         val fm = textPaint.fontMetrics
-        val textY = cy - (fm.ascent + fm.descent) / 2f
+        val textY = topPadding + (height - topPadding - bottomPadding) / 2f - (fm.ascent + fm.descent) / 2f
         val startX = cx - totalTextWidth / 2f
 
         val saved = textPaint.color
@@ -141,6 +132,7 @@ class FooterView(
     private fun openStore() {
         try {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(storeUrl))
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             context.startActivity(intent)
         } catch (_: Exception) {
         }
