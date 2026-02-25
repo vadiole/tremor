@@ -33,6 +33,7 @@ class KeyboardRowView(context: Context) : View(context), Density {
         textSize = 16f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val normalColor = context.getColor(R.color.surface)
@@ -74,6 +75,7 @@ class KeyboardRowView(context: Context) : View(context), Density {
                 pressedIndex = keyIndexAt(event.x)
                 if (pressedIndex >= 0) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
+                    animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
                 }
                 invalidate()
             }
@@ -95,10 +97,14 @@ class KeyboardRowView(context: Context) : View(context), Density {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                 }
                 pressedIndex = -1
+                animate().scaleX(1f).scaleY(1f).setDuration(150)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 invalidate()
             }
             MotionEvent.ACTION_CANCEL -> {
                 pressedIndex = -1
+                animate().scaleX(1f).scaleY(1f).setDuration(150)
+                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
                 invalidate()
             }
         }

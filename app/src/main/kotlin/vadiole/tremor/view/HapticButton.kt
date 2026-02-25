@@ -39,6 +39,7 @@ class HapticButton(
         textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val constantPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -46,6 +47,7 @@ class HapticButton(
         textSize = 8f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val pressedColor = context.getColor(R.color.surface_pressed)

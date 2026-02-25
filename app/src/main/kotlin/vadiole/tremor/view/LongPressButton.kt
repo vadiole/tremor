@@ -40,6 +40,7 @@ class LongPressButton(context: Context) : View(context), Density {
         textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val pressedColor = context.getColor(R.color.surface_pressed)

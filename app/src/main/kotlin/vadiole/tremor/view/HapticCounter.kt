@@ -34,6 +34,7 @@ class HapticCounter(context: Context) : View(context), Density {
         textSize = 16f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val buttonPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -41,6 +42,7 @@ class HapticCounter(context: Context) : View(context), Density {
         textSize = 20f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
+        isSubpixelText = true
     }
 
     private val dividerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
