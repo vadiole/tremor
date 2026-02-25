@@ -16,8 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | Save counter value to SharedPreferences | `feedback/24-counter-persist.md` | |
-| 2 | Fix LongPressButton: use proper animation APIs | `feedback/25-longpress-anim.md` | |
-| 3 | Fix DragThresholdView: remove vertical drag, fix scale animation | `feedback/26-drag-fix.md` | |
-| 4 | Improve colored hearts: direction + themed sets | `feedback/27-hearts-improve.md` | |
-| 5 | Performance and code review tickets | `feedback/28-perf-review.md` | |
+| 1 | Save counter value to SharedPreferences | `feedback/24-counter-persist.md` | Done |
+| 2 | Fix LongPressButton: use proper animation APIs | `feedback/25-longpress-anim.md` | Done |
+| 3 | Fix DragThresholdView: remove vertical drag, fix scale animation | `feedback/26-drag-fix.md` | Done |
+| 4 | Improve colored hearts: direction + themed sets | `feedback/27-hearts-improve.md` | Done |
+| 5 | Performance and code review tickets | `feedback/28-perf-review.md` | Done |
