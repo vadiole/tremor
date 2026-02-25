@@ -3,7 +3,9 @@ package vadiole.tremor
 import android.app.Activity
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.VibrationEffect
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -107,9 +109,10 @@ class TremorActivity : Activity() {
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
+            val strength = hapticConstantStrength(info.value)
             val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
                 performHapticFeedback(info.value)
-                waveOverlay.spawnWave(screenX, screenY)
+                waveOverlay.spawnWave(screenX, screenY, strength)
             }
             flow.addView(button)
         }
@@ -136,9 +139,10 @@ class TremorActivity : Activity() {
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
+            val strength = effectStrength(info.effectId)
             val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
-                waveOverlay.spawnWave(screenX, screenY)
+                waveOverlay.spawnWave(screenX, screenY, strength)
             }
             flow.addView(button)
         }
@@ -166,7 +170,7 @@ class TremorActivity : Activity() {
         for ((index, info) in primitives.withIndex()) {
             val row = PrimitiveRow(this, info.name, info.constantName) { scale, screenX, screenY ->
                 hapticEngine.playPrimitive(info.primitiveId, scale)
-                waveOverlay.spawnWave(screenX, screenY)
+                waveOverlay.spawnWave(screenX, screenY, scale)
             }
             val lp = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -261,6 +265,28 @@ class TremorActivity : Activity() {
 
     private fun performHapticFeedback(constant: Int) {
         waveOverlay.performHapticFeedback(constant)
+    }
+
+    private fun hapticConstantStrength(constant: Int): Float = when (constant) {
+        HapticFeedbackConstants.LONG_PRESS,
+        HapticFeedbackConstants.CONFIRM,
+        HapticFeedbackConstants.REJECT -> 0.8f
+        HapticFeedbackConstants.KEYBOARD_PRESS,
+        HapticFeedbackConstants.VIRTUAL_KEY -> 0.5f
+        HapticFeedbackConstants.CLOCK_TICK,
+        HapticFeedbackConstants.CONTEXT_CLICK,
+        HapticFeedbackConstants.TEXT_HANDLE_MOVE,
+        HapticFeedbackConstants.KEYBOARD_RELEASE,
+        HapticFeedbackConstants.VIRTUAL_KEY_RELEASE -> 0.3f
+        else -> 0.5f
+    }
+
+    private fun effectStrength(effectId: Int): Float = when (effectId) {
+        VibrationEffect.EFFECT_HEAVY_CLICK -> 1.0f
+        VibrationEffect.EFFECT_DOUBLE_CLICK -> 0.7f
+        VibrationEffect.EFFECT_CLICK -> 0.5f
+        VibrationEffect.EFFECT_TICK -> 0.3f
+        else -> 0.5f
     }
 
     private fun createSectionLabel(text: String, density: Float): TextView {
