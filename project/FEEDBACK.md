@@ -1,116 +1,26 @@
-# Iteration 3 – Feedback Items
+# Iteration 4 – Feedback Items
 
-| # | Title | Type | Status |
+> **General note from user**: Focus on quality. There are bugs — catch them proactively, don't wait for the user.
+
+## Workflow
+
+Each feedback item lives in `project/feedback/` as a separate file with 3 tickets:
+1. **UX-UI** — Review the feedback, research if needed, suggest the best design approach.
+2. **Development** — Implement the change.
+3. **Review** — Double-check the code for errors, bugs, edge cases. Fix if needed.
+
+Work through items **one by one, in order**. Complete all 3 tickets for an item before moving to the next.
+After completing all 3 tickets for an item, mark it Done here and commit.
+
+## Items
+
+| # | Title | File | Status |
 |---|---|---|---|
-| 1 | Density interface for dp calculations | dev | Done |
-| 2 | More example elements (top 7) | research + validate + dev | Done |
-| 3 | Improve WaveOverlayView per-primitive character | research + dev | Done |
-| 4 | Fix DrumRollerView haptics to SEGMENT_FREQUENT_TICK | dev | Done |
-| 5 | Fix Play Store link, underline, press effect | dev | Done |
-| 6 | Fix system bar colors in light mode | dev | Done |
-| 7 | Improve toggle: animation, taller, full-row tap | dev | Done |
-| 8 | Fix wave colors in light mode | dev | Done |
-| 9 | Research subtle ambient wave effect | research + dev (optional) | Done |
-| 10 | Research additional visual feedback ideas | research + validate | Done |
-| 11 | No raw strings rule + enforce | dev + spec | Done |
-
----
-
-## 1. Density interface for dp calculations
-
-**Type**: dev
-
-Create `interface Density { fun getResources(): Resources; fun Float.dp(): Float; fun Int.dp(): Int }` and apply it to all custom views to replace manual `* density` calculations everywhere.
-
----
-
-## 2. More example elements (top 7)
-
-**Type**: research + validate + dev
-
-Explore which interactive example components best showcase different haptic types. Need top 7. Validate ideas with user before implementing. Examples to consider:
-- Long click with visual feedback (button shrinking)
-- Horizontal scroll wheel with inertia
-- Rise/fall effect demo (like Google Circle to Search — gradient overlay + haptic rise)
-- Keyboard press/release simulation
-- Each example should demonstrate a different interaction type where the haptic character matters
-
----
-
-## 3. Improve WaveOverlayView per-primitive character
-
-**Type**: research + dev
-
-Currently responsive to amplitude but not to the character of the haptic itself. Primitives like `rise`, `fall`, `spin`, `thud` need thicker, more distinctive waves. `slow_rise` should have a delayed/slower wave expansion. Figure out best balance for all primitives and effects.
-
----
-
-## 4. Fix DrumRollerView haptics to SEGMENT_FREQUENT_TICK
-
-**Type**: dev
-
-Replace `CLOCK_TICK` with `SEGMENT_FREQUENT_TICK` in DrumRollerView scroll haptics.
-
----
-
-## 5. Fix Play Store link, underline, press effect
-
-**Type**: dev
-
-- Fix URL to: `https://play.google.com/store/apps/dev?id=4763171503902347202`
-- Only "vadiole" should be the link text (not the whole footer)
-- Add underline decoration
-- Add press effect: alpha 50% on press
-
----
-
-## 6. Fix system bar colors in light mode
-
-**Type**: dev
-
-System bars are white on white in light mode. Fix status bar and navigation bar appearance for light theme (dark icons on light background).
-
----
-
-## 7. Improve toggle: animation, taller, full-row tap
-
-**Type**: dev
-
-- Add smooth animation to toggle thumb movement
-- Make toggle taller to match Material3/iOS 16 proportions
-- Make the entire row tappable to toggle (not just the switch)
-
----
-
-## 8. Fix wave colors in light mode
-
-**Type**: dev
-
-Waves are almost invisible in light mode. Need darker/more visible wave color for light theme.
-
----
-
-## 9. Research subtle ambient wave effect
-
-**Type**: research + dev (optional)
-
-Research possibility of a very small ambient wave effect layered on top of existing waves — warms the space subtly without making users dizzy. Must be high performance. Optional if some devices can't support it.
-
----
-
-## 10. Research additional visual feedback ideas
-
-**Type**: research + validate
-
-Deep research: generate ideas, validate, improve, generate more. Goal: solid ideas for visual feedback. Inspiration:
-- Minimal particles as easter egg
-- Feedback for long-duration interactions (dragging wheel, waiting for rise/fall)
-- Other creative visual responses to haptic events
-
----
-
-## 11. No raw strings rule + enforce
-
-**Type**: dev + spec
-
-Ensure zero raw strings in codebase. Add rule to tech spec / project constraints so this never happens again.
+| 1 | Fix footer spacing | `feedback/01-footer-spacing.md` | Pending |
+| 2 | Fix toggle animation | `feedback/02-toggle-animation.md` | Pending |
+| 3 | Rollback bad feedback (hold me arc, drag trail, ambient noise) | `feedback/03-rollback-bad-feedback.md` | Pending |
+| 4 | Harder vertical drag resistance + softer spring | `feedback/04-drag-resistance.md` | Pending |
+| 5 | DrumRollerView inertia + button touch feedback | `feedback/05-drum-roller-inertia.md` | Pending |
+| 6 | Double click dispatches two waves | `feedback/06-double-click-waves.md` | Pending |
+| 7 | Improve draggable handle appearance | `feedback/07-drag-handle-look.md` | Pending |
+| 8 | Scale-down on touch for all clickable elements | `feedback/08-scale-on-touch.md` | Pending |

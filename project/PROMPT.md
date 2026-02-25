@@ -97,16 +97,27 @@ phase 1 complete
 
 ## Feedback Flow
 
-When the user provides a FEEDBACK.md file (at `project/FEEDBACK.md`):
+When the user provides feedback, it goes into `project/FEEDBACK.md` (index) and `project/feedback/` (individual ticket files):
 
-1. Read `project/FEEDBACK.md` — it contains numbered feedback items with status.
-2. Work through items **one by one**, in order.
-3. Each item may have one or more sub-tickets (research, design, dev) — execute them sequentially.
-4. After completing each item, mark it `Done` in FEEDBACK.md and commit.
-5. No approvals needed between items unless the item explicitly says "validate with user".
-6. If an item says "validate" or "explore options" — present findings to the user and wait for approval before implementing.
-7. Commit after each completed feedback item. Message format: `feedback: short description`.
-8. When all items are done, announce completion.
+### Structure
+- `project/FEEDBACK.md` — Master index with item list and status table.
+- `project/feedback/NN-short-name.md` — Individual ticket file per feedback item, containing 3 tickets each:
+  1. **UX-UI** — Review the feedback, research if needed, suggest the best design/approach.
+  2. **Development** — Implement the change.
+  3. **Review** — Double-check the code for errors, bugs, edge cases. Fix anything found.
+
+### Workflow
+1. Read `project/FEEDBACK.md` for the item list and status.
+2. Work through items **one by one, in order**. For each item:
+   a. Read `project/feedback/NN-*.md` for the full ticket details.
+   b. Execute UX-UI ticket — update status to Done in the file.
+   c. Execute Development ticket — update status to Done in the file.
+   d. Execute Review ticket — fix any issues found, update status to Done.
+   e. Mark the item Done in FEEDBACK.md and commit.
+3. No approvals needed between items unless the item explicitly says "validate with user".
+4. Commit after each completed feedback item. Message format: `feedback: short description`.
+5. **Focus on quality.** Proactively look for bugs, edge cases, and visual issues. Don't wait for the user to catch problems.
+6. When all items are done, announce completion.
 
 This flow takes priority over the normal phase-based workflow when FEEDBACK.md exists with pending items.
 
