@@ -132,7 +132,7 @@ class TremorActivity : Activity() {
         val effects = hapticEngine.getSupportedEffects()
         if (effects.isEmpty()) return
 
-        parent.addView(createSectionLabel("PREDEFINED EFFECTS", density))
+        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects), density))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
@@ -161,7 +161,7 @@ class TremorActivity : Activity() {
         val primitives = hapticEngine.getSupportedPrimitives()
         if (primitives.isEmpty()) return
 
-        parent.addView(createSectionLabel("PRIMITIVES", density))
+        parent.addView(createSectionLabel(getString(R.string.section_primitives), density))
 
         for ((index, info) in primitives.withIndex()) {
             val row = PrimitiveRow(this, info.name, info.constantName) { scale, screenX, screenY ->
@@ -196,7 +196,7 @@ class TremorActivity : Activity() {
 
         if (unavailable.isEmpty()) return
 
-        val text = "Not available on this device:\n${unavailable.joinToString(", ")}"
+        val text = getString(R.string.not_available_on_device, unavailable.joinToString(", "))
         val textView = TextView(this).apply {
             this.text = text
             setTextColor(getColor(R.color.text_disabled))
@@ -215,7 +215,7 @@ class TremorActivity : Activity() {
 
     private fun buildBanner(root: FrameLayout, density: Float) {
         bannerView = TextView(this).apply {
-            text = "Haptic feedback is disabled. Tap to enable."
+            text = getString(R.string.haptic_disabled_message)
             setTextColor(getColor(R.color.foreground))
             textSize = 12f
             typeface = Typeface.MONOSPACE
