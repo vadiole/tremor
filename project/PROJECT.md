@@ -41,7 +41,7 @@ A single-screen Android app that lets users explore and test every available hap
 |---|---|---|---|---|
 | 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | Done |
 | 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | In progress |
-| 3 | Requirements | Formalize what the app must do | Product requirements document | Not started |
+| 3 | Requirements | Formalize what the app must do | Product requirements document | In progress |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Not started |
 | 5 | Development | Build the app | Working APK | Not started |
 
@@ -58,3 +58,5 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Design | Single vertical scrolling list, no collapsible sections | Simple, no hidden content |
 | 2026-02-25 | Design | No header or title area — start directly with interactive elements | Maximize screen space for content |
 | 2026-02-25 | Design | Scale control: vertical drum roller with horizontal lines only, number readout beside it, no power bar | Minimal mechanical feel, clean aesthetic |
+| 2026-02-25 | Requirements | VIBRATE permission: manifest declaration only, no runtime request | Normal permission, auto-granted at install |
+| 2026-02-25 | Requirements | Haptics disabled: pinned banner at bottom, tappable to open Settings, non-blocking, disappears on resume if fixed | User can still explore UI, unobtrusive placement |
