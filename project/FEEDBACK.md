@@ -17,7 +17,7 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 | # | Title | File | Status |
 |---|---|---|---|
 | 1 | Fix footer spacing | `feedback/01-footer-spacing.md` | Done |
-| 2 | Fix toggle animation | `feedback/02-toggle-animation.md` | Pending |
+| 2 | Fix toggle animation | `feedback/02-toggle-animation.md` | Done |
 | 3 | Rollback bad feedback (hold me arc, drag trail, ambient noise) | `feedback/03-rollback-bad-feedback.md` | Pending |
 | 4 | Harder vertical drag resistance + softer spring | `feedback/04-drag-resistance.md` | Pending |
 | 5 | DrumRollerView inertia + button touch feedback | `feedback/05-drum-roller-inertia.md` | Pending |
