@@ -63,3 +63,4 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Requirements | Respect system haptic feedback setting — do not use FLAG_IGNORE_VIEW_SETTING | User expectation: system settings should be honored |
 | 2026-02-25 | Requirements | minSdkVersion = 31 (Android 12) | All core APIs available at minimum, simplifies codebase |
 | 2026-02-25 | Requirements | Buttons show API constant name in small grey text below human-readable label | Developer audience needs to see the actual constant names |
+| 2026-02-25 | Spec | Wave overlay uses AGSL RuntimeShader, soft Gaussian ring profile via smoothstep, no hard gradient transitions | Smooth natural wave look, GPU-native performance |

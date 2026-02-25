@@ -120,8 +120,37 @@ A singleton-style helper (or plain class instantiated in Activity). Responsibili
 - Not clickable / not focusable — touches pass through.
 - Maintains a list of active `Wave(x, y, startTime)` objects.
 - `spawnWave(x: Float, y: Float)` — adds a new wave, caps at 10.
-- `onDraw()`: For each active wave, compute elapsed time, calculate radius and alpha. Draw a `RadialGradient` ring using `Paint` with `BlendMode.SCREEN` (additive). Call `invalidate()` if any waves still active.
-- Wave params: expand speed ~800dp/s, duration ~600ms, ring width ~30dp, start alpha ~0.3.
+- **Rendering: AGSL RuntimeShader** (API 33+, but minSdk 31 so needs fallback or minSdk bump consideration).
+  - Preferred: AGSL `RuntimeShader` — a single shader receives all active wave data as uniforms (origins, radii, intensities) and computes per-pixel output. GPU-native additive blending, smooth gradients, excellent performance even with many concurrent waves.
+  - Fallback (API 31–32): Canvas-based `RadialGradient` per wave with `BlendMode.SCREEN`.
+- **Wave ring gradient profile** — soft Gaussian-like curve, NOT a hard 0→peak→0 triangle:
+  - The ring cross-section follows a smooth bell curve (approximated by `smoothstep` in shader or multi-stop gradient on Canvas).
+  - Profile: `0.0 → ease-in → peak → ease-out → 0.0` across the ring width.
+  - In AGSL: `smoothstep(outerEdge, mid, dist) * smoothstep(innerEdge, mid, dist)` produces a soft band.
+  - Ring width ~40dp for a wider, softer glow.
+- **Wave lifecycle**: expand speed ~800dp/s, duration ~600ms. Overall intensity fades out smoothly over the wave's lifetime (soft ease-out, not linear).
+- `onDraw()`: Set shader uniforms (wave count, per-wave x/y/radius/intensity), draw a full-screen rect with the shader paint. Call `postInvalidateOnAnimation()` if any waves active.
+- AGSL shader sketch:
+  ```glsl
+  uniform float2 waves[10];    // xy origins
+  uniform float radii[10];     // current radius per wave
+  uniform float intensities[10]; // current intensity (fades over lifetime)
+  uniform int waveCount;
+  uniform float2 resolution;
+  uniform float ringWidth;
+
+  half4 main(float2 fragCoord) {
+      float brightness = 0.0;
+      for (int i = 0; i < waveCount; i++) {
+          float dist = distance(fragCoord, waves[i]);
+          float ring = smoothstep(radii[i] - ringWidth, radii[i], dist)
+                     * smoothstep(radii[i] + ringWidth, radii[i], dist);
+          brightness += ring * intensities[i];
+      }
+      brightness = clamp(brightness, 0.0, 1.0);
+      return half4(brightness, brightness, brightness, brightness);
+  }
+  ```
 
 #### HapticButton.kt
 - Extends `View`. Custom-drawn: dark rect background, border, two lines of text (name + constant name).

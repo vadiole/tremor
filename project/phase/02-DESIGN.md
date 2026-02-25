@@ -290,12 +290,12 @@ Every haptic trigger creates a **circular wave** that expands outward from the e
 ### Wave Behavior
 
 - **Origin**: The exact (x, y) coordinates of the touch event, in screen-absolute coordinates.
-- **Shape**: Circular ring. The ring has a soft gradient — bright at the leading edge, fading behind.
+- **Shape**: Circular ring with a soft Gaussian-like cross-section profile — no hard edges.
 - **Expansion**: The ring expands outward at a constant velocity (~800dp/s). Starts at radius 0, grows until it exits the screen bounds.
-- **Fade**: The ring's opacity decreases as it expands. Starts at ~0.3 alpha (translucent white), fades to 0 by the time it reaches max radius.
-- **Ring width**: ~30dp soft gradient band (not a hard circle). Inner edge fades in, outer edge fades out.
+- **Fade**: Overall intensity fades smoothly over the wave's lifetime using ease-out (not linear). Soft start, soft end.
+- **Ring width**: ~40dp wide soft gradient band. Cross-section profile: `0.0 → smooth ease-in → peak → smooth ease-out → 0.0`. Achieved via `smoothstep` in shader. No abrupt transitions anywhere.
 - **Duration**: ~600ms from spawn to fully faded (depends on screen size; wave travels off-screen).
-- **Color**: White (#FFFFFF) with alpha. Translucent gradient on black background creates a subtle glow.
+- **Color**: White (#FFFFFF) with alpha. Translucent gradient on black background creates a soft, natural glow.
 
 ### Multiple Waves & Interference
 
@@ -308,34 +308,26 @@ When the user taps rapidly or drags (e.g., scrolling a wheel that fires haptic t
 
 ### Implementation Approach
 
-**Custom View overlay** covering the entire screen, drawn on top of all content.
+**AGSL RuntimeShader** rendered on a full-screen `View` overlay.
 
-Option A — **Canvas-based** (simpler):
-- Custom `View` with `onDraw()` using `RadialGradient` shaders per wave.
-- Each wave is a `RadialGradient` centered at (x, y) with current radius.
-- Animated via `ValueAnimator` updating radius and alpha per frame.
-- `PorterDuff.Mode.ADD` or `BlendMode.SCREEN` for additive blending.
-- Performance: Fine for ~10 concurrent waves with hardware acceleration.
-
-Option B — **GLSL shader** (richer physics):
-- Custom `SurfaceView` or use `RenderEffect` (API 31+) with an AGSL shader.
-- Shader receives an array of wave origins, radii, and intensities as uniforms.
-- GPU computes interference natively — true additive blending per pixel.
-- Performance: Excellent even with many waves, but more complex to implement and API 31+ only for AGSL.
-
-**Recommendation**: Start with **Option A (Canvas-based)** for the MVP. It's simpler, works across all API levels, and performs well for the expected number of concurrent waves. Can upgrade to shader later if needed.
+- `RuntimeShader` receives all active wave data as uniforms (origins array, radii array, intensities array, wave count).
+- GPU computes per-pixel brightness: for each wave, calculate distance from fragment to wave origin, apply `smoothstep` to produce a soft bell-curve ring, multiply by intensity, and sum additively.
+- True additive blending — overlapping waves produce natural interference brightness.
+- Performance: Excellent even with 10+ concurrent waves, all computed in a single shader pass.
+- Fallback for API 31–32 (no `RuntimeShader`): Canvas-based `RadialGradient` with multi-stop color array approximating the smooth profile, using `BlendMode.SCREEN`.
 
 ### Wave Lifecycle
 
 ```
 t=0ms    Touch down detected, haptic fires
          → Spawn new wave at (touchX, touchY)
-         → radius=0, alpha=0.3
+         → radius=0, intensity=1.0
 
 t=0-600  Expanding
          → radius increases at ~800dp/s
-         → alpha decreases linearly: 0.3 → 0.0
-         → ring gradient width stays constant at ~30dp
+         → intensity fades via ease-out curve (smooth deceleration to 0)
+         → ring width stays constant at ~40dp
+         → ring profile: smooth bell curve (smoothstep in, smoothstep out)
 
 t=600    Wave complete
          → Remove from active wave list
