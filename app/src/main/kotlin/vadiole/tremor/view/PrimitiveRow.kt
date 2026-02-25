@@ -77,7 +77,7 @@ class PrimitiveRow(
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
         val drumW = drum.measuredWidth
         val drumH = drum.measuredHeight
-        val drumLeft = (r - l) - padding - drumW
+        val drumLeft = (r - l) - drumW
         val drumTop = (rowHeight - drumH) / 2
         drum.layout(drumLeft, drumTop, drumLeft + drumW, drumTop + drumH)
     }
