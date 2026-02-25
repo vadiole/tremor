@@ -83,7 +83,8 @@ class PrimitiveRow(
     }
 
     override fun onDraw(canvas: Canvas) {
-        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        val halfStroke = borderPaint.strokeWidth / 2f
+        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
