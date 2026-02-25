@@ -4,7 +4,9 @@
 
 | ID | Title | Status |
 |---|---|---|
-| – | – | – |
+| DES-01 | Screen Structure & Layout | Done |
+| DES-02 | Element Design | Pending |
+| DES-03 | Visual Feedback Strategy | Pending |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 
@@ -39,9 +41,107 @@ Design a single-screen layout where every interactive element maps to a haptic A
 – The layout is driven by the API catalog from Phase 1. The number and grouping of elements comes from that research, not from design preference.
 – Custom views that handle visual feedback (e.g., a waveform view, a pulse indicator) should be designed as extractable components — separate classes created in code, not XML.
 
-## Questions to Resolve (present to user)
+## Questions Resolved
 
-– What visual feedback style best fits the lab/instrument aesthetic — waveform animation, flash/pulse, numeric readout, or a combination?
-– Should the screen scroll vertically as one long list of sections, or use a different layout strategy (e.g., collapsible sections, grid)?
-– How should element sizing work — fixed sizes, or adaptive based on content density?
-– Should there be a header/title area, or should the screen start directly with interactive elements?
+- **Visual feedback**: Wave animation expanding from touch point — translucent gradient, real wave physics, overlapping on rapid taps/drags, possibly shader-based.
+- **Scroll**: One long vertical list, no collapsible sections.
+- **Header**: None — start directly with interactive elements.
+- **Element sizing**: Flexible, but sliders are scrollable wheels with vertical scroll + power fill indicator.
+
+---
+
+## Screen Structure & Layout (DES-01 Output)
+
+### Overall Structure
+
+- Black background, full screen (no status bar tint, edge-to-edge)
+- Single `ScrollView` containing a vertical `LinearLayout`
+- No header, no title — content starts immediately
+- Sections separated by subtle spacing (no dividers, no cards)
+- Section labels: small monospace text, white, uppercase, left-aligned
+- Wave animation overlay covers the entire screen (rendered on top of all content)
+- Small device info text at the very bottom
+
+### ASCII Wireframe
+
+```
+┌──────────────────────────────────┐
+│░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░│ ← wave overlay (full screen, transparent)
+│                                  │   renders on top of everything
+│  HAPTIC FEEDBACK                 │ ← section label (small mono, white)
+│                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐     │
+│  │Confir│ │Reject│ │Toggle│     │ ← tappable items in a flow/grid
+│  │  m   │ │      │ │  On  │     │   wrap to fill width
+│  └──────┘ └──────┘ └──────┘     │
+│  ┌──────┐ ┌──────┐ ┌──────┐     │
+│  │Toggle│ │Long  │ │Kbd   │     │
+│  │ Off  │ │Press │ │Press │     │
+│  └──────┘ └──────┘ └──────┘     │
+│  ┌──────┐ ┌──────┐ ┌──────┐     │
+│  │Kbd   │ │Clock │ │Contxt│     │
+│  │Relse │ │Tick  │ │Click │     │
+│  └──────┘ └──────┘ └──────┘     │
+│  ... (more items wrap as needed) │
+│                                  │
+│                                  │
+│  PREDEFINED EFFECTS              │ ← section label
+│                                  │
+│  ┌──────┐ ┌──────┐ ┌──────┐     │
+│  │Click │ │Double│ │ Tick │     │
+│  │      │ │Click │ │      │     │
+│  └──────┘ └──────┘ └──────┘     │
+│  ┌──────┐                        │
+│  │Heavy │                        │
+│  │Click │                        │
+│  └──────┘                        │
+│                                  │
+│                                  │
+│  PRIMITIVES                      │ ← section label
+│                                  │
+│  ┌────────────────────────┐      │
+│  │ Click          ◎ ┃██░░│      │ ← item with wheel + power bar
+│  └────────────────────────┘      │
+│  ┌────────────────────────┐      │
+│  │ Tick           ◎ ┃█░░░│      │
+│  └────────────────────────┘      │
+│  ┌────────────────────────┐      │
+│  │ Low Tick       ◎ ┃███░│      │
+│  └────────────────────────┘      │
+│  ┌────────────────────────┐      │
+│  │ Quick Rise     ◎ ┃██░░│      │
+│  └────────────────────────┘      │
+│  ... (more primitives)           │
+│                                  │
+│                                  │
+│  PATTERN                         │ ← section label
+│                                  │
+│  ┌────────────────────────┐      │
+│  │ + Add primitive         │      │ ← tap to add from supported list
+│  │                         │      │
+│  │ ┌─────────────────────┐ │      │
+│  │ │ Click  0.8  20ms  ✕ │ │      │ ← added primitive row
+│  │ └─────────────────────┘ │      │
+│  │ ┌─────────────────────┐ │      │
+│  │ │ Thud   0.5  50ms  ✕ │ │      │ ← scale, delay, remove
+│  │ └─────────────────────┘ │      │
+│  │                         │      │
+│  │       [ ▶ PLAY ]        │      │ ← play composed pattern
+│  └────────────────────────┘      │
+│                                  │
+│                                  │
+│  Not available on this device:   │ ← small grey text
+│  Toggle On, Toggle Off,          │
+│  Drag Start, PRIMITIVE_SPIN      │
+│                                  │
+└──────────────────────────────────┘
+```
+
+### Layout Rules
+
+- **Sections 1 & 2** (Haptic Feedback, Predefined Effects): Items arranged in a **flow layout** (wrapping grid). Items are equal-sized rectangles fitting 3 per row with even spacing. Tap anywhere on the item to trigger.
+- **Section 3** (Primitives): **Vertical list**. Each row has the primitive name on the left, a scrollable wheel control + power indicator on the right. Tap the row to trigger at the current scale. Scroll the wheel to adjust scale.
+- **Section 4** (Pattern Builder): **Contained area**. Add button to insert primitives from a popup/dropdown of supported ones. Each added primitive shows as a row with scale, delay, and remove button. Play button at bottom.
+- **Section 5** (Device Info): **Small grey monospace text**, left-aligned, at the very bottom. Lists names of hidden/unsupported effects.
+- **Spacing**: ~24dp between sections, ~8dp between items within a section.
+- **Padding**: ~16dp horizontal screen padding.

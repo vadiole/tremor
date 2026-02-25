@@ -39,8 +39,8 @@ A single-screen Android app that lets users explore and test every available hap
 
 | # | Phase | Purpose | Output | Status |
 |---|---|---|---|---|
-| 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | In progress |
-| 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | Not started |
+| 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | Done |
+| 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | In progress |
 | 3 | Requirements | Formalize what the app must do | Product requirements document | Not started |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Not started |
 | 5 | Development | Build the app | Working APK | Not started |
@@ -54,3 +54,7 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Discovery | Simple minimal custom pattern for haptic composition only (not raw vibration) | Keep scope tight, focus on HapticFeedback/Composition primitives |
 | 2026-02-25 | Discovery | Show small text at bottom listing unavailable features | Inform user without cluttering UI |
 | 2026-02-25 | Discovery | Hide unsupported effects entirely | Keep UI clean, only show what works on this device |
+| 2026-02-25 | Design | Wave animation from touch point — translucent gradient expanding in all directions, real wave physics (overlapping when rapid taps/drags), possibly shader-based | Lab aesthetic, responsive feel, makes invisible haptics visible |
+| 2026-02-25 | Design | Single vertical scrolling list, no collapsible sections | Simple, no hidden content |
+| 2026-02-25 | Design | No header or title area — start directly with interactive elements | Maximize screen space for content |
+| 2026-02-25 | Design | Sliders as scrollable little wheels with vertical scroll, power indicator that fills up next to it | Unique tactile control, visually clean |
