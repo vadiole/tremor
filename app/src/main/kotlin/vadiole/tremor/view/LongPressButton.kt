@@ -121,6 +121,7 @@ class LongPressButton(context: Context) : View(context), Density {
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                 }
+                triggered = false
                 invalidate()
             }
         }
