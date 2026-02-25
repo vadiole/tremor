@@ -102,7 +102,7 @@ class RiseFallButton(
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val cx = width / 2f
-        val cy = height / 2f + textPaint.textSize / 3f
+        val cy = height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f
         canvas.drawText(labelText, cx, cy, textPaint)
     }
 

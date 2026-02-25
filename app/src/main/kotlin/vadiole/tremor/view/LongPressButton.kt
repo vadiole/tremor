@@ -86,7 +86,7 @@ class LongPressButton(context: Context) : View(context), Density {
 
         val label = if (triggered) labelTriggered else labelHoldMe
         val centerX = width / 2f
-        val centerY = height / 2f + textPaint.textSize / 3f
+        val centerY = height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f
         canvas.drawText(label, centerX, centerY, textPaint)
     }
 
