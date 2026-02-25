@@ -15,13 +15,17 @@ class HeartParticleView(context: Context) : View(context), Density {
     private val heartCount = 10
 
     private val redHeart = "\u2764\uFE0F"
-    private val specialEmojis = arrayOf(
-        "\uD83D\uDC99",  // 💙 blue heart (Ukraine, bi)
-        "\uD83D\uDC9B",  // 💛 yellow heart (Ukraine)
-        "\uD83E\uDD0D",  // 🤍 white heart (Poland)
-        "\uD83D\uDC97",  // 💗 pink heart (bi)
-        "\uD83D\uDC9C",  // 💜 purple heart (bi)
-        "\uD83D\uDC1E",  // 🐞 ladybug
+
+    private val themedSets = arrayOf(
+        arrayOf("\uD83D\uDC99", "\uD83D\uDC9B"),                       // 💙💛 Ukraine
+        arrayOf("\uD83D\uDC97", "\uD83D\uDC9C", "\uD83D\uDC99"),       // 💗💜💙 Bi flag
+        arrayOf("\uD83E\uDD0D", "\uD83E\uDD0D"),                       // 🤍🤍 Polish
+        arrayOf("\uD83D\uDC1E"),                                        // 🐞 Ladybug
+        arrayOf("\uD83C\uDF38", "\uD83C\uDF38", "\uD83C\uDF38"),       // 🌸🌸🌸 Cherry blossom
+        arrayOf("\uD83C\uDF08"),                                        // 🌈 Rainbow
+        arrayOf("\u2B50", "\u2B50"),                                     // ⭐⭐ Star
+        arrayOf("\uD83E\uDD8B", "\uD83E\uDD8B"),                       // 🦋🦋 Butterfly
+        arrayOf("\u2728", "\u2728"),                                     // ✨✨ Sparkles
     )
 
     private val vibrator: Vibrator = run {
@@ -98,17 +102,29 @@ class HeartParticleView(context: Context) : View(context), Density {
 
         playPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 0.3f)
 
+        // build emoji list: 1 in 3 chance of themed set
         val emojis = ArrayList<String>(heartCount)
-        repeat(6) { emojis.add(redHeart) }
-        repeat(4) { emojis.add(specialEmojis.random()) }
+        if (Math.random() < 0.33) {
+            val theme = themedSets[(Math.random() * themedSets.size).toInt()]
+            repeat(heartCount - theme.size) { emojis.add(redHeart) }
+            for (e in theme) emojis.add(e)
+        } else {
+            repeat(heartCount) { emojis.add(redHeart) }
+        }
         emojis.shuffle()
 
+        // aim toward screen center with ±25° spread
+        val targetX = width / 2f
+        val targetY = height / 2f
+        val baseAngle = Math.atan2((targetY - localY).toDouble(), (targetX - localX).toDouble())
+
         for (i in 0 until heartCount) {
-            val angle = Math.toRadians(-90.0 + (Math.random() * 80 - 40))
-            val speed = 500f + (Math.random() * 400f).toFloat()
+            val spread = Math.toRadians(Math.random() * 50.0 - 25.0)
+            val angle = baseAngle + spread
+            val speed = 450f + (Math.random() * 350f).toFloat()
             hearts.add(
                 Heart(
-                    x = localX + (Math.random() * 30 - 15).toFloat(),
+                    x = localX + (Math.random() * 20 - 10).toFloat(),
                     y = localY,
                     vx = (speed * Math.cos(angle)).toFloat(),
                     vy = (speed * Math.sin(angle)).toFloat(),
