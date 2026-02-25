@@ -1,15 +1,16 @@
 package vadiole.tremor.view
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
-import android.os.Handler
-import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.LinearInterpolator
+import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
@@ -48,19 +49,11 @@ class LongPressButton(context: Context) : View(context), Density {
 
     private val rect = RectF()
     private val progressRect = RectF()
-    private var pressStartTime = 0L
+    private var progress = 0f
     private var isPressed = false
     private var triggered = false
-    private val handler = Handler(Looper.getMainLooper())
 
-    private val progressRunnable = object : Runnable {
-        override fun run() {
-            if (isPressed && !triggered) {
-                invalidate()
-                handler.postDelayed(this, 16)
-            }
-        }
-    }
+    private var progressAnimator: ValueAnimator? = null
 
     init {
         isClickable = true
@@ -77,9 +70,7 @@ class LongPressButton(context: Context) : View(context), Density {
         rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
 
-        if (isPressed && !triggered) {
-            val elapsed = System.currentTimeMillis() - pressStartTime
-            val progress = (elapsed.toFloat() / longPressDelay).coerceIn(0f, 1f)
+        if (isPressed && !triggered && progress > 0f) {
             progressPaint.alpha = (255 * 0.15f).toInt()
             progressRect.set(halfStroke, halfStroke, halfStroke + (width - 2 * halfStroke) * progress, height - halfStroke)
             canvas.drawRoundRect(progressRect, cornerRadius, cornerRadius, progressPaint)
@@ -99,37 +90,54 @@ class LongPressButton(context: Context) : View(context), Density {
             MotionEvent.ACTION_DOWN -> {
                 isPressed = true
                 triggered = false
-                pressStartTime = System.currentTimeMillis()
+                progress = 0f
                 bgPaint.color = pressedColor
                 animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
-                handler.postDelayed(progressRunnable, 16)
-                handler.postDelayed({
-                    if (isPressed && !triggered) {
-                        triggered = true
-                        performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
-                        invalidate()
-                    }
-                }, longPressDelay)
+                startProgressAnimation()
                 invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
                 bgPaint.color = normalColor
                 animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
-                handler.removeCallbacksAndMessages(null)
+                    .setInterpolator(OvershootInterpolator(2f)).start()
+                cancelProgressAnimation()
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                 }
                 triggered = false
+                progress = 0f
                 invalidate()
             }
         }
         return true
     }
 
+    private fun startProgressAnimation() {
+        cancelProgressAnimation()
+        progressAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
+            duration = longPressDelay
+            interpolator = LinearInterpolator()
+            addUpdateListener {
+                progress = it.animatedValue as Float
+                invalidate()
+                if (progress >= 1f && isPressed && !triggered) {
+                    triggered = true
+                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    invalidate()
+                }
+            }
+            start()
+        }
+    }
+
+    private fun cancelProgressAnimation() {
+        progressAnimator?.cancel()
+        progressAnimator = null
+    }
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        handler.removeCallbacksAndMessages(null)
+        cancelProgressAnimation()
     }
 }
