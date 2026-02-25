@@ -43,8 +43,8 @@ Formalize what the app must do based on the API catalog (Phase 1) and the design
 ### FR-01: Haptic Feedback Section
 
 - FR-01.1: The app displays a section labeled "HAPTIC FEEDBACK" containing one tappable button per `HapticFeedbackConstants` constant.
-- FR-01.2: Each button is labeled with a human-readable name (e.g., "Confirm", "Reject", "Toggle On").
-- FR-01.3: Tapping a button calls `view.performHapticFeedback(constant, FLAG_IGNORE_VIEW_SETTING)` and spawns a wave animation from the touch point.
+- FR-01.2: Each button shows a human-readable name (e.g., "Confirm", "Reject", "Toggle On") and the API constant name below it in small grey text (e.g., "CONFIRM", "REJECT", "TOGGLE_ON").
+- FR-01.3: Tapping a button calls `view.performHapticFeedback(constant)` (respecting system haptic feedback setting) and spawns a wave animation from the touch point.
 - FR-01.4: Only constants supported on the device's API level are shown. Constants requiring a higher API level are hidden.
 - FR-01.5: The following 19 constants are included (excluding `KEYBOARD_TAP` duplicate and `NO_HAPTICS`): LONG_PRESS, VIRTUAL_KEY, CLOCK_TICK, CONTEXT_CLICK, KEYBOARD_PRESS, KEYBOARD_RELEASE, VIRTUAL_KEY_RELEASE, TEXT_HANDLE_MOVE, GESTURE_START, GESTURE_END, CONFIRM, REJECT, TOGGLE_ON, TOGGLE_OFF, GESTURE_THRESHOLD_ACTIVATE, GESTURE_THRESHOLD_DEACTIVATE, DRAG_START, SEGMENT_TICK, SEGMENT_FREQUENT_TICK.
 
@@ -52,25 +52,26 @@ Formalize what the app must do based on the API catalog (Phase 1) and the design
 
 - FR-02.1: The app displays a section labeled "PREDEFINED EFFECTS" containing one tappable button per `VibrationEffect` predefined effect.
 - FR-02.2: Tapping a button creates the effect via `VibrationEffect.createPredefined(effectId)` and calls `vibrator.vibrate(effect)`, then spawns a wave animation.
-- FR-02.3: The section is only visible on API 29+.
-- FR-02.4: Individual effects are hidden if `vibrator.areEffectsSupported()` returns `VIBRATION_EFFECT_SUPPORT_NO` (API 30+). On API 29, all 4 are shown (no support-checking API available).
+- FR-02.3: Each button shows a human-readable name and the API constant name below it in small grey text (e.g., "EFFECT_CLICK").
+- FR-02.4: Individual effects are hidden if `vibrator.areEffectsSupported()` returns `VIBRATION_EFFECT_SUPPORT_NO`. Effects with `SUPPORT_UNKNOWN` are shown.
 - FR-02.5: The 4 effects are: EFFECT_CLICK, EFFECT_DOUBLE_CLICK, EFFECT_TICK, EFFECT_HEAVY_CLICK.
+- FR-02.6: The section is always visible (minSdk 31 ≥ required API 29), but may be hidden if all effects are unsupported.
 
 ### FR-03: Composition Primitives Section
 
 - FR-03.1: The app displays a section labeled "PRIMITIVES" containing one row per supported `VibrationEffect.Composition` primitive.
-- FR-03.2: Each row shows: primitive name (left), numeric scale readout, drum roller control (right).
+- FR-03.2: Each row shows: primitive name with API constant name in small grey text (e.g., "PRIMITIVE_CLICK"), numeric scale readout, drum roller control (right).
 - FR-03.3: The drum roller adjusts the scale parameter from 0.0 to 1.0 in 0.05 increments. Default scale is 1.0.
 - FR-03.4: Scrolling the drum fires a haptic tick feedback on each step change.
 - FR-03.5: Tapping the row (outside the drum) creates a single-primitive composition at the current scale via `VibrationEffect.startComposition().addPrimitive(id, scale).compose()` and calls `vibrator.vibrate(effect)`, then spawns a wave animation.
-- FR-03.6: The section is only visible on API 30+.
+- FR-03.6: The section is only visible on API 31+ (minSdk is 31).
 - FR-03.7: Individual primitives are hidden if `vibrator.arePrimitivesSupported()` returns false.
 - FR-03.8: The 8 primitives are: PRIMITIVE_CLICK, PRIMITIVE_TICK, PRIMITIVE_LOW_TICK, PRIMITIVE_QUICK_RISE, PRIMITIVE_SLOW_RISE, PRIMITIVE_QUICK_FALL, PRIMITIVE_SPIN, PRIMITIVE_THUD.
 
 ### FR-04: Pattern Builder Section
 
 - FR-04.1: The app displays a section labeled "PATTERN" with a composition builder area.
-- FR-04.2: The section is only visible on API 30+ and only if at least one primitive is supported.
+- FR-04.2: The section is always visible (minSdk 31 ≥ required API 30), but hidden if no primitives are supported.
 - FR-04.3: The user can add up to 5 primitives to the pattern via an "+ ADD" button.
 - FR-04.4: Tapping "+ ADD" shows a popup listing all supported primitives by name. Tapping one adds it to the pattern.
 - FR-04.5: Each added primitive row shows: name, scale drum (0.0–1.0), delay drum (0–500ms in 10ms steps), and a remove (✕) button.
@@ -105,9 +106,9 @@ Formalize what the app must do based on the API catalog (Phase 1) and the design
 
 ### NFR-01: Target API
 
-- NFR-01.1: `minSdkVersion` = 26 (Android 8.0). This is the minimum for `VibrationEffect`.
+- NFR-01.1: `minSdkVersion` = 31 (Android 12). All core APIs (VibrationEffect, Composition, VibratorManager) available at minimum.
 - NFR-01.2: `targetSdkVersion` = 35 (latest stable).
-- NFR-01.3: The app gracefully degrades on API 26–29 by hiding sections that require higher APIs.
+- NFR-01.3: The app hides individual effects/primitives/constants not supported on the device's API level or hardware.
 
 ### NFR-02: Permissions
 
@@ -145,6 +146,6 @@ Formalize what the app must do based on the API catalog (Phase 1) and the design
 | App loses focus during vibration | `onPause()` called | Call `vibrator.cancel()` to stop any ongoing vibration. Clear active wave animations. |
 | Rapid repeated taps | User taps same button very quickly | Each tap triggers independently. The vibrator handles overlapping calls (new call cancels previous). Wave animations accumulate up to the 10-wave limit. |
 | Drum scroll conflicts with page scroll | User scrolls vertically on a drum roller | Drum roller intercepts vertical touch events within its bounds (`requestDisallowInterceptTouchEvent`). Parent ScrollView does not scroll when touching the drum. |
-| API 26–28 device | API level check | Only Haptic Feedback section is visible (HapticFeedbackConstants available since API 3). Predefined Effects (API 29+), Primitives (API 30+), and Pattern (API 30+) are all hidden. Device info explains what's unavailable. |
+| API 31–33 device | API level check | All sections visible. Some HapticFeedbackConstants (API 34+: TOGGLE_ON, TOGGLE_OFF, DRAG_START, SEGMENT_TICK, SEGMENT_FREQUENT_TICK, GESTURE_THRESHOLD_*) are hidden. Some primitives (API 31+: THUD, SPIN, LOW_TICK) available. Device info lists what's unavailable. |
 | Screen rotation | Configuration change | Lock to portrait orientation in manifest (`android:screenOrientation="portrait"`). No rotation handling needed. |
 | Pattern builder: duplicate primitives | User adds same primitive twice | Allowed. Each entry is independent with its own scale and delay. |

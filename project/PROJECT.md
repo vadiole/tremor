@@ -60,3 +60,6 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Design | Scale control: vertical drum roller with horizontal lines only, number readout beside it, no power bar | Minimal mechanical feel, clean aesthetic |
 | 2026-02-25 | Requirements | VIBRATE permission: manifest declaration only, no runtime request | Normal permission, auto-granted at install |
 | 2026-02-25 | Requirements | Haptics disabled: pinned banner at bottom, tappable to open Settings, non-blocking, disappears on resume if fixed | User can still explore UI, unobtrusive placement |
+| 2026-02-25 | Requirements | Respect system haptic feedback setting — do not use FLAG_IGNORE_VIEW_SETTING | User expectation: system settings should be honored |
+| 2026-02-25 | Requirements | minSdkVersion = 31 (Android 12) | All core APIs available at minimum, simplifies codebase |
+| 2026-02-25 | Requirements | Buttons show API constant name in small grey text below human-readable label | Developer audience needs to see the actual constant names |
