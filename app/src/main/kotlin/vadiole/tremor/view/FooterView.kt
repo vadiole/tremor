@@ -8,10 +8,7 @@ import android.graphics.Typeface
 import android.net.Uri
 import android.os.Handler
 import android.os.Looper
-import android.text.SpannableString
-import android.text.Spanned
 import android.text.TextPaint
-import android.text.style.CharacterStyle
 import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
@@ -41,19 +38,14 @@ class FooterView(
     private val linkEnd = linkStart + linkText.length
 
     private var isLinkPressed = false
-    private val spannable = SpannableString(fullText).apply {
-        setSpan(
-            object : CharacterStyle() {
-                override fun updateDrawState(tp: TextPaint) {
-                    tp.isUnderlineText = true
-                    tp.color = linkColor
-                    if (isLinkPressed) tp.alpha = 128
-                }
-            },
-            linkStart, linkEnd,
-            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
-        )
-    }
+
+    private val prefix = fullText.substring(0, linkStart)
+    private val link = fullText.substring(linkStart, linkEnd)
+    private val suffix = fullText.substring(linkEnd)
+    private val prefixWidth = textPaint.measureText(prefix)
+    private val linkWidth = textPaint.measureText(link)
+    private val suffixWidth = textPaint.measureText(suffix)
+    private val totalTextWidth = prefixWidth + linkWidth + suffixWidth
 
     private val handler = Handler(Looper.getMainLooper())
     private var longPressTriggered = false
@@ -72,25 +64,12 @@ class FooterView(
     override fun onDraw(canvas: Canvas) {
         val cx = width / 2f
         val cy = height / 2f
-
-        // Draw each character, applying span styles to the link range
         val fm = textPaint.fontMetrics
         val textY = cy - (fm.ascent + fm.descent) / 2f
+        val startX = cx - totalTextWidth / 2f
 
-        // Use StaticLayout-like approach: draw full spannable
         val saved = textPaint.color
         val savedUnderline = textPaint.isUnderlineText
-
-        // Draw non-link prefix
-        val prefix = fullText.substring(0, linkStart)
-        val link = fullText.substring(linkStart, linkEnd)
-        val suffix = fullText.substring(linkEnd)
-
-        val prefixWidth = textPaint.measureText(prefix)
-        val linkWidth = textPaint.measureText(link)
-        val suffixWidth = textPaint.measureText(suffix)
-        val totalWidth = prefixWidth + linkWidth + suffixWidth
-        val startX = cx - totalWidth / 2f
 
         textPaint.color = textColor
         textPaint.textAlign = Paint.Align.LEFT
@@ -143,6 +122,11 @@ class FooterView(
             }
         }
         return true
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        handler.removeCallbacksAndMessages(null)
     }
 
     private fun openStore() {
