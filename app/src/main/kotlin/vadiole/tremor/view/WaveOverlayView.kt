@@ -102,9 +102,9 @@ class WaveOverlayView(context: Context) : View(context) {
             intensities[i] = easeOut
         }
 
-        s.setFloatUniform("origins", origins, 0, maxWaves * 2)
-        s.setFloatUniform("radii", radii, 0, maxWaves)
-        s.setFloatUniform("intensities", intensities, 0, maxWaves)
+        s.setFloatUniform("origins", origins)
+        s.setFloatUniform("radii", radii)
+        s.setFloatUniform("intensities", intensities)
 
         shaderPaint.shader = s
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shaderPaint)
