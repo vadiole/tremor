@@ -34,6 +34,7 @@ class TremorActivity : Activity(), Density {
     private lateinit var waveOverlay: WaveOverlayView
     private lateinit var heartOverlay: HeartParticleView
     private var bannerView: TextView? = null
+    private var bannerShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,7 +114,8 @@ class TremorActivity : Activity(), Density {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) {
+        if (hasFocus && !bannerShown) {
+            bannerShown = true
             updateBanner()
         }
     }
