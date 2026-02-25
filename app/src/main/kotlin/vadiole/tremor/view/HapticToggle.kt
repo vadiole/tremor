@@ -7,7 +7,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.view.animation.OvershootInterpolator
+import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
@@ -64,8 +64,8 @@ class HapticToggle(context: Context) : View(context), Density {
         thumbAnimator?.cancel()
         val target = if (isOn) 1f else 0f
         thumbAnimator = ValueAnimator.ofFloat(thumbPosition, target).apply {
-            duration = 250
-            interpolator = OvershootInterpolator(1.2f)
+            duration = 200
+            interpolator = DecelerateInterpolator(2f)
             addUpdateListener {
                 thumbPosition = it.animatedValue as Float
                 invalidate()
@@ -97,6 +97,7 @@ class HapticToggle(context: Context) : View(context), Density {
     }
 
     private fun blendColor(from: Int, to: Int, fraction: Float): Int {
+        val f = fraction.coerceIn(0f, 1f)
         val fromA = (from shr 24) and 0xFF
         val fromR = (from shr 16) and 0xFF
         val fromG = (from shr 8) and 0xFF
@@ -105,10 +106,10 @@ class HapticToggle(context: Context) : View(context), Density {
         val toR = (to shr 16) and 0xFF
         val toG = (to shr 8) and 0xFF
         val toB = to and 0xFF
-        val a = (fromA + (toA - fromA) * fraction).toInt()
-        val r = (fromR + (toR - fromR) * fraction).toInt()
-        val g = (fromG + (toG - fromG) * fraction).toInt()
-        val b = (fromB + (toB - fromB) * fraction).toInt()
+        val a = (fromA + (toA - fromA) * f).toInt()
+        val r = (fromR + (toR - fromR) * f).toInt()
+        val g = (fromG + (toG - fromG) * f).toInt()
+        val b = (fromB + (toB - fromB) * f).toInt()
         return (a shl 24) or (r shl 16) or (g shl 8) or b
     }
 
