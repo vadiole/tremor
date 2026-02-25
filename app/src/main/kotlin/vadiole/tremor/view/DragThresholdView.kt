@@ -1,15 +1,17 @@
 package vadiole.tremor.view
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.DashPathEffect
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
-import android.graphics.Typeface
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
@@ -17,11 +19,10 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     private val viewHeight = 72.dp()
     private val cornerRadius = 6f.dp()
-    private val handleWidth = 44f.dp()
-    private val handleHeight = 36f.dp()
-    private val handleCorner = 18f.dp()
+    private val handleWidth = 36f.dp()
+    private val handleVerticalPadding = 8f.dp()
+    private val handleCornerRadius = 12f.dp()
     private val thresholdFraction = 0.6f
-    private val handlePadding = 8f.dp()
     private val verticalResistance = 0.04f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -43,21 +44,14 @@ class DragThresholdView(context: Context) : View(context), Density {
     }
 
     private val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface_pressed)
+        color = context.getColor(R.color.surface)
         style = Paint.Style.FILL
     }
 
     private val handleBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
         style = Paint.Style.STROKE
-        strokeWidth = 1.5f.dp()
-    }
-
-    private val gripPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.text_secondary)
         strokeWidth = 1f.dp()
-        style = Paint.Style.STROKE
-        strokeCap = Paint.Cap.ROUND
     }
 
     private val chevronPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -68,13 +62,9 @@ class DragThresholdView(context: Context) : View(context), Density {
         strokeJoin = Paint.Join.ROUND
     }
 
-    private val activatedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.foreground)
-        style = Paint.Style.FILL
-    }
-
     private val rect = RectF()
     private val handleRect = RectF()
+    private val handlePath = Path()
 
     private var handleX = 0f
     private var handleY = 0f
@@ -84,6 +74,10 @@ class DragThresholdView(context: Context) : View(context), Density {
     private var handleStartX = 0f
     private var activated = false
     private var gestureStarted = false
+
+    // handle pulse animation on threshold crossing
+    private var handleScale = 1f
+    private var pulseAnimator: ValueAnimator? = null
 
     // spring animation
     private var springVelocityX = 0f
@@ -97,7 +91,7 @@ class DragThresholdView(context: Context) : View(context), Density {
             if (!isAnimating) return
 
             val dt = 1f / 60f
-            val restX = handlePadding
+            val restX = restHandleX()
             val restY = 0f
 
             val dxSpring = handleX - restX
@@ -129,13 +123,15 @@ class DragThresholdView(context: Context) : View(context), Density {
         isClickable = true
     }
 
+    private fun restHandleX(): Float = borderPaint.strokeWidth / 2f
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val w = MeasureSpec.getSize(widthMeasureSpec)
         setMeasuredDimension(w, viewHeight)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        handleX = handlePadding
+        handleX = restHandleX()
         handleY = 0f
     }
 
@@ -143,20 +139,6 @@ class DragThresholdView(context: Context) : View(context), Density {
         val halfStroke = borderPaint.strokeWidth / 2f
         rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-
-        // activated fill
-        if (activated) {
-            val fillWidth = handleX + handleWidth / 2f
-            activatedPaint.alpha = 20
-            canvas.save()
-            val clipPath = android.graphics.Path()
-            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, android.graphics.Path.Direction.CW)
-            canvas.clipPath(clipPath)
-            canvas.drawRect(halfStroke, halfStroke, fillWidth, height - halfStroke, activatedPaint)
-            canvas.restore()
-            activatedPaint.alpha = 255
-        }
-
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         // threshold line
@@ -165,41 +147,62 @@ class DragThresholdView(context: Context) : View(context), Density {
         val lineBottom = height - 12f.dp()
         canvas.drawLine(thresholdX, lineTop, thresholdX, lineBottom, thresholdPaint)
 
-        // handle
-        val centerY = height / 2f + handleY
+        // handle - full height tab with flat left, rounded right
         val handleLeft = handleX
-        val handleTop = centerY - handleHeight / 2f
-        handleRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleTop + handleHeight)
-        canvas.drawRoundRect(handleRect, handleCorner, handleCorner, handlePaint)
-        canvas.drawRoundRect(handleRect, handleCorner, handleCorner, handleBorderPaint)
+        val handleTop = handleVerticalPadding + handleY
+        val handleBottom = height.toFloat() - handleVerticalPadding + handleY
+        handleRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleBottom)
 
-        // horizontal grip lines
-        val gripCx = handleLeft + handleWidth * 0.38f
-        val gripCy = centerY
-        val gripSpacing = 3.5f.dp()
-        val gripHalfW = 6f.dp()
-        for (i in -1..1) {
-            val gy = gripCy + i * gripSpacing
-            canvas.drawLine(gripCx - gripHalfW, gy, gripCx + gripHalfW, gy, gripPaint)
+        // clip to container bounds
+        canvas.save()
+        val clipPath = Path()
+        clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
+        canvas.clipPath(clipPath)
+
+        // apply pulse scale around handle center
+        if (handleScale != 1f) {
+            canvas.scale(handleScale, handleScale, handleRect.centerX(), handleRect.centerY())
         }
 
-        // right chevron
-        val chevronX = handleLeft + handleWidth * 0.72f
-        val chevronSize = 4f.dp()
-        canvas.drawLine(chevronX - chevronSize, gripCy - chevronSize, chevronX, gripCy, chevronPaint)
-        canvas.drawLine(chevronX, gripCy, chevronX - chevronSize, gripCy + chevronSize, chevronPaint)
+        // flat left corners (0), rounded right corners (12dp)
+        handlePath.reset()
+        handlePath.addRoundRect(
+            handleRect,
+            floatArrayOf(0f, 0f, handleCornerRadius, handleCornerRadius, handleCornerRadius, handleCornerRadius, 0f, 0f),
+            Path.Direction.CW,
+        )
+        canvas.drawPath(handlePath, handlePaint)
+        canvas.drawPath(handlePath, handleBorderPaint)
+
+        // chevron (right-pointing >)
+        val chevronCx = handleRect.centerX() + 2f.dp()
+        val chevronCy = handleRect.centerY()
+        val chevronSize = 5f.dp()
+        canvas.drawLine(chevronCx - chevronSize, chevronCy - chevronSize, chevronCx, chevronCy, chevronPaint)
+        canvas.drawLine(chevronCx, chevronCy, chevronCx - chevronSize, chevronCy + chevronSize, chevronPaint)
+
+        canvas.restore()
+    }
+
+    private fun pulseHandle() {
+        pulseAnimator?.cancel()
+        pulseAnimator = ValueAnimator.ofFloat(1f, 1.08f, 1f).apply {
+            duration = 200
+            interpolator = DecelerateInterpolator()
+            addUpdateListener {
+                handleScale = it.animatedValue as Float
+                invalidate()
+            }
+            start()
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                val centerY = height / 2f + handleY
-                val touchLeft = handleX - 16f.dp()
+                // touch zone: full height, left side up to handle right edge + padding
                 val touchRight = handleX + handleWidth + 16f.dp()
-                val touchTop = centerY - handleHeight / 2f - 16f.dp()
-                val touchBottom = centerY + handleHeight / 2f + 16f.dp()
-
-                if (event.x in touchLeft..touchRight && event.y in touchTop..touchBottom) {
+                if (event.x <= touchRight) {
                     isDragging = true
                     isAnimating = false
                     removeCallbacks(springRunnable)
@@ -223,8 +226,9 @@ class DragThresholdView(context: Context) : View(context), Density {
 
                 val dx = event.x - dragStartX
                 val dy = event.y - dragStartY
+                val restX = restHandleX()
 
-                handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
+                handleX = (handleStartX + dx).coerceIn(restX, width - handleWidth - restX)
                 handleY = dy * verticalResistance
 
                 val thresholdX = width * thresholdFraction
@@ -236,10 +240,12 @@ class DragThresholdView(context: Context) : View(context), Density {
                     val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE
                             else HapticFeedbackConstants.CONFIRM
                     performHapticFeedback(c)
+                    pulseHandle()
                 } else if (!activated && wasActivated) {
                     val c = if (Build.VERSION.SDK_INT >= 34) HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE
                             else HapticFeedbackConstants.CLOCK_TICK
                     performHapticFeedback(c)
+                    pulseHandle()
                 }
 
                 invalidate()
@@ -265,6 +271,6 @@ class DragThresholdView(context: Context) : View(context), Density {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         removeCallbacks(springRunnable)
+        pulseAnimator?.cancel()
     }
-
 }

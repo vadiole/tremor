@@ -16,8 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | Correct haptics for all example elements | `feedback/09-correct-haptics.md` | Pending |
-| 2 | Subpixel text on all text paints | `feedback/10-subpixel-text.md` | Pending |
-| 3 | QWERTY buttons scale-down press effect | `feedback/11-qwerty-scale.md` | Pending |
-| 4 | More scroll wheel inertia | `feedback/12-scroll-inertia.md` | Pending |
-| 5 | Improve DragThresholdView | `feedback/13-drag-threshold.md` | Pending |
+| 1 | Correct haptics for all example elements | `feedback/09-correct-haptics.md` | Done |
+| 2 | Subpixel text on all text paints | `feedback/10-subpixel-text.md` | Done |
+| 3 | QWERTY buttons scale-down press effect | `feedback/11-qwerty-scale.md` | Done |
+| 4 | More scroll wheel inertia | `feedback/12-scroll-inertia.md` | Done |
+| 5 | Improve DragThresholdView | `feedback/13-drag-threshold.md` | Done |
