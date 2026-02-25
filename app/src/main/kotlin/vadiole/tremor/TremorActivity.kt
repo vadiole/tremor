@@ -121,7 +121,7 @@ class TremorActivity : Activity(), Density {
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
             val strength = hapticConstantStrength(info.value)
-            val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
+            val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
                 performHapticFeedback(info.value)
                 waveOverlay.spawnWave(screenX, screenY, strength)
             }
@@ -150,7 +150,7 @@ class TremorActivity : Activity(), Density {
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
             val strength = effectStrength(info.effectId)
-            val button = HapticButton(this, info.name, info.constantName) { screenX, screenY ->
+            val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
                 waveOverlay.spawnWave(screenX, screenY, strength)
             }
@@ -178,7 +178,7 @@ class TremorActivity : Activity(), Density {
 
         for ((index, info) in primitives.withIndex()) {
             val waveStyle = primitiveWaveStyle(info.primitiveId)
-            val row = PrimitiveRow(this, info.name, info.constantName) { scale, screenX, screenY ->
+            val row = PrimitiveRow(this, getString(info.nameResId), info.constantName) { scale, screenX, screenY ->
                 hapticEngine.playPrimitive(info.primitiveId, scale)
                 waveOverlay.spawnWave(screenX, screenY, scale, waveStyle)
             }

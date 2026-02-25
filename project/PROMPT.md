@@ -127,6 +127,7 @@ If you are continuing from a previous session:
 – **Architecture**: As simple as possible. Single screen app. No settings. 1–2 main files, with custom views extracted into their own files where it makes sense.
 – **Scope**: Single screen with interactive elements for testing haptic APIs. The available APIs should drive what the UI contains.
 – **No tests**: No unit tests, no instrumented tests, no QA phase.
+– **No raw strings**: All user-visible text must be in `strings.xml` and accessed via `getString()` or `R.string.*`. No hardcoded display strings in Kotlin files. Technical identifiers (API constant names) and single-character symbols are exempt.
 
 ## Project Files
 

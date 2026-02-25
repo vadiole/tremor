@@ -12,7 +12,7 @@
 | 8 | Fix wave colors in light mode | dev | Done |
 | 9 | Research subtle ambient wave effect | research + dev (optional) | Done |
 | 10 | Research additional visual feedback ideas | research + validate | Done |
-| 11 | No raw strings rule + enforce | dev + spec | Pending |
+| 11 | No raw strings rule + enforce | dev + spec | Done |
 
 ---
 

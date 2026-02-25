@@ -88,20 +88,20 @@ class HapticEngine(context: Context) {
     }
 
     data class HapticConstantInfo(
-        val name: String,
+        val nameResId: Int,
         val constantName: String,
         val value: Int,
         val minApi: Int,
     )
 
     data class EffectInfo(
-        val name: String,
+        val nameResId: Int,
         val constantName: String,
         val effectId: Int,
     )
 
     data class PrimitiveInfo(
-        val name: String,
+        val nameResId: Int,
         val constantName: String,
         val primitiveId: Int,
     )
@@ -109,43 +109,43 @@ class HapticEngine(context: Context) {
     companion object {
 
         val allHapticConstants = listOf(
-            HapticConstantInfo("Confirm", "CONFIRM", HapticFeedbackConstants.CONFIRM, 30),
-            HapticConstantInfo("Reject", "REJECT", HapticFeedbackConstants.REJECT, 30),
-            HapticConstantInfo("Toggle On", "TOGGLE_ON", 21, 34),
-            HapticConstantInfo("Toggle Off", "TOGGLE_OFF", 22, 34),
-            HapticConstantInfo("Long Press", "LONG_PRESS", HapticFeedbackConstants.LONG_PRESS, 3),
-            HapticConstantInfo("Keyboard Press", "KEYBOARD_PRESS", HapticFeedbackConstants.KEYBOARD_PRESS, 27),
-            HapticConstantInfo("Keyboard Release", "KEYBOARD_RELEASE", HapticFeedbackConstants.KEYBOARD_RELEASE, 27),
-            HapticConstantInfo("Clock Tick", "CLOCK_TICK", HapticFeedbackConstants.CLOCK_TICK, 21),
-            HapticConstantInfo("Context Click", "CONTEXT_CLICK", HapticFeedbackConstants.CONTEXT_CLICK, 23),
-            HapticConstantInfo("Gesture Start", "GESTURE_START", 12, 30),
-            HapticConstantInfo("Gesture End", "GESTURE_END", 13, 30),
-            HapticConstantInfo("Gesture Threshold Activate", "GESTURE_THRESHOLD_ACTIVATE", 23, 34),
-            HapticConstantInfo("Gesture Threshold Deactivate", "GESTURE_THRESHOLD_DEACTIVATE", 24, 34),
-            HapticConstantInfo("Text Handle Move", "TEXT_HANDLE_MOVE", HapticFeedbackConstants.TEXT_HANDLE_MOVE, 27),
-            HapticConstantInfo("Virtual Key", "VIRTUAL_KEY", HapticFeedbackConstants.VIRTUAL_KEY, 3),
-            HapticConstantInfo("Virtual Key Release", "VIRTUAL_KEY_RELEASE", HapticFeedbackConstants.VIRTUAL_KEY_RELEASE, 27),
-            HapticConstantInfo("Drag Start", "DRAG_START", 25, 34),
-            HapticConstantInfo("Segment Tick", "SEGMENT_TICK", 26, 34),
-            HapticConstantInfo("Segment Frequent Tick", "SEGMENT_FREQUENT_TICK", 27, 34),
+            HapticConstantInfo(R.string.haptic_confirm, "CONFIRM", HapticFeedbackConstants.CONFIRM, 30),
+            HapticConstantInfo(R.string.haptic_reject, "REJECT", HapticFeedbackConstants.REJECT, 30),
+            HapticConstantInfo(R.string.haptic_toggle_on, "TOGGLE_ON", 21, 34),
+            HapticConstantInfo(R.string.haptic_toggle_off, "TOGGLE_OFF", 22, 34),
+            HapticConstantInfo(R.string.haptic_long_press, "LONG_PRESS", HapticFeedbackConstants.LONG_PRESS, 3),
+            HapticConstantInfo(R.string.haptic_keyboard_press, "KEYBOARD_PRESS", HapticFeedbackConstants.KEYBOARD_PRESS, 27),
+            HapticConstantInfo(R.string.haptic_keyboard_release, "KEYBOARD_RELEASE", HapticFeedbackConstants.KEYBOARD_RELEASE, 27),
+            HapticConstantInfo(R.string.haptic_clock_tick, "CLOCK_TICK", HapticFeedbackConstants.CLOCK_TICK, 21),
+            HapticConstantInfo(R.string.haptic_context_click, "CONTEXT_CLICK", HapticFeedbackConstants.CONTEXT_CLICK, 23),
+            HapticConstantInfo(R.string.haptic_gesture_start, "GESTURE_START", 12, 30),
+            HapticConstantInfo(R.string.haptic_gesture_end, "GESTURE_END", 13, 30),
+            HapticConstantInfo(R.string.haptic_gesture_threshold_activate, "GESTURE_THRESHOLD_ACTIVATE", 23, 34),
+            HapticConstantInfo(R.string.haptic_gesture_threshold_deactivate, "GESTURE_THRESHOLD_DEACTIVATE", 24, 34),
+            HapticConstantInfo(R.string.haptic_text_handle_move, "TEXT_HANDLE_MOVE", HapticFeedbackConstants.TEXT_HANDLE_MOVE, 27),
+            HapticConstantInfo(R.string.haptic_virtual_key, "VIRTUAL_KEY", HapticFeedbackConstants.VIRTUAL_KEY, 3),
+            HapticConstantInfo(R.string.haptic_virtual_key_release, "VIRTUAL_KEY_RELEASE", HapticFeedbackConstants.VIRTUAL_KEY_RELEASE, 27),
+            HapticConstantInfo(R.string.haptic_drag_start, "DRAG_START", 25, 34),
+            HapticConstantInfo(R.string.haptic_segment_tick, "SEGMENT_TICK", 26, 34),
+            HapticConstantInfo(R.string.haptic_segment_frequent_tick, "SEGMENT_FREQUENT_TICK", 27, 34),
         )
 
         val allEffects = listOf(
-            EffectInfo("Click", "EFFECT_CLICK", VibrationEffect.EFFECT_CLICK),
-            EffectInfo("Double Click", "EFFECT_DOUBLE_CLICK", VibrationEffect.EFFECT_DOUBLE_CLICK),
-            EffectInfo("Tick", "EFFECT_TICK", VibrationEffect.EFFECT_TICK),
-            EffectInfo("Heavy Click", "EFFECT_HEAVY_CLICK", VibrationEffect.EFFECT_HEAVY_CLICK),
+            EffectInfo(R.string.effect_click, "EFFECT_CLICK", VibrationEffect.EFFECT_CLICK),
+            EffectInfo(R.string.effect_double_click, "EFFECT_DOUBLE_CLICK", VibrationEffect.EFFECT_DOUBLE_CLICK),
+            EffectInfo(R.string.effect_tick, "EFFECT_TICK", VibrationEffect.EFFECT_TICK),
+            EffectInfo(R.string.effect_heavy_click, "EFFECT_HEAVY_CLICK", VibrationEffect.EFFECT_HEAVY_CLICK),
         )
 
         val allPrimitives = listOf(
-            PrimitiveInfo("Click", "PRIMITIVE_CLICK", VibrationEffect.Composition.PRIMITIVE_CLICK),
-            PrimitiveInfo("Tick", "PRIMITIVE_TICK", VibrationEffect.Composition.PRIMITIVE_TICK),
-            PrimitiveInfo("Low Tick", "PRIMITIVE_LOW_TICK", VibrationEffect.Composition.PRIMITIVE_LOW_TICK),
-            PrimitiveInfo("Quick Rise", "PRIMITIVE_QUICK_RISE", VibrationEffect.Composition.PRIMITIVE_QUICK_RISE),
-            PrimitiveInfo("Slow Rise", "PRIMITIVE_SLOW_RISE", VibrationEffect.Composition.PRIMITIVE_SLOW_RISE),
-            PrimitiveInfo("Quick Fall", "PRIMITIVE_QUICK_FALL", VibrationEffect.Composition.PRIMITIVE_QUICK_FALL),
-            PrimitiveInfo("Spin", "PRIMITIVE_SPIN", VibrationEffect.Composition.PRIMITIVE_SPIN),
-            PrimitiveInfo("Thud", "PRIMITIVE_THUD", VibrationEffect.Composition.PRIMITIVE_THUD),
+            PrimitiveInfo(R.string.primitive_click, "PRIMITIVE_CLICK", VibrationEffect.Composition.PRIMITIVE_CLICK),
+            PrimitiveInfo(R.string.primitive_tick, "PRIMITIVE_TICK", VibrationEffect.Composition.PRIMITIVE_TICK),
+            PrimitiveInfo(R.string.primitive_low_tick, "PRIMITIVE_LOW_TICK", VibrationEffect.Composition.PRIMITIVE_LOW_TICK),
+            PrimitiveInfo(R.string.primitive_quick_rise, "PRIMITIVE_QUICK_RISE", VibrationEffect.Composition.PRIMITIVE_QUICK_RISE),
+            PrimitiveInfo(R.string.primitive_slow_rise, "PRIMITIVE_SLOW_RISE", VibrationEffect.Composition.PRIMITIVE_SLOW_RISE),
+            PrimitiveInfo(R.string.primitive_quick_fall, "PRIMITIVE_QUICK_FALL", VibrationEffect.Composition.PRIMITIVE_QUICK_FALL),
+            PrimitiveInfo(R.string.primitive_spin, "PRIMITIVE_SPIN", VibrationEffect.Composition.PRIMITIVE_SPIN),
+            PrimitiveInfo(R.string.primitive_thud, "PRIMITIVE_THUD", VibrationEffect.Composition.PRIMITIVE_THUD),
         )
     }
 }
