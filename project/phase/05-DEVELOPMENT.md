@@ -13,7 +13,7 @@
 | DEV-07 | PatternBuilderView | Done |
 | DEV-08 | WaveOverlayView | Done |
 | DEV-09 | TremorActivity — Assembly & Wiring | Done |
-| DEV-10 | Edge Cases & Polish | Pending |
+| DEV-10 | Edge Cases & Polish | Done |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 

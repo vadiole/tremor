@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
+import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -47,6 +48,11 @@ class TremorActivity : Activity() {
         val content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(padding, padding, padding, padding)
+            setOnApplyWindowInsetsListener { v, insets ->
+                val systemBars = insets.getInsets(WindowInsets.Type.systemBars())
+                v.setPadding(padding, padding + systemBars.top, padding, padding + systemBars.bottom)
+                insets
+            }
         }
 
         buildHapticFeedbackSection(content, density, sectionSpacing, itemSpacing)
@@ -247,6 +253,16 @@ class TremorActivity : Activity() {
                 (16 * density).toInt(),
                 (12 * density).toInt(),
             )
+            setOnApplyWindowInsetsListener { v, insets ->
+                val navBar = insets.getInsets(WindowInsets.Type.systemBars()).bottom
+                v.setPadding(
+                    (16 * density).toInt(),
+                    (12 * density).toInt(),
+                    (16 * density).toInt(),
+                    (12 * density).toInt() + navBar,
+                )
+                insets
+            }
             setOnClickListener {
                 try {
                     val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
