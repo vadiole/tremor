@@ -22,7 +22,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handleWidth = 36f.dp()
     private val handlePadding = 6f.dp()
     private val handleCornerRadius = 8f.dp()
-    private val thresholdFraction = 0.6f
+    private val thresholdFraction = 0.75f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
