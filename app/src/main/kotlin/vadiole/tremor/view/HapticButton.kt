@@ -9,6 +9,7 @@ import android.text.TextPaint
 import android.text.TextUtils
 import android.view.MotionEvent
 import android.view.View
+import vadiole.tremor.Density
 import vadiole.tremor.R
 
 class HapticButton(
@@ -16,13 +17,11 @@ class HapticButton(
     private val label: String,
     private val constantName: String,
     private val onTrigger: (screenX: Float, screenY: Float) -> Unit,
-) : View(context) {
+) : View(context), Density {
 
-    private val density = resources.displayMetrics.density
-
-    private val cornerRadius = 6f * density
-    private val minHeight = (56 * density).toInt()
-    private val horizontalPadding = 8f * density
+    private val cornerRadius = 6f.dp()
+    private val minHeight = 56.dp()
+    private val horizontalPadding = 8f.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -32,19 +31,19 @@ class HapticButton(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f * density
+        textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
 
     private val constantPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 8f * density
+        textSize = 8f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
@@ -73,8 +72,8 @@ class HapticButton(
 
         val centerX = width / 2f
         val maxTextWidth = width - horizontalPadding * 2
-        val labelY = height / 2f - 3f * density
-        val constantY = labelY + 13f * density
+        val labelY = height / 2f - 3f.dp()
+        val constantY = labelY + 13f.dp()
 
         val truncatedLabel = TextUtils.ellipsize(label, labelPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()
         val truncatedConstant = TextUtils.ellipsize(constantName, constantPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()

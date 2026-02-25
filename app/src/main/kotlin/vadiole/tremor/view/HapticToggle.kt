@@ -6,15 +6,15 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.view.HapticFeedbackConstants
 import android.view.View
+import vadiole.tremor.Density
 import vadiole.tremor.R
 
-class HapticToggle(context: Context) : View(context) {
+class HapticToggle(context: Context) : View(context), Density {
 
-    private val density = resources.displayMetrics.density
-    private val trackWidth = (52 * density).toInt()
-    private val trackHeight = (28 * density).toInt()
-    private val thumbRadius = 10f * density
-    private val thumbPadding = 4f * density
+    private val trackWidth = 52.dp()
+    private val trackHeight = 28.dp()
+    private val thumbRadius = 10f.dp()
+    private val thumbPadding = 4f.dp()
 
     private var isOn = false
 
@@ -25,7 +25,7 @@ class HapticToggle(context: Context) : View(context) {
     private val trackBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

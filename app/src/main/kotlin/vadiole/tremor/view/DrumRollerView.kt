@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import vadiole.tremor.Density
 import vadiole.tremor.R
 import kotlin.math.abs
 import kotlin.math.roundToInt
@@ -16,32 +17,30 @@ class DrumRollerView(
     private val minValue: Float = 0f,
     private val maxValue: Float = 1f,
     private val step: Float = 0.05f,
-) : View(context) {
+) : View(context), Density {
 
     var value: Float = maxValue
         private set
 
     var onValueChanged: ((Float) -> Unit)? = null
 
-    private val density = resources.displayMetrics.density
-
-    private val visualWidth = (20 * density).toInt()
-    private val visualHeight = (48 * density).toInt()
-    private val touchWidth = (48 * density).toInt()
-    private val touchHeight = (64 * density).toInt()
-    private val lineSpacing = 8f * density
-    private val borderRadius = 4f * density
+    private val visualWidth = 20.dp()
+    private val visualHeight = 48.dp()
+    private val touchWidth = 48.dp()
+    private val touchHeight = 64.dp()
+    private val lineSpacing = 8f.dp()
+    private val borderRadius = 4f.dp()
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
         style = Paint.Style.STROKE
     }
 
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -82,8 +81,8 @@ class DrumRollerView(
             lineY -= lineSpacing
         }
 
-        val drumLeft = offsetX + 4f * density
-        val drumRight = offsetX + visualWidth - 4f * density
+        val drumLeft = offsetX + 4f.dp()
+        val drumRight = offsetX + visualWidth - 4f.dp()
         val halfVisual = visualHeight / 2f
 
         while (lineY < height + lineSpacing) {

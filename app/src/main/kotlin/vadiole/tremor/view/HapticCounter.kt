@@ -8,13 +8,13 @@ import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import vadiole.tremor.Density
 import vadiole.tremor.R
 
-class HapticCounter(context: Context) : View(context) {
+class HapticCounter(context: Context) : View(context), Density {
 
-    private val density = resources.displayMetrics.density
-    private val viewHeight = (56 * density).toInt()
-    private val cornerRadius = 6f * density
+    private val viewHeight = 56.dp()
+    private val cornerRadius = 6f.dp()
 
     private var count = 0
 
@@ -26,26 +26,26 @@ class HapticCounter(context: Context) : View(context) {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 16f * density
+        textSize = 16f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
 
     private val buttonPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 20f * density
+        textSize = 20f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
 
     private val dividerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val rect = RectF()
