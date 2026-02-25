@@ -47,7 +47,7 @@ class KeyButton(
 
     init {
         isClickable = true
-        setOnTouchListener(ScaleFeedback())
+        setOnTouchListener(ScaleFeedback(scale = 0.87f))
     }
 
     override fun onDraw(canvas: Canvas) {
