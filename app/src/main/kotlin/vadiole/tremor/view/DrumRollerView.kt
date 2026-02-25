@@ -25,8 +25,10 @@ class DrumRollerView(
 
     private val density = resources.displayMetrics.density
 
-    private val drumWidth = (20 * density).toInt()
-    private val drumHeight = (48 * density).toInt()
+    private val visualWidth = (20 * density).toInt()
+    private val visualHeight = (48 * density).toInt()
+    private val touchWidth = (48 * density).toInt()
+    private val touchHeight = (64 * density).toInt()
     private val lineSpacing = 8f * density
     private val borderRadius = 4f * density
 
@@ -58,11 +60,14 @@ class DrumRollerView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(drumWidth, drumHeight)
+        setMeasuredDimension(touchWidth, touchHeight)
     }
 
     override fun onDraw(canvas: Canvas) {
-        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        val offsetX = (width - visualWidth) / 2f
+        val offsetY = (height - visualHeight) / 2f
+
+        rect.set(offsetX, offsetY, offsetX + visualWidth, offsetY + visualHeight)
         canvas.drawRoundRect(rect, borderRadius, borderRadius, bgPaint)
         canvas.drawRoundRect(rect, borderRadius, borderRadius, borderPaint)
 
@@ -77,18 +82,21 @@ class DrumRollerView(
             lineY -= lineSpacing
         }
 
+        val drumLeft = offsetX + 4f * density
+        val drumRight = offsetX + visualWidth - 4f * density
+        val halfVisual = visualHeight / 2f
+
         while (lineY < height + lineSpacing) {
             val distFromCenter = abs(lineY - centerY)
-            val halfHeight = height / 2f
-            val alpha = if (distFromCenter < halfHeight) {
-                val t = distFromCenter / halfHeight
+            val alpha = if (distFromCenter < halfVisual) {
+                val t = distFromCenter / halfVisual
                 val fade = 1f - t * t
                 (fade * 255).toInt().coerceIn(0, 255)
             } else {
                 0
             }
             linePaint.alpha = alpha
-            canvas.drawLine(4f * density, lineY, width - 4f * density, lineY, linePaint)
+            canvas.drawLine(drumLeft, lineY, drumRight, lineY, linePaint)
             lineY += lineSpacing
         }
 
