@@ -49,8 +49,8 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private var velocity = 0f
     private var lastMoveTime = 0L
     private var isFlung = false
-    private val friction = 0.92f
-    private val minVelocity = 0.5f.dp()
+    private val friction = 0.96f
+    private val minVelocity = 0.2f.dp()
 
     private val flingRunnable = object : Runnable {
         override fun run() {
