@@ -95,6 +95,21 @@ phase 1 complete
 – Update the ticket status table in the phase file after completing each ticket.
 – Commit after completing each ticket (see Git Usage above).
 
+## Feedback Flow
+
+When the user provides a FEEDBACK.md file (at `project/FEEDBACK.md`):
+
+1. Read `project/FEEDBACK.md` — it contains numbered feedback items with status.
+2. Work through items **one by one**, in order.
+3. Each item may have one or more sub-tickets (research, design, dev) — execute them sequentially.
+4. After completing each item, mark it `Done` in FEEDBACK.md and commit.
+5. No approvals needed between items unless the item explicitly says "validate with user".
+6. If an item says "validate" or "explore options" — present findings to the user and wait for approval before implementing.
+7. Commit after each completed feedback item. Message format: `feedback: short description`.
+8. When all items are done, announce completion.
+
+This flow takes priority over the normal phase-based workflow when FEEDBACK.md exists with pending items.
+
 ## Resuming Work
 
 If you are continuing from a previous session:
@@ -123,3 +138,5 @@ If you are continuing from a previous session:
 | `phase/03-REQUIREMENTS.md` | Product requirements derived from discovery and design |
 | `phase/04-TECHNICAL-SPEC.md` | Architecture, file structure, API abstraction |
 | `phase/05-DEVELOPMENT.md` | Implementation tickets and build order |
+| `phase/06-ITERATION2.md` | Iteration 2 polish tickets |
+| `FEEDBACK.md` | Iteration 3 feedback items (when present) |
