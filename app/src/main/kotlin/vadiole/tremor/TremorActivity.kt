@@ -14,12 +14,16 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
+import vadiole.tremor.view.DragThresholdView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.HapticButton
 import vadiole.tremor.view.HapticCounter
 import vadiole.tremor.view.HapticToggle
+import vadiole.tremor.view.KeyboardRowView
 import vadiole.tremor.view.LongPressButton
 import vadiole.tremor.view.PrimitiveRow
+import vadiole.tremor.view.RiseFallButton
+import vadiole.tremor.view.ScrollWheelView
 import vadiole.tremor.view.WaveOverlayView
 
 class TremorActivity : Activity(), Density {
@@ -228,6 +232,42 @@ class TremorActivity : Activity(), Density {
         ))
 
         parent.addView(HapticCounter(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(KeyboardRowView(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(ScrollWheelView(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(RiseFallButton(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(DragThresholdView(this), LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         ))
