@@ -16,6 +16,9 @@ import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.HapticButton
+import vadiole.tremor.view.HapticCounter
+import vadiole.tremor.view.HapticToggle
+import vadiole.tremor.view.LongPressButton
 import vadiole.tremor.view.PrimitiveRow
 import vadiole.tremor.view.WaveOverlayView
 
@@ -61,6 +64,7 @@ class TremorActivity : Activity() {
         buildHapticFeedbackSection(content, density, sectionSpacing, itemSpacing)
         buildPredefinedEffectsSection(content, density, sectionSpacing, itemSpacing)
         buildPrimitivesSection(content, density, sectionSpacing, itemSpacing)
+        buildExamplesSection(content, density, sectionSpacing, itemSpacing)
         buildDeviceInfo(content, density, sectionSpacing)
         buildFooter(content, density)
 
@@ -182,6 +186,56 @@ class TremorActivity : Activity() {
             if (index > 0) lp.topMargin = itemSpacing
             parent.addView(row, lp)
         }
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
+        ))
+    }
+
+    private fun buildExamplesSection(
+        parent: LinearLayout,
+        density: Float,
+        sectionSpacing: Int,
+        itemSpacing: Int,
+    ) {
+        parent.addView(createSectionLabel(getString(R.string.section_examples), density))
+
+        val toggleRow = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+        }
+        val toggleLabel = TextView(this).apply {
+            text = "Toggle"
+            setTextColor(getColor(R.color.foreground))
+            textSize = 13f
+            typeface = android.graphics.Typeface.MONOSPACE
+        }
+        toggleRow.addView(toggleLabel, LinearLayout.LayoutParams(
+            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
+        ))
+        toggleRow.addView(HapticToggle(this))
+        parent.addView(toggleRow, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(LongPressButton(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+        ))
+
+        parent.addView(HapticCounter(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        ))
 
         parent.addView(Space(this), LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
