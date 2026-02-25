@@ -97,8 +97,8 @@ class HapticCounter(context: Context) : View(context), Density {
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val thirdW = width / 3f
-        val centerY = height / 2f + buttonPaint.textSize / 3f
-        val textCenterY = height / 2f + textPaint.textSize / 3f
+        val centerY = height / 2f - (buttonPaint.ascent() + buttonPaint.descent()) / 2f
+        val textCenterY = height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f
 
         canvas.drawLine(thirdW, halfStroke, thirdW, height - halfStroke, dividerPaint)
         canvas.drawLine(thirdW * 2, halfStroke, thirdW * 2, height - halfStroke, dividerPaint)

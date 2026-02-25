@@ -106,7 +106,7 @@ class PrimitiveRow(
         canvas.drawText(constantName, labelX, constantY, constantPaint)
 
         val valueX = drum.left.toFloat() - drumMarginStart
-        val valueY = height / 2f + valuePaint.textSize / 3f
+        val valueY = height / 2f - (valuePaint.ascent() + valuePaint.descent()) / 2f
         canvas.drawText(cachedValueText, valueX, valueY, valuePaint)
     }
 
