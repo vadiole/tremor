@@ -1,5 +1,6 @@
 package vadiole.tremor
 
+import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.VibrationEffect
@@ -10,6 +11,8 @@ import android.view.View
 
 class HapticEngine(context: Context) {
 
+    private val appContext: Context = context.applicationContext
+
     private val vibrator: Vibrator = run {
         val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
         manager.defaultVibrator
@@ -18,11 +21,18 @@ class HapticEngine(context: Context) {
     val hasVibrator: Boolean = vibrator.hasVibrator()
 
     fun isHapticEnabled(view: View): Boolean {
+        if (isDndActive()) return false
+        // On API 35+ ViewRootImpl uses async haptic feedback which always returns true,
+        // so performHapticFeedback can't detect disabled vibration. Only DND is checkable.
+        if (Build.VERSION.SDK_INT >= 35) return true
         // Must be called when the view is attached (e.g. from onWindowFocusChanged),
         // because performHapticFeedback returns false when mAttachInfo is null.
-        // On API 35+ the async path always returns true, so the banner won't
-        // show a false positive — acceptable for a haptics testing app.
         return view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+    }
+
+    private fun isDndActive(): Boolean {
+        val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        return nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
     }
 
     fun getAvailableHapticConstants(): List<HapticConstantInfo> {
