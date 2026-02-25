@@ -39,7 +39,7 @@ A single-screen Android app that lets users explore and test every available hap
 
 | # | Phase | Purpose | Output | Status |
 |---|---|---|---|---|
-| 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | Not started |
+| 1 | Discovery | Research all Android haptic APIs, analyze competitors | API catalog, feature list, MVP scope | In progress |
 | 2 | Design | Define the single-screen layout and interaction model | Screen layout, visual feedback strategy | Not started |
 | 3 | Requirements | Formalize what the app must do | Product requirements document | Not started |
 | 4 | Technical Spec | Define architecture, file structure, API mapping | Tech spec document | Not started |
@@ -51,4 +51,6 @@ A single-screen Android app that lets users explore and test every available hap
 
 | Date | Phase | Decision | Rationale |
 |---|---|---|---|
-| – | – | – | – |
+| 2026-02-25 | Discovery | Simple minimal custom pattern for haptic composition only (not raw vibration) | Keep scope tight, focus on HapticFeedback/Composition primitives |
+| 2026-02-25 | Discovery | Show small text at bottom listing unavailable features | Inform user without cluttering UI |
+| 2026-02-25 | Discovery | Hide unsupported effects entirely | Keep UI clean, only show what works on this device |
