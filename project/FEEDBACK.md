@@ -16,8 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | HapticButton text block centering fix | `feedback/19-button-centering.md` | |
-| 2 | QWERTY refactor: extract KeyButton view | `feedback/20-qwerty-refactor.md` | |
-| 3 | Footer touch area taller | `feedback/21-footer-height.md` | |
-| 4 | Easter egg colored hearts | `feedback/22-colored-hearts.md` | |
-| 5 | Remove dots from wave overlay | `feedback/23-remove-dots.md` | |
+| 1 | HapticButton text block centering fix | `feedback/19-button-centering.md` | Done |
+| 2 | QWERTY refactor: extract KeyButton view | `feedback/20-qwerty-refactor.md` | Done |
+| 3 | Footer touch area taller | `feedback/21-footer-height.md` | Done |
+| 4 | Easter egg colored hearts | `feedback/22-colored-hearts.md` | Done |
+| 5 | Remove dots from wave overlay | `feedback/23-remove-dots.md` | Done |
