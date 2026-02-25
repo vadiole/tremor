@@ -37,12 +37,14 @@ class PrimitiveRow(
         color = context.getColor(R.color.foreground)
         textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
+        isSubpixelText = true
     }
 
     private val constantPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
         textSize = 9f.dp()
         typeface = Typeface.MONOSPACE
+        isSubpixelText = true
     }
 
     private val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -50,6 +52,7 @@ class PrimitiveRow(
         textSize = 11f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.RIGHT
+        isSubpixelText = true
     }
 
     private val pressedColor = context.getColor(R.color.surface_pressed)
