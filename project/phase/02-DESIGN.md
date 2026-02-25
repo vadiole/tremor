@@ -6,7 +6,7 @@
 |---|---|---|
 | DES-01 | Screen Structure & Layout | Done |
 | DES-02 | Element Design | Done |
-| DES-03 | Visual Feedback Strategy | Pending |
+| DES-03 | Visual Feedback Strategy | Done |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 
@@ -269,3 +269,87 @@ A contained area for composing sequences of primitives.
 | Text muted | #666666 | Section labels |
 | Text disabled | #555555 | Device info |
 | Dashed border | #333333 | Add button in pattern builder |
+
+---
+
+## Visual Feedback Strategy (DES-03 Output)
+
+### Concept: Ripple Wave
+
+Every haptic trigger creates a **circular wave** that expands outward from the exact touch point. The wave is a translucent gradient ring that grows and fades — like dropping a stone in still water.
+
+### Wave Behavior
+
+- **Origin**: The exact (x, y) coordinates of the touch event, in screen-absolute coordinates.
+- **Shape**: Circular ring. The ring has a soft gradient — bright at the leading edge, fading behind.
+- **Expansion**: The ring expands outward at a constant velocity (~800dp/s). Starts at radius 0, grows until it exits the screen bounds.
+- **Fade**: The ring's opacity decreases as it expands. Starts at ~0.3 alpha (translucent white), fades to 0 by the time it reaches max radius.
+- **Ring width**: ~30dp soft gradient band (not a hard circle). Inner edge fades in, outer edge fades out.
+- **Duration**: ~600ms from spawn to fully faded (depends on screen size; wave travels off-screen).
+- **Color**: White (#FFFFFF) with alpha. Translucent gradient on black background creates a subtle glow.
+
+### Multiple Waves & Interference
+
+When the user taps rapidly or drags (e.g., scrolling a wheel that fires haptic ticks), multiple waves coexist:
+
+- Each haptic trigger spawns an independent wave at its touch coordinates.
+- Waves do NOT cancel each other — they **additively blend**. Overlapping regions appear brighter.
+- This creates natural interference patterns when taps are rapid or when dragging across items.
+- Max concurrent waves: ~10 (oldest waves auto-removed when limit reached to preserve performance).
+
+### Implementation Approach
+
+**Custom View overlay** covering the entire screen, drawn on top of all content.
+
+Option A — **Canvas-based** (simpler):
+- Custom `View` with `onDraw()` using `RadialGradient` shaders per wave.
+- Each wave is a `RadialGradient` centered at (x, y) with current radius.
+- Animated via `ValueAnimator` updating radius and alpha per frame.
+- `PorterDuff.Mode.ADD` or `BlendMode.SCREEN` for additive blending.
+- Performance: Fine for ~10 concurrent waves with hardware acceleration.
+
+Option B — **GLSL shader** (richer physics):
+- Custom `SurfaceView` or use `RenderEffect` (API 31+) with an AGSL shader.
+- Shader receives an array of wave origins, radii, and intensities as uniforms.
+- GPU computes interference natively — true additive blending per pixel.
+- Performance: Excellent even with many waves, but more complex to implement and API 31+ only for AGSL.
+
+**Recommendation**: Start with **Option A (Canvas-based)** for the MVP. It's simpler, works across all API levels, and performs well for the expected number of concurrent waves. Can upgrade to shader later if needed.
+
+### Wave Lifecycle
+
+```
+t=0ms    Touch down detected, haptic fires
+         → Spawn new wave at (touchX, touchY)
+         → radius=0, alpha=0.3
+
+t=0-600  Expanding
+         → radius increases at ~800dp/s
+         → alpha decreases linearly: 0.3 → 0.0
+         → ring gradient width stays constant at ~30dp
+
+t=600    Wave complete
+         → Remove from active wave list
+```
+
+### Integration Points
+
+- **HapticButton tap** (Sections 1 & 2): Wave spawns at the tap coordinates within the button, translated to screen coordinates.
+- **PrimitiveRow tap** (Section 3): Wave spawns at tap point on the row.
+- **Wheel scroll** (Section 3): Each scale step change fires a haptic tick → wave spawns at the wheel's screen position.
+- **Pattern play** (Section 4): Wave spawns at the play button location for each primitive in the sequence (with timing matching the composition delays).
+
+### Overlay Architecture
+
+```
+FrameLayout (root)
+├── ScrollView
+│   └── LinearLayout (all sections)
+└── WaveOverlayView (match_parent, clickable=false)
+    └── intercepts no touches, only draws waves
+```
+
+- `WaveOverlayView` sits on top of the scroll content.
+- It is **not clickable** — all touches pass through to the content below.
+- Other views call `waveOverlay.spawnWave(screenX, screenY)` when a haptic fires.
+- The overlay animates independently using `invalidate()` loop during active waves.
