@@ -1,4 +1,4 @@
-# Iteration 6 – Feedback Items
+# Iteration 7 – Feedback Items
 
 > **General note**: Focus on quality. Proactively catch bugs.
 
@@ -16,8 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | Per-key scale on QWERTY buttons | `feedback/14-qwerty-per-key.md` | Done |
-| 2 | DragThresholdView rounded handle + wobble | `feedback/15-drag-wobble.md` | Done |
-| 3 | LongPressButton reset on finger lift | `feedback/16-longpress-reset.md` | Done |
-| 4 | Two-line button text for long names | `feedback/17-two-line-buttons.md` | Done |
-| 5 | Footer vadiole press + heart easter egg | `feedback/18-heart-easter-egg.md` | Done |
+| 1 | HapticButton text block centering fix | `feedback/19-button-centering.md` | |
+| 2 | QWERTY refactor: extract KeyButton view | `feedback/20-qwerty-refactor.md` | |
+| 3 | Footer touch area taller | `feedback/21-footer-height.md` | |
+| 4 | Easter egg colored hearts | `feedback/22-colored-hearts.md` | |
+| 5 | Remove dots from wave overlay | `feedback/23-remove-dots.md` | |

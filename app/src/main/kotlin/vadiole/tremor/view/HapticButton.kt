@@ -55,6 +55,10 @@ class HapticButton(
     private val pressedColor = context.getColor(R.color.surface_pressed)
     private val normalColor = context.getColor(R.color.surface)
 
+    private val constantFm = constantPaint.fontMetrics
+    private val constantTextHeight = constantFm.descent - constantFm.ascent
+    private val gap = 3f.dp()
+
     private val rect = RectF()
     private val location = IntArray(2)
     private var labelLayout: StaticLayout? = null
@@ -75,9 +79,7 @@ class HapticButton(
             .build()
 
         val labelHeight = labelLayout!!.height
-        val constantHeight = constantPaint.textSize
-        val gap = 3f.dp()
-        val totalContentHeight = labelHeight + gap + constantHeight
+        val totalContentHeight = labelHeight + gap + constantTextHeight
         val height = maxOf(minHeight, (totalContentHeight + verticalPadding * 2).toInt())
         setMeasuredDimension(width, height)
     }
@@ -91,9 +93,7 @@ class HapticButton(
         val layout = labelLayout ?: return
         val centerX = width / 2f
         val maxTextWidth = (width - horizontalPadding * 2).toInt()
-        val constantHeight = constantPaint.textSize
-        val gap = 3f.dp()
-        val totalContentHeight = layout.height + gap + constantHeight
+        val totalContentHeight = layout.height + gap + constantTextHeight
 
         // label (StaticLayout, centered)
         val labelTop = (height - totalContentHeight) / 2f
@@ -102,8 +102,8 @@ class HapticButton(
         layout.draw(canvas)
         canvas.restore()
 
-        // constant name (single line, centered)
-        val constantY = labelTop + layout.height + gap + constantHeight * 0.85f
+        // constant name (single line, baseline from font metrics)
+        val constantY = labelTop + layout.height + gap - constantFm.ascent
         val truncatedConstant = TextUtils.ellipsize(
             constantName, constantPaint, width - horizontalPadding * 2, TextUtils.TruncateAt.END,
         ).toString()
