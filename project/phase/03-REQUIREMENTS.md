@@ -5,7 +5,7 @@
 | ID | Title | Status |
 |---|---|---|
 | REQ-01 | Functional & Non-Functional Requirements | Done |
-| REQ-02 | Edge Cases | Pending |
+| REQ-02 | Edge Cases | Done |
 
 > Tickets are created during PM mode at the start of this phase. Update this table as work progresses.
 
@@ -126,3 +126,25 @@ Formalize what the app must do based on the API catalog (Phase 1) and the design
 - NFR-04.2: All views created programmatically in Kotlin — no XML layouts, no Jetpack Compose.
 - NFR-04.3: Custom views (wave overlay, drum roller, flow layout) extracted into separate files.
 - NFR-04.4: No external libraries.
+
+---
+
+## Edge Cases (REQ-02 Output)
+
+| Condition | Detection | Behavior |
+|---|---|---|
+| Device has no vibrator | `vibrator.hasVibrator()` returns false on startup | Hide all sections that require VIBRATE permission (Predefined Effects, Primitives, Pattern). Only show HapticFeedbackConstants section (system handles those independently). Show "No vibrator detected" in device info text. |
+| System haptic feedback disabled | Check `Settings.System.HAPTIC_FEEDBACK_ENABLED` on `onResume()` | Show pinned banner at bottom: "Haptic feedback is disabled. Tap to enable." Tapping opens `Settings.ACTION_SOUND_SETTINGS`. Banner disappears on next `onResume()` if setting is now enabled. Content remains usable. |
+| No amplitude control | `vibrator.hasAmplitudeControl()` returns false | No direct impact — the app uses `VibrationEffect.createPredefined()` and `Composition` which don't require amplitude control. No special handling needed. |
+| Predefined effect unsupported | `areEffectsSupported()` returns `SUPPORT_NO` for an effect | Hide that specific effect button. List it in device info text at bottom. |
+| Predefined effect support unknown | `areEffectsSupported()` returns `SUPPORT_UNKNOWN` | Show the button — the effect may still work. If it fails silently at runtime, that's acceptable. |
+| Primitive unsupported | `arePrimitivesSupported()` returns false for a primitive | Hide that primitive row. Hide it from the pattern builder's add popup. List it in device info text. |
+| All primitives unsupported | `arePrimitivesSupported()` returns false for all 8 | Hide the entire Primitives section and the entire Pattern section. Note in device info. |
+| All predefined effects unsupported | `areEffectsSupported()` returns NO for all 4 | Hide the entire Predefined Effects section. Note in device info. |
+| Composition with 0 primitives | User taps play with empty pattern | Play button is disabled when pattern is empty. No action. |
+| App loses focus during vibration | `onPause()` called | Call `vibrator.cancel()` to stop any ongoing vibration. Clear active wave animations. |
+| Rapid repeated taps | User taps same button very quickly | Each tap triggers independently. The vibrator handles overlapping calls (new call cancels previous). Wave animations accumulate up to the 10-wave limit. |
+| Drum scroll conflicts with page scroll | User scrolls vertically on a drum roller | Drum roller intercepts vertical touch events within its bounds (`requestDisallowInterceptTouchEvent`). Parent ScrollView does not scroll when touching the drum. |
+| API 26–28 device | API level check | Only Haptic Feedback section is visible (HapticFeedbackConstants available since API 3). Predefined Effects (API 29+), Primitives (API 30+), and Pattern (API 30+) are all hidden. Device info explains what's unavailable. |
+| Screen rotation | Configuration change | Lock to portrait orientation in manifest (`android:screenOrientation="portrait"`). No rotation handling needed. |
+| Pattern builder: duplicate primitives | User adds same primitive twice | Allowed. Each entry is independent with its own scale and delay. |
