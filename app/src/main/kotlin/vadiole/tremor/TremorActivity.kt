@@ -243,10 +243,20 @@ class TremorActivity : Activity() {
             }
             setOnClickListener {
                 try {
-                    val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
+                    val intent = android.content.Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS)
                     startActivity(intent)
                 } catch (_: Exception) {
+                    try {
+                        val intent = android.content.Intent(android.provider.Settings.ACTION_SOUND_SETTINGS)
+                        startActivity(intent)
+                    } catch (_: Exception) {
+                    }
                 }
+                android.widget.Toast.makeText(
+                    this@TremorActivity,
+                    getString(R.string.haptic_disabled_message),
+                    android.widget.Toast.LENGTH_SHORT,
+                ).show()
             }
             visibility = View.GONE
         }
