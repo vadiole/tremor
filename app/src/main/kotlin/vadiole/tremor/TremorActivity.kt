@@ -311,22 +311,52 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun buildFooter(parent: LinearLayout) {
+        val byText = getString(R.string.footer_by)
+        val vadioleText = getString(R.string.footer_vadiole)
+        val heartText = getString(R.string.footer_with_heart)
+        val full = "$byText$vadioleText$heartText"
+
+        val spannable = android.text.SpannableString(full)
+        val linkStart = byText.length
+        val linkEnd = linkStart + vadioleText.length
+
+        spannable.setSpan(
+            android.text.style.UnderlineSpan(),
+            linkStart, linkEnd,
+            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+
+        val linkColor = getColor(R.color.text_disabled)
+        spannable.setSpan(
+            object : android.text.style.ClickableSpan() {
+                override fun onClick(widget: View) {
+                    try {
+                        val intent = android.content.Intent(
+                            android.content.Intent.ACTION_VIEW,
+                            android.net.Uri.parse("https://play.google.com/store/apps/dev?id=4763171503902347202"),
+                        )
+                        startActivity(intent)
+                    } catch (_: Exception) {
+                    }
+                }
+
+                override fun updateDrawState(ds: android.text.TextPaint) {
+                    ds.isUnderlineText = true
+                    ds.color = linkColor
+                }
+            },
+            linkStart, linkEnd,
+            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE,
+        )
+
         val footer = TextView(this).apply {
-            text = getString(R.string.footer_attribution)
+            text = spannable
+            movementMethod = android.text.method.LinkMovementMethod.getInstance()
             setTextColor(getColor(R.color.text_disabled))
+            highlightColor = (linkColor and 0x00FFFFFF) or 0x80000000.toInt()
             textSize = 10f
             typeface = Typeface.MONOSPACE
             gravity = Gravity.CENTER
-            setOnClickListener {
-                try {
-                    val intent = android.content.Intent(
-                        android.content.Intent.ACTION_VIEW,
-                        android.net.Uri.parse("https://play.google.com/store/apps/dev?id=7632468092672498696"),
-                    )
-                    startActivity(intent)
-                } catch (_: Exception) {
-                }
-            }
         }
         val lp = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
