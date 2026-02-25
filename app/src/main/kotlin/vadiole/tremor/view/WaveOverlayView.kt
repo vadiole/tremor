@@ -40,7 +40,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         }
     }
 
-    fun spawnWave(screenX: Float, screenY: Float, strength: Float = 0.5f) {
+    fun spawnWave(screenX: Float, screenY: Float, strength: Float = 0.5f, style: WaveStyle = WaveStyle.DEFAULT) {
         val loc = IntArray(2)
         getLocationOnScreen(loc)
         val localX = screenX - loc[0]
@@ -49,7 +49,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         if (waves.size >= maxWaves) {
             waves.removeAt(0)
         }
-        waves.add(Wave(localX, localY, SystemClock.elapsedRealtime(), strength.coerceIn(0f, 1f)))
+        waves.add(Wave(localX, localY, SystemClock.elapsedRealtime(), strength.coerceIn(0f, 1f), style))
         postInvalidateOnAnimation()
     }
 
@@ -62,7 +62,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         if (waves.isEmpty()) return
 
         val now = SystemClock.elapsedRealtime()
-        waves.removeAll { now - it.startTime > it.durationMs }
+        waves.removeAll { now - it.startTime > it.totalDurationMs }
 
         if (waves.isEmpty()) return
 
@@ -92,7 +92,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
         for (i in 0 until count) {
             val wave = waves[i]
             val elapsed = (now - wave.startTime).toFloat()
-            val progress = (elapsed / wave.durationMs).coerceIn(0f, 1f)
+            val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
+            val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
 
             origins[i * 2] = wave.x
             origins[i * 2 + 1] = wave.y
@@ -100,7 +101,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             ringWidths[i] = wave.ringWidth
 
             val easeOut = 1f - progress * progress
-            intensities[i] = easeOut * wave.intensityMultiplier
+            intensities[i] = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
         }
 
         s.setFloatUniform("origins", origins)
@@ -115,7 +116,10 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private fun drawFallback(canvas: Canvas, now: Long) {
         for (wave in waves) {
             val elapsed = (now - wave.startTime).toFloat()
-            val progress = (elapsed / wave.durationMs).coerceIn(0f, 1f)
+            val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
+            if (effectiveElapsed <= 0f) continue
+
+            val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
             val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
             val easeOut = 1f - progress * progress
             val alpha = (easeOut * wave.intensityMultiplier * 0.3f * 255).toInt().coerceIn(0, 255)
@@ -133,11 +137,47 @@ class WaveOverlayView(context: Context) : View(context), Density {
         val y: Float,
         val startTime: Long,
         strength: Float,
+        style: WaveStyle,
     ) {
-        val durationMs = baseDurationMs * (0.6f + strength * 0.6f)
-        val expandSpeed = baseExpandSpeed * (0.5f + strength * 0.7f)
-        val ringWidth = baseRingWidth * (0.5f + strength * 0.5f)
-        val intensityMultiplier = 0.4f + strength * 0.6f
+        val delayMs = style.delayMs
+        val durationMs = baseDurationMs * (0.6f + strength * 0.6f) * style.durationMultiplier
+        val totalDurationMs = durationMs + delayMs
+        val expandSpeed = baseExpandSpeed * (0.5f + strength * 0.7f) * style.speedMultiplier
+        val ringWidth = baseRingWidth * (0.5f + strength * 0.5f) * style.ringWidthMultiplier
+        val intensityMultiplier = (0.4f + strength * 0.6f) * style.intensityMultiplier
+    }
+
+    data class WaveStyle(
+        val durationMultiplier: Float = 1f,
+        val speedMultiplier: Float = 1f,
+        val ringWidthMultiplier: Float = 1f,
+        val intensityMultiplier: Float = 1f,
+        val delayMs: Float = 0f,
+    ) {
+        companion object {
+            val DEFAULT = WaveStyle()
+
+            // short taps: quick, thin
+            val TICK = WaveStyle(durationMultiplier = 0.7f, speedMultiplier = 1.2f, ringWidthMultiplier = 0.6f)
+
+            // medium impacts
+            val CLICK = WaveStyle(ringWidthMultiplier = 0.8f)
+
+            // heavy impacts: thick, intense
+            val THUD = WaveStyle(durationMultiplier = 1.4f, speedMultiplier = 0.7f, ringWidthMultiplier = 1.8f, intensityMultiplier = 1.3f)
+
+            // spin: wide, medium speed
+            val SPIN = WaveStyle(durationMultiplier = 1.2f, speedMultiplier = 0.9f, ringWidthMultiplier = 1.5f, intensityMultiplier = 1.1f)
+
+            // quick rise: fast expand, thickening
+            val RISE = WaveStyle(durationMultiplier = 1.1f, speedMultiplier = 1.3f, ringWidthMultiplier = 1.4f, intensityMultiplier = 1.2f)
+
+            // slow rise: delayed start, slow expand, thick
+            val SLOW_RISE = WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f)
+
+            // quick fall: fast shrink feel
+            val FALL = WaveStyle(durationMultiplier = 0.8f, speedMultiplier = 1.4f, ringWidthMultiplier = 1.2f, intensityMultiplier = 0.9f)
+        }
     }
 
     companion object {
