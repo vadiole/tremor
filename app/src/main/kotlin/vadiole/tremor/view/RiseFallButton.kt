@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.LinearGradient
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Shader
 import android.graphics.Typeface
@@ -54,6 +55,7 @@ class RiseFallButton(
 
     private val rect = RectF()
     private val fillRect = RectF()
+    private val clipPath = Path()
     private var fillProgress = 0f
     private var riseAnimator: ValueAnimator? = null
     private var fallAnimator: ValueAnimator? = null
@@ -68,6 +70,16 @@ class RiseFallButton(
         setMeasuredDimension(w, viewHeight)
     }
 
+    override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
+        super.onSizeChanged(w, h, oldw, oldh)
+        fillPaint.shader = LinearGradient(
+            0f, h.toFloat(), 0f, 0f,
+            (foregroundColor and 0x00FFFFFF) or 0x05000000,
+            (foregroundColor and 0x00FFFFFF) or 0x30000000,
+            Shader.TileMode.CLAMP,
+        )
+    }
+
     override fun onDraw(canvas: Canvas) {
         val halfStroke = borderPaint.strokeWidth / 2f
         rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
@@ -77,17 +89,10 @@ class RiseFallButton(
             val fillHeight = (height - 2 * halfStroke) * fillProgress
             fillRect.set(halfStroke, height - halfStroke - fillHeight, width - halfStroke, height - halfStroke)
 
-            if (fillPaint.shader == null || width > 0) {
-                fillPaint.shader = LinearGradient(
-                    0f, height.toFloat(), 0f, 0f,
-                    (foregroundColor and 0x00FFFFFF) or 0x05000000,
-                    (foregroundColor and 0x00FFFFFF) or 0x30000000,
-                    Shader.TileMode.CLAMP,
-                )
-            }
-
             canvas.save()
-            canvas.clipRoundRect(rect, cornerRadius)
+            clipPath.reset()
+            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
+            canvas.clipPath(clipPath)
             canvas.drawRect(fillRect, fillPaint)
             canvas.restore()
         }
@@ -146,12 +151,6 @@ class RiseFallButton(
             }
             start()
         }
-    }
-
-    private fun Canvas.clipRoundRect(r: RectF, radius: Float) {
-        val path = android.graphics.Path()
-        path.addRoundRect(r, radius, radius, android.graphics.Path.Direction.CW)
-        clipPath(path)
     }
 
     override fun onDetachedFromWindow() {

@@ -11,6 +11,8 @@ class FlowLayout(
     private val verticalGap: Int,
 ) : ViewGroup(context) {
 
+    private var rowHeights = IntArray(0)
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val availableWidth = MeasureSpec.getSize(widthMeasureSpec)
         val totalGaps = (columns - 1) * horizontalGap
@@ -44,21 +46,25 @@ class FlowLayout(
         val childWidth = (availableWidth - totalGaps) / columns
 
         // first pass: compute row heights
-        val rowHeights = mutableListOf<Int>()
+        val maxRows = (childCount + columns - 1) / columns
+        if (rowHeights.size < maxRows) {
+            rowHeights = IntArray(maxRows)
+        }
+        var rowCount = 0
         var rh = 0
         var col = 0
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE) continue
             if (col == columns) {
-                rowHeights.add(rh)
+                rowHeights[rowCount++] = rh
                 rh = 0
                 col = 0
             }
             rh = maxOf(rh, child.measuredHeight)
             col++
         }
-        rowHeights.add(rh)
+        rowHeights[rowCount] = rh
 
         // second pass: layout with equal row heights
         var x = 0

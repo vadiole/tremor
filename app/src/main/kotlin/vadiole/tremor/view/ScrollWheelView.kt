@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import kotlin.math.abs
@@ -51,6 +51,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private var isFlung = false
     private val friction = 0.96f
     private val minVelocity = 0.2f.dp()
+    private val maxVelocity = 50f.dp()
 
     private val flingRunnable = object : Runnable {
         override fun run() {
@@ -134,16 +135,16 @@ class ScrollWheelView(context: Context) : View(context), Density {
                 isFlung = false
                 removeCallbacks(flingRunnable)
                 lastTouchX = event.x
-                lastMoveTime = System.currentTimeMillis()
+                lastMoveTime = SystemClock.uptimeMillis()
                 velocity = 0f
                 lastTickOffset = scrollOffset
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
                 val dx = event.x - lastTouchX
-                val now = System.currentTimeMillis()
+                val now = SystemClock.uptimeMillis()
                 val dt = (now - lastMoveTime).coerceAtLeast(1)
-                velocity = dx / dt * 16f
+                velocity = (dx / dt * 16f).coerceIn(-maxVelocity, maxVelocity)
                 lastMoveTime = now
                 lastTouchX = event.x
                 scrollOffset += dx

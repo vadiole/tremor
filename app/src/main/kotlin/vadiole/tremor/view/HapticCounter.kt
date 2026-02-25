@@ -3,6 +3,7 @@ package vadiole.tremor.view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
@@ -60,6 +61,7 @@ class HapticCounter(context: Context) : View(context), Density {
 
     private val rect = RectF()
     private val pressedRect = RectF()
+    private val clipPath = Path()
     private var pressedZone = 0 // -1 = minus, 1 = plus, 0 = none
 
     init {
@@ -79,8 +81,8 @@ class HapticCounter(context: Context) : View(context), Density {
         if (pressedZone != 0) {
             val thirdW = width / 3f
             canvas.save()
-            val clipPath = android.graphics.Path()
-            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, android.graphics.Path.Direction.CW)
+            clipPath.reset()
+            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
             canvas.clipPath(clipPath)
             if (pressedZone == -1) {
                 pressedRect.set(halfStroke, halfStroke, thirdW, height - halfStroke)

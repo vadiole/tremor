@@ -65,9 +65,14 @@ class PrimitiveRow(
 
     val drum = DrumRollerView(context).also { addView(it) }
 
+    private var cachedValueText = String.format("%.2f", drum.value)
+
     init {
         setWillNotDraw(false)
-        drum.onValueChanged = { invalidate() }
+        drum.onValueChanged = {
+            cachedValueText = String.format("%.2f", it)
+            invalidate()
+        }
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -99,10 +104,9 @@ class PrimitiveRow(
         canvas.drawText(label, labelX, labelY, labelPaint)
         canvas.drawText(constantName, labelX, constantY, constantPaint)
 
-        val valueText = String.format("%.2f", drum.value)
         val valueX = drum.left.toFloat() - drumMarginStart
         val valueY = height / 2f + valuePaint.textSize / 3f
-        canvas.drawText(valueText, valueX, valueY, valuePaint)
+        canvas.drawText(cachedValueText, valueX, valueY, valuePaint)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {

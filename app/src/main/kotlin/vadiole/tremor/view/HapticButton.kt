@@ -64,6 +64,7 @@ class HapticButton(
     private val rect = RectF()
     private val location = IntArray(2)
     private var labelLayout: StaticLayout? = null
+    private var truncatedConstant: String = constantName
 
     init {
         isClickable = true
@@ -79,6 +80,10 @@ class HapticButton(
             .setMaxLines(2)
             .setEllipsize(TextUtils.TruncateAt.END)
             .build()
+
+        truncatedConstant = TextUtils.ellipsize(
+            constantName, constantPaint, width - horizontalPadding * 2, TextUtils.TruncateAt.END,
+        ).toString()
 
         val labelHeight = labelLayout!!.height
         val totalContentHeight = labelHeight + gap + constantTextHeight
@@ -106,9 +111,6 @@ class HapticButton(
 
         // constant name (single line, baseline from font metrics)
         val constantY = labelTop + layout.height + gap - constantFm.ascent
-        val truncatedConstant = TextUtils.ellipsize(
-            constantName, constantPaint, width - horizontalPadding * 2, TextUtils.TruncateAt.END,
-        ).toString()
         canvas.drawText(truncatedConstant, centerX, constantY, constantPaint)
     }
 
