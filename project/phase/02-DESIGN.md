@@ -99,18 +99,16 @@ Design a single-screen layout where every interactive element maps to a haptic A
 │                                  │
 │  PRIMITIVES                      │ ← section label
 │                                  │
-│  ┌────────────────────────┐      │
-│  │ Click          ◎ ┃██░░│      │ ← item with wheel + power bar
-│  └────────────────────────┘      │
-│  ┌────────────────────────┐      │
-│  │ Tick           ◎ ┃█░░░│      │
-│  └────────────────────────┘      │
-│  ┌────────────────────────┐      │
-│  │ Low Tick       ◎ ┃███░│      │
-│  └────────────────────────┘      │
-│  ┌────────────────────────┐      │
-│  │ Quick Rise     ◎ ┃██░░│      │
-│  └────────────────────────┘      │
+│  ┌──────────────────────────┐    │
+│  │ Click    .60 ┌─┐ ██░░  │    │ ← drum roller + power bar
+│  │              │││ │       │    │
+│  │              └─┘        │    │
+│  └──────────────────────────┘    │
+│  ┌──────────────────────────┐    │
+│  │ Tick     .80 ┌─┐ ███░  │    │
+│  │              │││ │       │    │
+│  │              └─┘        │    │
+│  └──────────────────────────┘    │
 │  ... (more primitives)           │
 │                                  │
 │                                  │
@@ -171,58 +169,70 @@ Used for HapticFeedbackConstants and Predefined Effects — simple tap-to-trigge
 
 ### Element Type B: Primitive Row (Section 3)
 
-Each primitive has a name, a wheel control for scale, and a power fill indicator.
+Each primitive has a name, a drum roller for scale, a power fill bar, and a numeric readout.
 
 ```
-┌──────────────────────────────────┐
-│                                  │  height: 56dp
-│  Click                 ◎ ┃██░░  │  background: #1A1A1A
-│                                  │  border: 1px #333
-└──────────────────────────────────┘  corner radius: 6dp
+┌──────────────────────────────────────┐
+│                                      │  height: 64dp
+│                          ┌───┐       │  background: #1A1A1A
+│                          │ │ │       │  border: 1px #333
+│  Click              .60  │ │ │ ██░░  │  corner radius: 6dp
+│                          │ │ │       │
+│                          └───┘       │
+│                                      │
+└──────────────────────────────────────┘
 
-     ↑                   ↑   ↑
-   label              wheel  power bar
-   (mono 13sp)        (24dp) (fill indicator)
+  ↑                    ↑    ↑     ↑
+label               number drum  power bar
 ```
 
 - **Label**: Left-aligned, monospace 13sp, white
-- **Wheel control** (◎): 24x24dp circular element on the right side. User scrolls vertically (up = increase, down = decrease) to adjust scale 0.0–1.0 in 0.05 steps. Visual: small circle with tick marks or a notch indicating rotation.
-- **Power indicator** (┃██░░): Vertical bar or horizontal fill, 4dp wide x 40dp tall (or 40dp wide x 6dp tall). Fills proportionally to current scale. White fill on dark background.
+- **Drum roller**: 20dp wide × 48dp tall. Displays only vertical tick lines (│) — no numbers on the drum. Lines scroll continuously as user drags up/down. The drum is a clipped window showing ~5 tick lines at varying opacity — center line is brightest, edge lines fade out. Scrolling the drum adjusts scale 0.0–1.0 in 0.05 increments (21 steps). Visual feel: like scrolling a mechanical counter.
+  - Lines: 1px white, spaced 8dp apart
+  - Clipping: Rounded rect mask on the drum area
+  - Edge fade: Lines near top/bottom edges of the drum fade to transparent
+  - Border: Subtle 1px #333 around the drum window
+- **Number readout**: Monospace 11sp, #888 (grey), positioned to the left of the drum. Shows "0.60" format (always 2 decimal places). Updates as drum scrolls.
+- **Power bar**: Horizontal, 40dp wide × 4dp tall, positioned to the right of the drum. White fill on #222 background. Fill width = current scale percentage. Rounded ends.
 - **Interaction**:
-  - Tap anywhere on the row (except wheel) → trigger primitive at current scale + wave animation
-  - Scroll on wheel area → adjust scale (haptic tick on each step change)
-- **Scale display**: Small text showing current value like "0.75" next to the power bar, monospace 10sp, grey (#888)
+  - Tap anywhere on the row (outside drum) → trigger primitive at current scale + wave animation
+  - Vertical drag/scroll on drum area → adjust scale (haptic tick on each 0.05 step)
+  - Drum touch does NOT trigger the haptic — only adjusts scale
+- **Default scale**: 1.0 (full power) for all primitives on launch
 
 ### Element Type C: Pattern Builder (Section 4)
 
 A contained area for composing sequences of primitives.
 
 ```
-┌──────────────────────────────────┐
-│  PATTERN                         │
-│                                  │
-│  ┌──────────────────────────┐    │
-│  │ Click    0.8   20ms   ✕  │    │  primitive row: 40dp height
-│  └──────────────────────────┘    │  background: #111
-│  ┌──────────────────────────┐    │
-│  │ Thud     0.5   50ms   ✕  │    │
-│  └──────────────────────────┘    │
-│                                  │
-│  ┌──────────────────────────┐    │
-│  │         + ADD             │    │  add button: dashed border
-│  └──────────────────────────┘    │
-│                                  │
-│         ┌──────────┐             │
-│         │  ▶ PLAY  │             │  play button: white border
-│         └──────────┘             │  centered, 48dp height
-│                                  │
-└──────────────────────────────────┘
+┌──────────────────────────────────────┐
+│                                      │
+│  ┌────────────────────────────────┐  │
+│  │ Click  .80 ┌─┐  20ms ┌─┐  ✕  │  │  primitive row: 48dp
+│  │            │││ │      │││ │     │  │  two drums: scale + delay
+│  │            └─┘        └─┘      │  │
+│  └────────────────────────────────┘  │
+│  ┌────────────────────────────────┐  │
+│  │ Thud   .50 ┌─┐  50ms ┌─┐  ✕  │  │
+│  │            │││ │      │││ │     │  │
+│  │            └─┘        └─┘      │  │
+│  └────────────────────────────────┘  │
+│                                      │
+│  ┌────────────────────────────────┐  │
+│  │           + ADD                │  │  add button: dashed border
+│  └────────────────────────────────┘  │
+│                                      │
+│           ┌──────────┐               │
+│           │  ▶ PLAY  │               │  play button: white border
+│           └──────────┘               │  centered, 48dp height
+│                                      │
+└──────────────────────────────────────┘
 ```
 
-- **Primitive row**: Shows name, scale (editable via wheel), delay in ms (editable via wheel), and ✕ remove button
-  - Scale wheel: same as Element Type B wheel
-  - Delay wheel: scrollable, increments of 10ms, range 0–500ms
-  - Remove (✕): 24dp tap target, grey, turns white on hover
+- **Primitive row**: Shows name, scale drum, delay drum, and ✕ remove button
+  - Scale drum: Same drum roller as Element Type B — tick lines, 0.0–1.0 in 0.05 steps. Number readout to the left.
+  - Delay drum: Same drum style — tick lines, 0–500ms in 10ms steps. Number readout ("20ms") to the left.
+  - Remove (✕): 24dp tap target, grey #555, turns white on press
 - **Add button**: Dashed border (#333), monospace text "+ ADD". Tap opens a simple dropdown/popup listing supported primitives. Popup: black background, white text, each item is tappable.
 - **Play button**: Centered, solid white border, monospace "▶ PLAY". Tap → compose and vibrate the full pattern + wave animation.
 - **Limit**: Max 5 primitives in a pattern (add button hides at 5).

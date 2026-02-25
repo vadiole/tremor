@@ -57,4 +57,4 @@ A single-screen Android app that lets users explore and test every available hap
 | 2026-02-25 | Design | Wave animation from touch point — translucent gradient expanding in all directions, real wave physics (overlapping when rapid taps/drags), possibly shader-based | Lab aesthetic, responsive feel, makes invisible haptics visible |
 | 2026-02-25 | Design | Single vertical scrolling list, no collapsible sections | Simple, no hidden content |
 | 2026-02-25 | Design | No header or title area — start directly with interactive elements | Maximize screen space for content |
-| 2026-02-25 | Design | Sliders as scrollable little wheels with vertical scroll, power indicator that fills up next to it | Unique tactile control, visually clean |
+| 2026-02-25 | Design | Scale control: vertical drum roller with tick lines only (no numbers on drum), number readout beside it, horizontal power fill bar | Minimal mechanical feel, clean aesthetic |
