@@ -1,4 +1,4 @@
-# Iteration 7 – Feedback Items
+# Iteration 8 – Feedback Items
 
 > **General note**: Focus on quality. Proactively catch bugs.
 
@@ -16,8 +16,8 @@ After completing all 3 tickets for an item, mark it Done here and commit.
 
 | # | Title | File | Status |
 |---|---|---|---|
-| 1 | HapticButton text block centering fix | `feedback/19-button-centering.md` | Done |
-| 2 | QWERTY refactor: extract KeyButton view | `feedback/20-qwerty-refactor.md` | Done |
-| 3 | Footer touch area taller | `feedback/21-footer-height.md` | Done |
-| 4 | Easter egg colored hearts | `feedback/22-colored-hearts.md` | Done |
-| 5 | Remove dots from wave overlay | `feedback/23-remove-dots.md` | Done |
+| 1 | Save counter value to SharedPreferences | `feedback/24-counter-persist.md` | |
+| 2 | Fix LongPressButton: use proper animation APIs | `feedback/25-longpress-anim.md` | |
+| 3 | Fix DragThresholdView: remove vertical drag, fix scale animation | `feedback/26-drag-fix.md` | |
+| 4 | Improve colored hearts: direction + themed sets | `feedback/27-hearts-improve.md` | |
+| 5 | Performance and code review tickets | `feedback/28-perf-review.md` | |

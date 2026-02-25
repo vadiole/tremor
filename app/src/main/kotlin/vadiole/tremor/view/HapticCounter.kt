@@ -16,7 +16,8 @@ class HapticCounter(context: Context) : View(context), Density {
     private val viewHeight = 56.dp()
     private val cornerRadius = 6f.dp()
 
-    private var count = 0
+    private val prefs = context.getSharedPreferences("tremor", Context.MODE_PRIVATE)
+    private var count = prefs.getInt("counter", 0)
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -109,6 +110,7 @@ class HapticCounter(context: Context) : View(context), Density {
                 when {
                     event.x < thirdW -> {
                         count--
+                        prefs.edit().putInt("counter", count).apply()
                         pressedZone = -1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                         animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
@@ -116,6 +118,7 @@ class HapticCounter(context: Context) : View(context), Density {
                     }
                     event.x > thirdW * 2 -> {
                         count++
+                        prefs.edit().putInt("counter", count).apply()
                         pressedZone = 1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                         animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
