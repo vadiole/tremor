@@ -414,7 +414,10 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun performHapticFeedback(constant: Int) {
-        waveOverlay.performHapticFeedback(constant)
+        val played = waveOverlay.performHapticFeedback(constant)
+        if (!played && bannerView?.visibility != View.VISIBLE) {
+            bannerView?.visibility = View.VISIBLE
+        }
     }
 
     private fun hapticConstantStrength(constant: Int): Float = when (constant) {
