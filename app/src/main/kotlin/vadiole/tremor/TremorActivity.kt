@@ -105,7 +105,7 @@ class TremorActivity : Activity() {
         val constants = hapticEngine.getAvailableHapticConstants()
         if (constants.isEmpty()) return
 
-        parent.addView(createSectionLabel("HAPTIC FEEDBACK", density))
+        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants), density))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
