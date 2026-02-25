@@ -16,9 +16,11 @@ import vadiole.tremor.R
 class KeyButton(
     context: Context,
     private val letter: Char,
+    private val onPress: () -> Unit = {},
+    private val onRelease: () -> Unit = {},
 ) : View(context), Density {
 
-    private val cornerRadius = 4f.dp()
+    private val cornerRadius = 6f.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -67,12 +69,14 @@ class KeyButton(
                 bgPaint.color = pressedColor
                 invalidate()
                 animatePress()
+                onPress()
                 performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 bgPaint.color = normalColor
                 invalidate()
                 animateRelease()
+                onRelease()
                 if (event.action == MotionEvent.ACTION_UP) {
                     performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                 }
