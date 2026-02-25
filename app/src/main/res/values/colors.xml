@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="background">#FF000000</color>
-    <color name="foreground">#FFFFFFFF</color>
-    <color name="surface">#FF1A1A1A</color>
-    <color name="surface_pressed">#FF2A2A2A</color>
-    <color name="border">#FF333333</color>
-    <color name="text_secondary">#FF888888</color>
-    <color name="text_muted">#FF666666</color>
-    <color name="text_disabled">#FF555555</color>
+    <color name="background">#FFFFFFFF</color>
+    <color name="foreground">#FF000000</color>
+    <color name="surface">#FFF5F5F5</color>
+    <color name="surface_pressed">#FFEBEBEB</color>
+    <color name="border">#FFDDDDDD</color>
+    <color name="text_secondary">#FF777777</color>
+    <color name="text_muted">#FF999999</color>
+    <color name="text_disabled">#FFAAAAAA</color>
 </resources>
