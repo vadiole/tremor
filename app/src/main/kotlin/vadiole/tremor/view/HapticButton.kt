@@ -5,6 +5,8 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RectF
 import android.graphics.Typeface
+import android.text.Layout
+import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
 import android.view.MotionEvent
@@ -22,6 +24,7 @@ class HapticButton(
     private val cornerRadius = 6f.dp()
     private val minHeight = 56.dp()
     private val horizontalPadding = 8f.dp()
+    private val verticalPadding = 8f.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -38,7 +41,6 @@ class HapticButton(
         color = context.getColor(R.color.foreground)
         textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
-        textAlign = Paint.Align.CENTER
         isSubpixelText = true
     }
 
@@ -55,6 +57,7 @@ class HapticButton(
 
     private val rect = RectF()
     private val location = IntArray(2)
+    private var labelLayout: StaticLayout? = null
 
     init {
         isClickable = true
@@ -63,7 +66,20 @@ class HapticButton(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
-        setMeasuredDimension(width, minHeight)
+        val maxTextWidth = (width - horizontalPadding * 2).toInt().coerceAtLeast(1)
+
+        labelLayout = StaticLayout.Builder.obtain(label, 0, label.length, labelPaint, maxTextWidth)
+            .setAlignment(Layout.Alignment.ALIGN_CENTER)
+            .setMaxLines(2)
+            .setEllipsize(TextUtils.TruncateAt.END)
+            .build()
+
+        val labelHeight = labelLayout!!.height
+        val constantHeight = constantPaint.textSize
+        val gap = 3f.dp()
+        val totalContentHeight = labelHeight + gap + constantHeight
+        val height = maxOf(minHeight, (totalContentHeight + verticalPadding * 2).toInt())
+        setMeasuredDimension(width, height)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -72,15 +88,25 @@ class HapticButton(
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
+        val layout = labelLayout ?: return
         val centerX = width / 2f
-        val maxTextWidth = width - horizontalPadding * 2
-        val labelY = height / 2f - 3f.dp()
-        val constantY = labelY + 13f.dp()
+        val maxTextWidth = (width - horizontalPadding * 2).toInt()
+        val constantHeight = constantPaint.textSize
+        val gap = 3f.dp()
+        val totalContentHeight = layout.height + gap + constantHeight
 
-        val truncatedLabel = TextUtils.ellipsize(label, labelPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()
-        val truncatedConstant = TextUtils.ellipsize(constantName, constantPaint, maxTextWidth, TextUtils.TruncateAt.END).toString()
+        // label (StaticLayout, centered)
+        val labelTop = (height - totalContentHeight) / 2f
+        canvas.save()
+        canvas.translate(centerX - maxTextWidth / 2f, labelTop)
+        layout.draw(canvas)
+        canvas.restore()
 
-        canvas.drawText(truncatedLabel, centerX, labelY, labelPaint)
+        // constant name (single line, centered)
+        val constantY = labelTop + layout.height + gap + constantHeight * 0.85f
+        val truncatedConstant = TextUtils.ellipsize(
+            constantName, constantPaint, width - horizontalPadding * 2, TextUtils.TruncateAt.END,
+        ).toString()
         canvas.drawText(truncatedConstant, centerX, constantY, constantPaint)
     }
 

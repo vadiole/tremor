@@ -43,23 +43,39 @@ class FlowLayout(
         val totalGaps = (columns - 1) * horizontalGap
         val childWidth = (availableWidth - totalGaps) / columns
 
-        var x = 0
-        var y = 0
-        var rowHeight = 0
+        // first pass: compute row heights
+        val rowHeights = mutableListOf<Int>()
+        var rh = 0
         var col = 0
-
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE) continue
             if (col == columns) {
-                y += rowHeight + verticalGap
-                x = 0
-                rowHeight = 0
+                rowHeights.add(rh)
+                rh = 0
                 col = 0
             }
-            child.layout(x, y, x + childWidth, y + child.measuredHeight)
+            rh = maxOf(rh, child.measuredHeight)
+            col++
+        }
+        rowHeights.add(rh)
+
+        // second pass: layout with equal row heights
+        var x = 0
+        var y = 0
+        var rowIndex = 0
+        col = 0
+        for (i in 0 until childCount) {
+            val child = getChildAt(i)
+            if (child.visibility == View.GONE) continue
+            if (col == columns) {
+                y += rowHeights[rowIndex] + verticalGap
+                x = 0
+                rowIndex++
+                col = 0
+            }
+            child.layout(x, y, x + childWidth, y + rowHeights[rowIndex])
             x += childWidth + horizontalGap
-            rowHeight = maxOf(rowHeight, child.measuredHeight)
             col++
         }
     }
