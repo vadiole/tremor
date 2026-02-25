@@ -22,8 +22,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
 
+    private val waveColor = context.getColor(R.color.foreground)
+
     private val fallbackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
+        color = waveColor
     }
 
     init {
@@ -108,6 +111,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("radii", radii)
         s.setFloatUniform("intensities", intensities)
         s.setFloatUniform("ringWidths", ringWidths)
+        s.setFloatUniform("waveColor",
+            ((waveColor shr 16) and 0xFF) / 255f,
+            ((waveColor shr 8) and 0xFF) / 255f,
+            (waveColor and 0xFF) / 255f,
+        )
 
         shaderPaint.shader = s
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shaderPaint)
@@ -124,7 +132,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val easeOut = 1f - progress * progress
             val alpha = (easeOut * wave.intensityMultiplier * 0.3f * 255).toInt().coerceIn(0, 255)
 
-            fallbackPaint.alpha = alpha
+            fallbackPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
             fallbackPaint.strokeWidth = wave.ringWidth
             if (radius > wave.ringWidth / 2f) {
                 canvas.drawCircle(wave.x, wave.y, radius, fallbackPaint)
@@ -188,6 +196,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             uniform float radii[10];
             uniform float intensities[10];
             uniform float ringWidths[10];
+            uniform float3 waveColor;
 
             half4 main(float2 fragCoord) {
                 float brightness = 0.0;
@@ -210,7 +219,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
                 }
 
                 brightness = clamp(brightness, 0.0, 1.0);
-                return half4(brightness, brightness, brightness, brightness);
+                return half4(half3(waveColor) * brightness, brightness);
             }
         """
     }
