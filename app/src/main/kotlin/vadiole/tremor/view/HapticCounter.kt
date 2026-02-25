@@ -10,6 +10,8 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.animatePress
+import vadiole.tremor.animateRelease
 
 class HapticCounter(context: Context) : View(context), Density {
 
@@ -113,7 +115,7 @@ class HapticCounter(context: Context) : View(context), Density {
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = -1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                        animatePress()
                         invalidate()
                     }
                     event.x > thirdW * 2 -> {
@@ -121,15 +123,14 @@ class HapticCounter(context: Context) : View(context), Density {
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = 1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                        animatePress()
                         invalidate()
                     }
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (pressedZone != 0) {
-                    animate().scaleX(1f).scaleY(1f).setDuration(150)
-                        .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
+                    animateRelease()
                 }
                 pressedZone = 0
                 invalidate()

@@ -16,6 +16,8 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.animatePress
+import vadiole.tremor.animateRelease
 
 class RiseFallButton(context: Context) : View(context), Density {
 
@@ -105,12 +107,11 @@ class RiseFallButton(context: Context) : View(context), Density {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                animate().scaleX(0.97f).scaleY(0.97f).setDuration(80).start()
+                animatePress()
                 startRise()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                animate().scaleX(1f).scaleY(1f).setDuration(150)
-                    .setInterpolator(android.view.animation.OvershootInterpolator(2f)).start()
+                animateRelease()
                 startFall()
             }
         }
