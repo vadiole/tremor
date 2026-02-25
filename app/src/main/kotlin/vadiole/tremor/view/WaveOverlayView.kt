@@ -13,10 +13,7 @@ import vadiole.tremor.R
 class WaveOverlayView(context: Context) : View(context), Density {
 
     private val waves = mutableListOf<Wave>()
-    private val dots = mutableListOf<TouchDot>()
     private val maxWaves = 10
-    private val dotDurationMs = 200f
-    private val dotRadius = 3f.dp()
     private val baseDurationMs = 600f
     private val baseExpandSpeed = 800f.dp()
     private val baseRingWidth = 40f.dp()
@@ -30,10 +27,6 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val fallbackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = waveColor
-    }
-
-    private val dotPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
     }
 
     init {
@@ -61,34 +54,24 @@ class WaveOverlayView(context: Context) : View(context), Density {
         }
         val now = SystemClock.elapsedRealtime()
         waves.add(Wave(localX, localY, now, strength.coerceIn(0f, 1f), style))
-        dots.add(TouchDot(localX, localY, now))
         postInvalidateOnAnimation()
     }
 
     fun clearWaves() {
         waves.clear()
-        dots.clear()
         invalidate()
     }
 
     override fun onDraw(canvas: Canvas) {
         val now = SystemClock.elapsedRealtime()
         waves.removeAll { now - it.startTime > it.totalDurationMs }
-        dots.removeAll { now - it.startTime > dotDurationMs }
 
-        val hasWaves = waves.isNotEmpty()
-        val hasDots = dots.isNotEmpty()
-
-        if (!hasWaves && !hasDots) return
+        if (waves.isEmpty()) return
 
         if (useShader && shader != null && Build.VERSION.SDK_INT >= 33) {
             drawWithShader(canvas, now)
-        } else if (hasWaves) {
+        } else {
             drawFallback(canvas, now)
-        }
-
-        if (hasDots) {
-            drawDots(canvas, now)
         }
 
         postInvalidateOnAnimation()
@@ -145,7 +128,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
             val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
             val easeOut = 1f - progress * progress
-            val alpha = (easeOut * wave.intensityMultiplier * 0.3f * 255).toInt().coerceIn(0, 255)
+            val alpha = (easeOut * wave.intensityMultiplier * 0.2f * 255).toInt().coerceIn(0, 255)
 
             fallbackPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
             fallbackPaint.strokeWidth = wave.ringWidth
@@ -154,18 +137,6 @@ class WaveOverlayView(context: Context) : View(context), Density {
             }
         }
     }
-
-    private fun drawDots(canvas: Canvas, now: Long) {
-        for (dot in dots) {
-            val elapsed = (now - dot.startTime).toFloat()
-            val progress = (elapsed / dotDurationMs).coerceIn(0f, 1f)
-            val alpha = ((1f - progress * progress) * 0.6f * 255).toInt().coerceIn(0, 255)
-            dotPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
-            canvas.drawCircle(dot.x, dot.y, dotRadius * (1f - progress * 0.3f), dotPaint)
-        }
-    }
-
-    private class TouchDot(val x: Float, val y: Float, val startTime: Long)
 
     private inner class Wave(
         val x: Float,
