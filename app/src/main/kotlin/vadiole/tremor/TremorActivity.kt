@@ -62,6 +62,7 @@ class TremorActivity : Activity() {
         buildPredefinedEffectsSection(content, density, sectionSpacing, itemSpacing)
         buildPrimitivesSection(content, density, sectionSpacing, itemSpacing)
         buildDeviceInfo(content, density, sectionSpacing)
+        buildFooter(content, density)
 
         scrollView.addView(content, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -217,6 +218,33 @@ class TremorActivity : Activity() {
         lp.topMargin = (8 * density).toInt()
         lp.bottomMargin = sectionSpacing
         parent.addView(textView, lp)
+    }
+
+    private fun buildFooter(parent: LinearLayout, density: Float) {
+        val footer = TextView(this).apply {
+            text = getString(R.string.footer_attribution)
+            setTextColor(getColor(R.color.text_disabled))
+            textSize = 10f
+            typeface = Typeface.MONOSPACE
+            gravity = Gravity.CENTER
+            setOnClickListener {
+                try {
+                    val intent = android.content.Intent(
+                        android.content.Intent.ACTION_VIEW,
+                        android.net.Uri.parse("https://play.google.com/store/apps/dev?id=7632468092672498696"),
+                    )
+                    startActivity(intent)
+                } catch (_: Exception) {
+                }
+            }
+        }
+        val lp = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT,
+        )
+        lp.topMargin = (16 * density).toInt()
+        lp.bottomMargin = (8 * density).toInt()
+        parent.addView(footer, lp)
     }
 
     private fun buildBanner(root: FrameLayout, density: Float) {
