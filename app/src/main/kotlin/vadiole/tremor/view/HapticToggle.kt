@@ -67,7 +67,7 @@ class HapticToggle(context: Context) : View(context), Density {
         val target = if (isOn) 1f else 0f
         thumbAnimator = ValueAnimator.ofFloat(thumbPosition, target).apply {
             duration = 200
-            interpolator = DecelerateInterpolator(2f)
+            interpolator = thumbInterpolator
             addUpdateListener {
                 thumbPosition = it.animatedValue as Float
                 invalidate()
@@ -118,5 +118,9 @@ class HapticToggle(context: Context) : View(context), Density {
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         thumbAnimator?.cancel()
+    }
+
+    private companion object {
+        val thumbInterpolator = DecelerateInterpolator(2f)
     }
 }
