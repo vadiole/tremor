@@ -7,6 +7,7 @@ import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.MotionEvent
 import android.view.ViewGroup
+import vadiole.tremor.Density
 import vadiole.tremor.R
 
 class PrimitiveRow(
@@ -14,13 +15,12 @@ class PrimitiveRow(
     private val label: String,
     private val constantName: String,
     private val onTrigger: (scale: Float, screenX: Float, screenY: Float) -> Unit,
-) : ViewGroup(context) {
+) : ViewGroup(context), Density {
 
-    private val density = resources.displayMetrics.density
-    private val rowHeight = (64 * density).toInt()
-    private val cornerRadius = 6f * density
-    private val padding = (12 * density).toInt()
-    private val drumMarginStart = (8 * density).toInt()
+    private val rowHeight = 64.dp()
+    private val cornerRadius = 6f.dp()
+    private val padding = 12.dp()
+    private val drumMarginStart = 8.dp()
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -30,24 +30,24 @@ class PrimitiveRow(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f * density
+        textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
     }
 
     private val constantPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 9f * density
+        textSize = 9f.dp()
         typeface = Typeface.MONOSPACE
     }
 
     private val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 11f * density
+        textSize = 11f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.RIGHT
     }
@@ -89,8 +89,8 @@ class PrimitiveRow(
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val labelX = padding.toFloat()
-        val labelY = height / 2f - 2f * density
-        val constantY = labelY + 12f * density
+        val labelY = height / 2f - 2f.dp()
+        val constantY = labelY + 12f.dp()
         canvas.drawText(label, labelX, labelY, labelPaint)
         canvas.drawText(constantName, labelX, constantY, constantPaint)
 

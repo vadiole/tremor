@@ -7,4 +7,7 @@
     <string name="not_available_on_device">Not available on this device:\n%s</string>
     <string name="haptic_disabled_message">Haptic feedback is disabled. Tap to enable.</string>
     <string name="footer_attribution">by vadiole with &lt;3</string>
+    <string name="example_toggle">Toggle</string>
+    <string name="example_hold_me">HOLD ME</string>
+    <string name="example_triggered">TRIGGERED</string>
 </resources>

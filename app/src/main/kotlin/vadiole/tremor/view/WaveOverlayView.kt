@@ -7,15 +7,16 @@ import android.graphics.RuntimeShader
 import android.os.Build
 import android.os.SystemClock
 import android.view.View
+import vadiole.tremor.Density
+import vadiole.tremor.R
 
-class WaveOverlayView(context: Context) : View(context) {
+class WaveOverlayView(context: Context) : View(context), Density {
 
-    private val density = resources.displayMetrics.density
     private val waves = mutableListOf<Wave>()
     private val maxWaves = 10
     private val baseDurationMs = 600f
-    private val baseExpandSpeed = 800f * density
-    private val baseRingWidth = 40f * density
+    private val baseExpandSpeed = 800f.dp()
+    private val baseRingWidth = 40f.dp()
 
     private val useShader = Build.VERSION.SDK_INT >= 33
     private var shader: RuntimeShader? = null

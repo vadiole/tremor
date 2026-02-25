@@ -22,7 +22,7 @@ import vadiole.tremor.view.LongPressButton
 import vadiole.tremor.view.PrimitiveRow
 import vadiole.tremor.view.WaveOverlayView
 
-class TremorActivity : Activity() {
+class TremorActivity : Activity(), Density {
 
     private lateinit var hapticEngine: HapticEngine
     private lateinit var waveOverlay: WaveOverlayView
@@ -35,10 +35,9 @@ class TremorActivity : Activity() {
 
         hapticEngine = HapticEngine(this)
 
-        val density = resources.displayMetrics.density
-        val padding = (16 * density).toInt()
-        val sectionSpacing = (24 * density).toInt()
-        val itemSpacing = (8 * density).toInt()
+        val padding = 16.dp()
+        val sectionSpacing = 24.dp()
+        val itemSpacing = 8.dp()
 
         val root = FrameLayout(this).apply {
             setBackgroundColor(getColor(R.color.background))
@@ -48,7 +47,7 @@ class TremorActivity : Activity() {
             isVerticalScrollBarEnabled = false
             clipToPadding = false
             isVerticalFadingEdgeEnabled = true
-            setFadingEdgeLength((48 * density).toInt())
+            setFadingEdgeLength(48.dp())
         }
 
         val content = LinearLayout(this).apply {
@@ -61,12 +60,12 @@ class TremorActivity : Activity() {
             }
         }
 
-        buildHapticFeedbackSection(content, density, sectionSpacing, itemSpacing)
-        buildPredefinedEffectsSection(content, density, sectionSpacing, itemSpacing)
-        buildPrimitivesSection(content, density, sectionSpacing, itemSpacing)
-        buildExamplesSection(content, density, sectionSpacing, itemSpacing)
-        buildDeviceInfo(content, density, sectionSpacing)
-        buildFooter(content, density)
+        buildHapticFeedbackSection(content, sectionSpacing, itemSpacing)
+        buildPredefinedEffectsSection(content, sectionSpacing, itemSpacing)
+        buildPrimitivesSection(content, sectionSpacing, itemSpacing)
+        buildExamplesSection(content, sectionSpacing, itemSpacing)
+        buildDeviceInfo(content, sectionSpacing)
+        buildFooter(content)
 
         scrollView.addView(content, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -87,7 +86,7 @@ class TremorActivity : Activity() {
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
 
-        buildBanner(root, density)
+        buildBanner(root)
 
         setContentView(root)
     }
@@ -105,14 +104,13 @@ class TremorActivity : Activity() {
 
     private fun buildHapticFeedbackSection(
         parent: LinearLayout,
-        density: Float,
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
         val constants = hapticEngine.getAvailableHapticConstants()
         if (constants.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants), density))
+        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants)))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
@@ -135,14 +133,13 @@ class TremorActivity : Activity() {
 
     private fun buildPredefinedEffectsSection(
         parent: LinearLayout,
-        density: Float,
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
         val effects = hapticEngine.getSupportedEffects()
         if (effects.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects), density))
+        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects)))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
@@ -165,14 +162,13 @@ class TremorActivity : Activity() {
 
     private fun buildPrimitivesSection(
         parent: LinearLayout,
-        density: Float,
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
         val primitives = hapticEngine.getSupportedPrimitives()
         if (primitives.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_primitives), density))
+        parent.addView(createSectionLabel(getString(R.string.section_primitives)))
 
         for ((index, info) in primitives.withIndex()) {
             val row = PrimitiveRow(this, info.name, info.constantName) { scale, screenX, screenY ->
@@ -194,21 +190,20 @@ class TremorActivity : Activity() {
 
     private fun buildExamplesSection(
         parent: LinearLayout,
-        density: Float,
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        parent.addView(createSectionLabel(getString(R.string.section_examples), density))
+        parent.addView(createSectionLabel(getString(R.string.section_examples)))
 
         val toggleRow = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
         }
         val toggleLabel = TextView(this).apply {
-            text = "Toggle"
+            text = getString(R.string.example_toggle)
             setTextColor(getColor(R.color.foreground))
             textSize = 13f
-            typeface = android.graphics.Typeface.MONOSPACE
+            typeface = Typeface.MONOSPACE
         }
         toggleRow.addView(toggleLabel, LinearLayout.LayoutParams(
             0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
@@ -242,7 +237,7 @@ class TremorActivity : Activity() {
         ))
     }
 
-    private fun buildDeviceInfo(parent: LinearLayout, density: Float, sectionSpacing: Int) {
+    private fun buildDeviceInfo(parent: LinearLayout, sectionSpacing: Int) {
         val unavailable = mutableListOf<String>()
 
         for (info in hapticEngine.getUnavailableHapticConstants()) {
@@ -269,12 +264,12 @@ class TremorActivity : Activity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         )
-        lp.topMargin = (8 * density).toInt()
+        lp.topMargin = 8.dp()
         lp.bottomMargin = sectionSpacing
         parent.addView(textView, lp)
     }
 
-    private fun buildFooter(parent: LinearLayout, density: Float) {
+    private fun buildFooter(parent: LinearLayout) {
         val footer = TextView(this).apply {
             text = getString(R.string.footer_attribution)
             setTextColor(getColor(R.color.text_disabled))
@@ -296,12 +291,12 @@ class TremorActivity : Activity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         )
-        lp.topMargin = (16 * density).toInt()
-        lp.bottomMargin = (8 * density).toInt()
+        lp.topMargin = 16.dp()
+        lp.bottomMargin = 8.dp()
         parent.addView(footer, lp)
     }
 
-    private fun buildBanner(root: FrameLayout, density: Float) {
+    private fun buildBanner(root: FrameLayout) {
         bannerView = TextView(this).apply {
             text = getString(R.string.haptic_disabled_message)
             setTextColor(getColor(R.color.foreground))
@@ -309,20 +304,10 @@ class TremorActivity : Activity() {
             typeface = Typeface.MONOSPACE
             gravity = Gravity.CENTER
             setBackgroundColor(getColor(R.color.surface))
-            setPadding(
-                (16 * density).toInt(),
-                (12 * density).toInt(),
-                (16 * density).toInt(),
-                (12 * density).toInt(),
-            )
+            setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp())
             setOnApplyWindowInsetsListener { v, insets ->
                 val navBar = insets.getInsets(WindowInsets.Type.systemBars()).bottom
-                v.setPadding(
-                    (16 * density).toInt(),
-                    (12 * density).toInt(),
-                    (16 * density).toInt(),
-                    (12 * density).toInt() + navBar,
-                )
+                v.setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp() + navBar)
                 insets
             }
             setOnClickListener {
@@ -383,7 +368,7 @@ class TremorActivity : Activity() {
         else -> 0.5f
     }
 
-    private fun createSectionLabel(text: String, density: Float): TextView {
+    private fun createSectionLabel(text: String): TextView {
         return TextView(this).apply {
             this.text = text
             setTextColor(getColor(R.color.text_muted))
@@ -394,7 +379,7 @@ class TremorActivity : Activity() {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
             )
-            lp.bottomMargin = (12 * density).toInt()
+            lp.bottomMargin = 12.dp()
             layoutParams = lp
         }
     }

@@ -10,13 +10,13 @@ import android.os.Looper
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import vadiole.tremor.Density
 import vadiole.tremor.R
 
-class LongPressButton(context: Context) : View(context) {
+class LongPressButton(context: Context) : View(context), Density {
 
-    private val density = resources.displayMetrics.density
-    private val minHeight = (56 * density).toInt()
-    private val cornerRadius = 6f * density
+    private val minHeight = 56.dp()
+    private val cornerRadius = 6f.dp()
     private val longPressDelay = 500L
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -27,7 +27,7 @@ class LongPressButton(context: Context) : View(context) {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f * density
+        strokeWidth = 1f.dp()
     }
 
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -37,7 +37,7 @@ class LongPressButton(context: Context) : View(context) {
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f * density
+        textSize = 13f.dp()
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
     }
@@ -87,7 +87,7 @@ class LongPressButton(context: Context) : View(context) {
 
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
-        val label = if (triggered) "TRIGGERED" else "HOLD ME"
+        val label = context.getString(if (triggered) R.string.example_triggered else R.string.example_hold_me)
         val centerX = width / 2f
         val centerY = height / 2f + textPaint.textSize / 3f
         canvas.drawText(label, centerX, centerY, textPaint)
