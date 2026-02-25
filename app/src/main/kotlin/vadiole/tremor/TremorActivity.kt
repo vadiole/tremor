@@ -14,7 +14,6 @@ import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.HapticButton
-import vadiole.tremor.view.PatternBuilderView
 import vadiole.tremor.view.PrimitiveRow
 import vadiole.tremor.view.WaveOverlayView
 
@@ -58,7 +57,6 @@ class TremorActivity : Activity() {
         buildHapticFeedbackSection(content, density, sectionSpacing, itemSpacing)
         buildPredefinedEffectsSection(content, density, sectionSpacing, itemSpacing)
         buildPrimitivesSection(content, density, sectionSpacing, itemSpacing)
-        buildPatternSection(content, density, sectionSpacing)
         buildDeviceInfo(content, density, sectionSpacing)
 
         scrollView.addView(content, FrameLayout.LayoutParams(
@@ -177,30 +175,6 @@ class TremorActivity : Activity() {
             if (index > 0) lp.topMargin = itemSpacing
             parent.addView(row, lp)
         }
-
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
-    }
-
-    private fun buildPatternSection(
-        parent: LinearLayout,
-        density: Float,
-        sectionSpacing: Int,
-    ) {
-        val primitives = hapticEngine.getSupportedPrimitives()
-        if (primitives.isEmpty()) return
-
-        parent.addView(createSectionLabel("PATTERN", density))
-
-        val builder = PatternBuilderView(this, primitives) { entries, screenX, screenY ->
-            hapticEngine.playPattern(entries)
-            waveOverlay.spawnWave(screenX, screenY)
-        }
-        parent.addView(builder, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
 
         parent.addView(Space(this), LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,

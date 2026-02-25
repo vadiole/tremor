@@ -83,15 +83,6 @@ class HapticEngine(context: Context) {
         vibrator.vibrate(effect)
     }
 
-    fun playPattern(entries: List<PatternEntry>) {
-        if (entries.isEmpty()) return
-        val composition = VibrationEffect.startComposition()
-        for (entry in entries) {
-            composition.addPrimitive(entry.primitiveId, entry.scale, entry.delayMs)
-        }
-        vibrator.vibrate(composition.compose())
-    }
-
     fun cancel() {
         vibrator.cancel()
     }
@@ -113,13 +104,6 @@ class HapticEngine(context: Context) {
         val name: String,
         val constantName: String,
         val primitiveId: Int,
-    )
-
-    data class PatternEntry(
-        val primitiveId: Int,
-        val name: String,
-        val scale: Float,
-        val delayMs: Int,
     )
 
     companion object {
