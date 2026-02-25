@@ -16,8 +16,7 @@ import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
+import vadiole.tremor.ScaleFeedback
 
 class RiseFallButton(
     context: Context,
@@ -65,6 +64,7 @@ class RiseFallButton(
     init {
         isClickable = true
         isFocusable = true
+        setOnTouchListener(ScaleFeedback())
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -109,11 +109,9 @@ class RiseFallButton(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                animatePress()
                 startRise()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                animateRelease()
                 startFall()
             }
         }

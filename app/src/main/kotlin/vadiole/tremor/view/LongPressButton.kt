@@ -13,8 +13,7 @@ import android.view.animation.LinearInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
+import vadiole.tremor.ScaleFeedback
 
 class LongPressButton(context: Context) : View(context), Density {
 
@@ -63,6 +62,7 @@ class LongPressButton(context: Context) : View(context), Density {
     init {
         isClickable = true
         isFocusable = true
+        setOnTouchListener(ScaleFeedback())
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -97,14 +97,12 @@ class LongPressButton(context: Context) : View(context), Density {
                 triggered = false
                 progress = 0f
                 bgPaint.color = pressedColor
-                animatePress()
                 startProgressAnimation()
                 invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
                 bgPaint.color = normalColor
-                animateRelease()
                 cancelProgressAnimation()
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
