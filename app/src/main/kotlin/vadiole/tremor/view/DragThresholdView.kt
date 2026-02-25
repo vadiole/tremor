@@ -14,11 +14,12 @@ import android.view.View
 import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 
 class DragThresholdView(context: Context) : View(context), Density {
 
     private val viewHeight = 72.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val handleWidth = 36f.dp()
     private val handlePadding = 6f.dp()
     private val handleCornerRadius = 8f.dp()

@@ -12,13 +12,14 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
 class LongPressButton(context: Context) : View(context), Density {
 
     private val minHeight = 56.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val longPressDelay = 500L
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

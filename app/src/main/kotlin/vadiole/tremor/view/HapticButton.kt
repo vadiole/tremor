@@ -13,6 +13,7 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
@@ -23,7 +24,7 @@ class HapticButton(
     private val onTrigger: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val minHeight = 56.dp()
     private val horizontalPadding = 8f.dp()
     private val verticalPadding = 8f.dp()

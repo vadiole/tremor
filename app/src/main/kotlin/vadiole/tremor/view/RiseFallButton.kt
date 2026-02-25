@@ -15,6 +15,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 import vadiole.tremor.animatePress
 import vadiole.tremor.animateRelease
 
@@ -24,7 +25,7 @@ class RiseFallButton(
 ) : View(context), Density {
 
     private val viewHeight = 72.dp()
-    private val cornerRadius = 6f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
     private val riseDurationMs = 400L
     private val fallDurationMs = 300L
 
