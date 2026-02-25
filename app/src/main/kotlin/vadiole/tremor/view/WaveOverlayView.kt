@@ -21,6 +21,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val useShader = Build.VERSION.SDK_INT >= 33
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
+    private var ambientRunning = false
 
     private val waveColor = context.getColor(R.color.foreground)
 
@@ -61,21 +62,35 @@ class WaveOverlayView(context: Context) : View(context), Density {
         invalidate()
     }
 
-    override fun onDraw(canvas: Canvas) {
-        if (waves.isEmpty()) return
+    fun startAmbient() {
+        if (!ambientRunning && useShader) {
+            ambientRunning = true
+            postInvalidateOnAnimation()
+        }
+    }
 
+    fun stopAmbient() {
+        ambientRunning = false
+    }
+
+    override fun onDraw(canvas: Canvas) {
         val now = SystemClock.elapsedRealtime()
         waves.removeAll { now - it.startTime > it.totalDurationMs }
 
-        if (waves.isEmpty()) return
+        val hasWaves = waves.isNotEmpty()
+        val hasAmbient = ambientRunning && useShader
+
+        if (!hasWaves && !hasAmbient) return
 
         if (useShader && shader != null && Build.VERSION.SDK_INT >= 33) {
             drawWithShader(canvas, now)
-        } else {
+        } else if (hasWaves) {
             drawFallback(canvas, now)
         }
 
-        postInvalidateOnAnimation()
+        if (hasWaves || hasAmbient) {
+            postInvalidateOnAnimation()
+        }
     }
 
     private fun drawWithShader(canvas: Canvas, now: Long) {
@@ -116,6 +131,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             ((waveColor shr 8) and 0xFF) / 255f,
             (waveColor and 0xFF) / 255f,
         )
+        s.setFloatUniform("time", (now % 100000L) / 1000f)
+        s.setIntUniform("ambientEnabled", if (ambientRunning) 1 else 0)
 
         shaderPaint.shader = s
         canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shaderPaint)
@@ -197,6 +214,27 @@ class WaveOverlayView(context: Context) : View(context), Density {
             uniform float intensities[10];
             uniform float ringWidths[10];
             uniform float3 waveColor;
+            uniform float time;
+            uniform int ambientEnabled;
+
+            float2 hash2(float2 p) {
+                float2 q = float2(dot(p, float2(127.1, 311.7)),
+                                  dot(p, float2(269.5, 183.3)));
+                return fract(sin(q) * 43758.5453);
+            }
+
+            float vnoise(float2 p) {
+                float2 i = floor(p);
+                float2 f = fract(p);
+                float2 u = f * f * (3.0 - 2.0 * f);
+
+                float a = dot(hash2(i + float2(0.0, 0.0)) - 0.5, f - float2(0.0, 0.0));
+                float b = dot(hash2(i + float2(1.0, 0.0)) - 0.5, f - float2(1.0, 0.0));
+                float c = dot(hash2(i + float2(0.0, 1.0)) - 0.5, f - float2(0.0, 1.0));
+                float d = dot(hash2(i + float2(1.0, 1.0)) - 0.5, f - float2(1.0, 1.0));
+
+                return mix(mix(a, b, u.x), mix(c, d, u.x), u.y) + 0.5;
+            }
 
             half4 main(float2 fragCoord) {
                 float brightness = 0.0;
@@ -216,6 +254,12 @@ class WaveOverlayView(context: Context) : View(context), Density {
                                     * smoothstep(outer + halfRing * 0.5, r, dist);
 
                     brightness += ringShape * intensities[i] * 0.25;
+                }
+
+                if (ambientEnabled == 1) {
+                    float2 uv = fragCoord / resolution * 3.0;
+                    float n = vnoise(uv + time * 0.04);
+                    brightness += n * 0.02;
                 }
 
                 brightness = clamp(brightness, 0.0, 1.0);

@@ -10,7 +10,7 @@
 | 6 | Fix system bar colors in light mode | dev | Done |
 | 7 | Improve toggle: animation, taller, full-row tap | dev | Done |
 | 8 | Fix wave colors in light mode | dev | Done |
-| 9 | Research subtle ambient wave effect | research + dev (optional) | Pending |
+| 9 | Research subtle ambient wave effect | research + dev (optional) | Done |
 | 10 | Research additional visual feedback ideas | research + validate | Pending |
 | 11 | No raw strings rule + enforce | dev + spec | Pending |
 
