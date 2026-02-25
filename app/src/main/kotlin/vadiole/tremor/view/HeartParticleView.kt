@@ -11,9 +11,18 @@ import vadiole.tremor.Density
 
 class HeartParticleView(context: Context) : View(context), Density {
 
-    private val heartText = "\u2764\uFE0F"
     private val gravity = 900f
-    private val heartCount = 16
+    private val heartCount = 10
+
+    private val redHeart = "\u2764\uFE0F"
+    private val specialEmojis = arrayOf(
+        "\uD83D\uDC99",  // 💙 blue heart (Ukraine, bi)
+        "\uD83D\uDC9B",  // 💛 yellow heart (Ukraine)
+        "\uD83E\uDD0D",  // 🤍 white heart (Poland)
+        "\uD83D\uDC97",  // 💗 pink heart (bi)
+        "\uD83D\uDC9C",  // 💜 purple heart (bi)
+        "\uD83D\uDC1E",  // 🐞 ladybug
+    )
 
     private val vibrator: Vibrator = run {
         val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
@@ -33,6 +42,7 @@ class HeartParticleView(context: Context) : View(context), Density {
         var size: Float,
         var rotation: Float,
         var rotationSpeed: Float,
+        val emoji: String,
         var passedBottom: Boolean = false,
     )
 
@@ -88,6 +98,11 @@ class HeartParticleView(context: Context) : View(context), Density {
 
         playPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 0.3f)
 
+        val emojis = ArrayList<String>(heartCount)
+        repeat(6) { emojis.add(redHeart) }
+        repeat(4) { emojis.add(specialEmojis.random()) }
+        emojis.shuffle()
+
         for (i in 0 until heartCount) {
             val angle = Math.toRadians(-90.0 + (Math.random() * 80 - 40))
             val speed = 500f + (Math.random() * 400f).toFloat()
@@ -100,6 +115,7 @@ class HeartParticleView(context: Context) : View(context), Density {
                     size = 16f.dp() + (Math.random() * 10f).toFloat().dp(),
                     rotation = (Math.random() * 40 - 20).toFloat(),
                     rotationSpeed = (Math.random() * 200 - 100).toFloat(),
+                    emoji = emojis[i],
                 ),
             )
         }
@@ -115,7 +131,7 @@ class HeartParticleView(context: Context) : View(context), Density {
             canvas.translate(h.x, h.y)
             canvas.rotate(h.rotation)
             heartPaint.textSize = h.size
-            canvas.drawText(heartText, 0f, heartPaint.textSize / 3f, heartPaint)
+            canvas.drawText(h.emoji, 0f, heartPaint.textSize / 3f, heartPaint)
             canvas.restore()
         }
     }
