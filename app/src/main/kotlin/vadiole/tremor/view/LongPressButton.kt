@@ -17,8 +17,8 @@ import vadiole.tremor.ScaleFeedback
 
 class LongPressButton(context: Context) : View(context), Density {
 
-    private val minHeight = 56.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
+    private val minHeight = 56.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val longPressDelay = 500L
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -29,7 +29,7 @@ class LongPressButton(context: Context) : View(context), Density {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -39,7 +39,7 @@ class LongPressButton(context: Context) : View(context), Density {
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f.dp()
+        textSize = 13f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true

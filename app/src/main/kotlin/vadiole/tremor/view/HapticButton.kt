@@ -23,10 +23,10 @@ class HapticButton(
     private val onTrigger: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
-    private val minHeight = 56.dp()
-    private val horizontalPadding = 8f.dp()
-    private val verticalPadding = 8f.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
+    private val minHeight = 56.dp
+    private val horizontalPadding = 8f.dp
+    private val verticalPadding = 8f.dp
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -36,19 +36,19 @@ class HapticButton(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f.dp()
+        textSize = 13f.sp
         typeface = Typeface.MONOSPACE
         isSubpixelText = true
     }
 
     private val constantPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 8f.dp()
+        textSize = 8f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true
@@ -59,7 +59,7 @@ class HapticButton(
 
     private val constantFm = constantPaint.fontMetrics
     private val constantTextHeight = constantFm.descent - constantFm.ascent
-    private val gap = 3f.dp()
+    private val gap = 3f.dp
 
     private val rect = RectF()
     private val location = IntArray(2)

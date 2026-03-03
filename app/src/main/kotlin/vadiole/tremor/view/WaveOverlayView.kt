@@ -15,8 +15,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val waves = mutableListOf<Wave>()
     private val maxWaves = 10
     private val baseDurationMs = 600f
-    private val baseExpandSpeed = 800f.dp()
-    private val baseRingWidth = 40f.dp()
+    private val baseExpandSpeed = 800f.dp
+    private val baseRingWidth = 40f.dp
 
     private val useShader = Build.VERSION.SDK_INT >= 33
     private var shader: RuntimeShader? = null

@@ -44,9 +44,9 @@ class TremorActivity : Activity(), Density {
 
         hapticEngine = HapticEngine(this)
 
-        val padding = UiConstants.CONTENT_PADDING_DP.dp()
-        val sectionSpacing = UiConstants.SECTION_SPACING_DP.dp()
-        val itemSpacing = UiConstants.ITEM_SPACING_DP.dp()
+        val padding = UiConstants.CONTENT_PADDING_DP.dp
+        val sectionSpacing = UiConstants.SECTION_SPACING_DP.dp
+        val itemSpacing = UiConstants.ITEM_SPACING_DP.dp
 
         val root = FrameLayout(this).apply {
             setBackgroundColor(getColor(R.color.background))
@@ -56,7 +56,7 @@ class TremorActivity : Activity(), Density {
             isVerticalScrollBarEnabled = false
             clipToPadding = false
             isVerticalFadingEdgeEnabled = true
-            setFadingEdgeLength(48.dp())
+            setFadingEdgeLength(48.dp)
         }
 
         val content = LinearLayout(this).apply {
@@ -333,7 +333,7 @@ class TremorActivity : Activity(), Density {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT,
         )
-        lp.topMargin = 8.dp()
+        lp.topMargin = 8.dp
         lp.bottomMargin = sectionSpacing
         parent.addView(textView, lp)
     }
@@ -395,7 +395,7 @@ class TremorActivity : Activity(), Density {
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT,
             )
-            lp.bottomMargin = 12.dp()
+            lp.bottomMargin = 12.dp
             layoutParams = lp
         }
     }

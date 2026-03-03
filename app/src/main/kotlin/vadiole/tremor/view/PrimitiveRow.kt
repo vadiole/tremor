@@ -19,10 +19,10 @@ class PrimitiveRow(
     private val onTrigger: (scale: Float, screenX: Float, screenY: Float) -> Unit,
 ) : ViewGroup(context), Density {
 
-    private val rowHeight = 64.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
-    private val padding = 12.dp()
-    private val drumMarginStart = 8.dp()
+    private val rowHeight = 64.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
+    private val padding = 12.dp
+    private val drumMarginStart = 8.dp
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -32,26 +32,26 @@ class PrimitiveRow(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val labelPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f.dp()
+        textSize = 13f.sp
         typeface = Typeface.MONOSPACE
         isSubpixelText = true
     }
 
     private val constantPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 9f.dp()
+        textSize = 9f.sp
         typeface = Typeface.MONOSPACE
         isSubpixelText = true
     }
 
     private val valuePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
-        textSize = 11f.dp()
+        textSize = 11f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.RIGHT
         isSubpixelText = true
@@ -100,8 +100,8 @@ class PrimitiveRow(
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val labelX = padding.toFloat()
-        val labelY = height / 2f - 2f.dp()
-        val constantY = labelY + 12f.dp()
+        val labelY = height / 2f - 2f.dp
+        val constantY = labelY + 12f.dp
         canvas.drawText(label, labelX, labelY, labelPaint)
         canvas.drawText(constantName, labelX, constantY, constantPaint)
 

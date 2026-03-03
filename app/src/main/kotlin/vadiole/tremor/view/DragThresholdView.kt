@@ -18,11 +18,11 @@ import vadiole.tremor.UiConstants
 
 class DragThresholdView(context: Context) : View(context), Density {
 
-    private val viewHeight = 72.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
-    private val handleWidth = 36f.dp()
-    private val handlePadding = 6f.dp()
-    private val handleCornerRadius = 8f.dp()
+    private val viewHeight = 72.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
+    private val handleWidth = 36f.dp
+    private val handlePadding = 6f.dp
+    private val handleCornerRadius = 8f.dp
     private val thresholdFraction = 0.75f
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -33,14 +33,14 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val thresholdPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_muted)
         style = Paint.Style.STROKE
-        strokeWidth = 1.5f.dp()
-        pathEffect = DashPathEffect(floatArrayOf(4f.dp(), 4f.dp()), 0f)
+        strokeWidth = 1.5f.dp
+        pathEffect = DashPathEffect(floatArrayOf(4f.dp, 4f.dp), 0f)
     }
 
     private val handlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -51,12 +51,12 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handleBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val chevronPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_muted)
-        strokeWidth = 1.5f.dp()
+        strokeWidth = 1.5f.dp
         style = Paint.Style.STROKE
         strokeCap = Paint.Cap.ROUND
         strokeJoin = Paint.Join.ROUND
@@ -132,8 +132,8 @@ class DragThresholdView(context: Context) : View(context), Density {
 
         // threshold line (centered vertically)
         val thresholdX = width * thresholdFraction
-        val dashLen = 4f.dp()
-        val gapLen = 4f.dp()
+        val dashLen = 4f.dp
+        val gapLen = 4f.dp
         val cycle = dashLen + gapLen
         val lineLength = height - halfStroke * 2
         val n = ((lineLength + gapLen) / cycle).toInt()
@@ -163,9 +163,9 @@ class DragThresholdView(context: Context) : View(context), Density {
         canvas.drawRoundRect(handleRect, handleCornerRadius, handleCornerRadius, handleBorderPaint)
 
         // chevron (right-pointing >)
-        val chevronCx = handleRect.centerX() + 2f.dp()
+        val chevronCx = handleRect.centerX() + 2f.dp
         val chevronCy = handleRect.centerY()
-        val chevronSize = 5f.dp()
+        val chevronSize = 5f.dp
         canvas.drawLine(chevronCx - chevronSize, chevronCy - chevronSize, chevronCx, chevronCy, chevronPaint)
         canvas.drawLine(chevronCx, chevronCy, chevronCx - chevronSize, chevronCy + chevronSize, chevronPaint)
 
@@ -188,7 +188,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                val touchRight = handleX + handleWidth + 16f.dp()
+                val touchRight = handleX + handleWidth + 16f.dp
                 if (event.x <= touchRight) {
                     isDragging = true
                     isAnimating = false

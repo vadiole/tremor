@@ -18,7 +18,7 @@ class KeyButton(
     private val letter: Char,
 ) : View(context), Density {
 
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -28,12 +28,12 @@ class KeyButton(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 16f.dp()
+        textSize = 16f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true

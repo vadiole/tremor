@@ -7,8 +7,8 @@ import vadiole.tremor.Density
 class KeyboardRowView(context: Context) : ViewGroup(context), Density {
 
     private val keys = charArrayOf('Q', 'W', 'E', 'R', 'T', 'Y')
-    private val keyGap = 6.dp()
-    private val viewHeight = 56.dp()
+    private val keyGap = 6.dp
+    private val viewHeight = 56.dp
 
     init {
         clipChildren = false

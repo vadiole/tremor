@@ -25,23 +25,23 @@ class DrumRollerView(
 
     var onValueChanged: ((Float) -> Unit)? = null
 
-    private val visualWidth = 20.dp()
-    private val visualHeight = 48.dp()
-    private val touchWidth = 48.dp()
-    private val touchHeight = 64.dp()
-    private val lineSpacing = 8f.dp()
-    private val borderRadius = 4f.dp()
+    private val visualWidth = 20.dp
+    private val visualHeight = 48.dp
+    private val touchWidth = 48.dp
+    private val touchHeight = 64.dp
+    private val lineSpacing = 8f.dp
+    private val borderRadius = 4f.dp
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
         style = Paint.Style.STROKE
     }
 
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -121,8 +121,8 @@ class DrumRollerView(
             lineY -= lineSpacing
         }
 
-        val drumLeft = offsetX + 4f.dp()
-        val drumRight = offsetX + visualWidth - 4f.dp()
+        val drumLeft = offsetX + 4f.dp
+        val drumRight = offsetX + visualWidth - 4f.dp
         val halfVisual = visualHeight / 2f
 
         while (lineY < height + lineSpacing) {

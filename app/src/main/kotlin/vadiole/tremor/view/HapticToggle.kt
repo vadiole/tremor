@@ -14,10 +14,10 @@ import vadiole.tremor.R
 
 class HapticToggle(context: Context) : View(context), Density {
 
-    private val trackWidth = 56.dp()
-    private val trackHeight = 32.dp()
-    private val thumbRadius = 12f.dp()
-    private val thumbPadding = 4f.dp()
+    private val trackWidth = 56.dp
+    private val trackHeight = 32.dp
+    private val thumbRadius = 12f.dp
+    private val thumbPadding = 4f.dp
 
     private var isOn = false
     private var thumbPosition = 0f
@@ -29,7 +29,7 @@ class HapticToggle(context: Context) : View(context), Density {
     private val trackBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {

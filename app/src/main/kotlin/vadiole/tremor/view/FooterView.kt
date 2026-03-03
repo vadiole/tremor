@@ -19,15 +19,15 @@ class FooterView(
     private val onLongPress: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
-    private val topPadding = 16.dp()
-    private val bottomPadding = 8.dp()
+    private val topPadding = 16.dp
+    private val bottomPadding = 8.dp
     private val longPressDelay = 500L
     private val linkColor = context.getColor(R.color.text_disabled)
     private val textColor = context.getColor(R.color.text_disabled)
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = textColor
-        textSize = 10f.dp()
+        textSize = 10f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true

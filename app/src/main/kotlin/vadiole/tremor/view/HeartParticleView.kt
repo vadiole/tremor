@@ -30,7 +30,7 @@ class HeartParticleView(
     )
 
     private val heartPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = 20f.dp()
+        textSize = 20f.sp
         textAlign = Paint.Align.CENTER
     }
 
@@ -71,7 +71,7 @@ class HeartParticleView(
                     playPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 0.75f)
                 }
 
-                if (h.y > height + 100f.dp()) {
+                if (h.y > height + 100f.dp) {
                     iter.remove()
                 }
             }
@@ -120,7 +120,7 @@ class HeartParticleView(
                     y = localY,
                     vx = (speed * Math.cos(angle)).toFloat(),
                     vy = (speed * Math.sin(angle)).toFloat(),
-                    size = 16f.dp() + (Math.random() * 10f).toFloat().dp(),
+                    size = 16f.dp + (Math.random() * 10f).toFloat().dp,
                     rotation = (Math.random() * 40 - 20).toFloat(),
                     rotationSpeed = (Math.random() * 200 - 100).toFloat(),
                     emoji = emojis[i],

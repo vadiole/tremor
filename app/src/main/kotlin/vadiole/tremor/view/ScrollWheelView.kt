@@ -15,9 +15,9 @@ import kotlin.math.abs
 
 class ScrollWheelView(context: Context) : View(context), Density {
 
-    private val viewHeight = 56.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
-    private val tickSpacing = 12f.dp()
+    private val viewHeight = 56.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
+    private val tickSpacing = 12f.dp
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -27,22 +27,22 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val tickPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
         style = Paint.Style.STROKE
     }
 
     private val streakPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
         style = Paint.Style.STROKE
     }
 
-    private val streakThreshold = 2f.dp()
+    private val streakThreshold = 2f.dp
 
     private val rect = RectF()
     private var scrollOffset = 0f
@@ -51,8 +51,8 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private var lastMoveTime = 0L
     private var isFlung = false
     private val friction = 0.96f
-    private val minVelocity = 0.2f.dp()
-    private val maxVelocity = 50f.dp()
+    private val minVelocity = 0.2f.dp
+    private val maxVelocity = 50f.dp
 
     private val flingRunnable = object : Runnable {
         override fun run() {
@@ -94,13 +94,13 @@ class ScrollWheelView(context: Context) : View(context), Density {
         while (x < 0) x += tickSpacing
         x -= tickSpacing
 
-        val topY = 8f.dp()
-        val bottomY = height - 8f.dp()
+        val topY = 8f.dp
+        val bottomY = height - 8f.dp
         val halfWidth = width / 2f
 
         val absVelocity = abs(velocity)
         val streakLength = if (absVelocity > streakThreshold) {
-            (absVelocity * 0.3f).coerceAtMost(8f.dp())
+            (absVelocity * 0.3f).coerceAtMost(8f.dp)
         } else 0f
         val streakDir = if (velocity > 0) -1f else 1f
 

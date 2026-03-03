@@ -18,7 +18,7 @@ class TutorialView(context: Context) : TextView(context), Density {
         color = context.getColor(R.color.border)
         style = Paint.Style.FILL
     }
-    private val borderHeight = 1f.dp()
+    private val borderHeight = 1f.dp
 
     init {
         text = context.getString(R.string.haptic_disabled_message)
@@ -27,10 +27,10 @@ class TutorialView(context: Context) : TextView(context), Density {
         typeface = Typeface.MONOSPACE
         gravity = Gravity.CENTER
         setBackgroundColor(context.getColor(R.color.surface))
-        setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp())
+        setPadding(16.dp, 12.dp, 16.dp, 12.dp)
         setOnApplyWindowInsetsListener { v, insets ->
             val navBar = insets.getInsets(WindowInsets.Type.systemBars()).bottom
-            v.setPadding(16.dp(), 12.dp(), 16.dp(), 12.dp() + navBar)
+            v.setPadding(16.dp, 12.dp, 16.dp, 12.dp + navBar)
             insets
         }
         setOnClickListener {

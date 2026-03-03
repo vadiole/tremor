@@ -23,8 +23,8 @@ class RiseFallButton(
     private val playPrimitive: (primitiveId: Int, scale: Float) -> Unit,
 ) : View(context), Density {
 
-    private val viewHeight = 72.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
+    private val viewHeight = 72.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val riseDurationMs = 400L
     private val fallDurationMs = 300L
 
@@ -36,7 +36,7 @@ class RiseFallButton(
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -45,7 +45,7 @@ class RiseFallButton(
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 13f.dp()
+        textSize = 13f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true

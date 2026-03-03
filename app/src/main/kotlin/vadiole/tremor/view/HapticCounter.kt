@@ -17,8 +17,8 @@ import vadiole.tremor.animateRelease
 
 class HapticCounter(context: Context) : View(context), Density {
 
-    private val viewHeight = 56.dp()
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp()
+    private val viewHeight = 56.dp
+    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
 
     private val prefs = context.getSharedPreferences("tremor", Context.MODE_PRIVATE)
     private var count = prefs.getInt("counter", 0)
@@ -31,12 +31,12 @@ class HapticCounter(context: Context) : View(context), Density {
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
         style = Paint.Style.STROKE
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 16f.dp()
+        textSize = 16f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true
@@ -44,7 +44,7 @@ class HapticCounter(context: Context) : View(context), Density {
 
     private val buttonPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
-        textSize = 20f.dp()
+        textSize = 20f.sp
         typeface = Typeface.MONOSPACE
         textAlign = Paint.Align.CENTER
         isSubpixelText = true
@@ -52,7 +52,7 @@ class HapticCounter(context: Context) : View(context), Density {
 
     private val dividerPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.border)
-        strokeWidth = 1f.dp()
+        strokeWidth = 1f.dp
     }
 
     private val pressedPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
