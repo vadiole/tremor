@@ -143,6 +143,9 @@ class TremorActivity : Activity(), Density {
             val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
                 performHapticFeedback(info.value)
                 waveOverlay.spawnWave(screenX, screenY, strength)
+                if (info.value == HapticFeedbackConstants.REJECT) {
+                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, 100)
+                }
             }
             flow.addView(button)
         }
