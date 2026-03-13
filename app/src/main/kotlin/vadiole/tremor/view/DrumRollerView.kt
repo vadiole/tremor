@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.os.SystemClock
 import android.graphics.Paint
 import android.graphics.RectF
+import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
@@ -31,6 +32,11 @@ class DrumRollerView(
     private val touchHeight = 64.dp
     private val lineSpacing = 8f.dp
     private val borderRadius = 4f.dp
+    private val tickHapticConstant = if (Build.VERSION.SDK_INT >= 34) {
+        HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
+    } else {
+        HapticFeedbackConstants.CLOCK_TICK
+    }
 
     private val linePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -71,13 +77,13 @@ class DrumRollerView(
                 scrollOffset -= 1f
                 currentStep--
                 updateValue()
-                performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+                performHapticFeedback(tickHapticConstant)
             }
             while (scrollOffset <= -1f && currentStep < totalSteps) {
                 scrollOffset += 1f
                 currentStep++
                 updateValue()
-                performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+                performHapticFeedback(tickHapticConstant)
             }
 
             if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
@@ -166,13 +172,13 @@ class DrumRollerView(
                     scrollOffset -= 1f
                     currentStep--
                     updateValue()
-                    performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+                    performHapticFeedback(tickHapticConstant)
                 }
                 while (scrollOffset <= -1f && currentStep < totalSteps) {
                     scrollOffset += 1f
                     currentStep++
                     updateValue()
-                    performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+                    performHapticFeedback(tickHapticConstant)
                 }
 
                 if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f

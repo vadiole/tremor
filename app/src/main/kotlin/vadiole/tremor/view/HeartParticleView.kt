@@ -10,6 +10,7 @@ import vadiole.tremor.Density
 class HeartParticleView(
     context: Context,
     private val playPrimitive: (primitiveId: Int, scale: Float) -> Unit,
+    private val supportedPrimitives: Set<Int> = emptySet(),
 ) : View(context), Density {
 
     private val gravity = 900f
@@ -68,7 +69,9 @@ class HeartParticleView(
 
                 if (!h.passedBottom && h.y > height) {
                     h.passedBottom = true
-                    playPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 0.75f)
+                    if (VibrationEffect.Composition.PRIMITIVE_TICK in supportedPrimitives) {
+                        playPrimitive(VibrationEffect.Composition.PRIMITIVE_TICK, 0.75f)
+                    }
                 }
 
                 if (h.y > height + 100f.dp) {
@@ -92,7 +95,9 @@ class HeartParticleView(
         val localX = screenX - loc[0]
         val localY = screenY - loc[1]
 
-        playPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 0.3f)
+        if (VibrationEffect.Composition.PRIMITIVE_THUD in supportedPrimitives) {
+            playPrimitive(VibrationEffect.Composition.PRIMITIVE_THUD, 0.3f)
+        }
 
         // build emoji list: 1 in 3 chance of themed set
         val emojis = ArrayList<String>(heartCount)

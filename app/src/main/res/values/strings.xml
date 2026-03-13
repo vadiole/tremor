@@ -8,6 +8,7 @@
     <string name="haptic_disabled_message">Make sure DND mode is turned off and vibration is enabled in system settings.</string>
     <string name="footer_template">by %s with &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
     <string name="example_toggle">Toggle</string>
     <string name="example_hold_me">HOLD ME</string>
     <string name="example_hold_me_done">HOLD ME 🤗</string>

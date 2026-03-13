@@ -5,6 +5,7 @@ import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
+import android.view.HapticFeedbackConstants
 import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
@@ -34,6 +35,10 @@ class TremorActivity : Activity(), Density {
     private lateinit var hapticEngine: HapticEngine
     private lateinit var waveOverlay: WaveOverlayView
     private lateinit var heartOverlay: HeartParticleView
+    private lateinit var fallbackEffectIds: Set<Int>
+    private lateinit var supportedPrimitives: List<HapticEngine.PrimitiveInfo>
+    private lateinit var supportedPrimitiveIds: Set<Int>
+    private lateinit var unsupportedPrimitives: List<HapticEngine.PrimitiveInfo>
     private var bannerView: TutorialView? = null
     private var bannerShown = false
 
@@ -43,6 +48,10 @@ class TremorActivity : Activity(), Density {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
 
         hapticEngine = HapticEngine(this)
+        fallbackEffectIds = hapticEngine.getFallbackEffectIds()
+        supportedPrimitives = hapticEngine.getSupportedPrimitives()
+        supportedPrimitiveIds = supportedPrimitives.map { it.primitiveId }.toSet()
+        unsupportedPrimitives = HapticEngine.allPrimitives.filter { it.primitiveId !in supportedPrimitiveIds }
 
         val padding = UiConstants.CONTENT_PADDING_DP.dp
         val sectionSpacing = UiConstants.SECTION_SPACING_DP.dp
@@ -95,7 +104,7 @@ class TremorActivity : Activity(), Density {
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
 
-        heartOverlay = HeartParticleView(this, hapticEngine::playPrimitive).apply {
+        heartOverlay = HeartParticleView(this, hapticEngine::playPrimitive, supportedPrimitiveIds).apply {
             isClickable = false
             isFocusable = false
         }
@@ -164,15 +173,16 @@ class TremorActivity : Activity(), Density {
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        val effects = hapticEngine.getSupportedEffects()
+        val effects = hapticEngine.getAllEffects()
         if (effects.isEmpty()) return
 
         parent.addView(createSectionLabel(getString(R.string.section_predefined_effects)))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
+            val isFallback = info.effectId in fallbackEffectIds
             val strength = effectStrength(info.effectId)
-            val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
+            val button = HapticButton(this, getString(info.nameResId), info.constantName, isFallback) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.effectId == VibrationEffect.EFFECT_DOUBLE_CLICK) {
@@ -196,7 +206,7 @@ class TremorActivity : Activity(), Density {
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        val primitives = hapticEngine.getSupportedPrimitives()
+        val primitives = supportedPrimitives
         if (primitives.isEmpty()) return
 
         parent.addView(createSectionLabel(getString(R.string.section_primitives)))
@@ -227,32 +237,36 @@ class TremorActivity : Activity(), Density {
     ) {
         parent.addView(createSectionLabel(getString(R.string.section_examples)))
 
-        val toggle = HapticToggle(this)
-        val toggleRow = LinearLayout(this).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            isClickable = true
-            isFocusable = true
-            setOnClickListener { toggle.toggle() }
-        }
-        val toggleLabel = TextView(this).apply {
-            text = getString(R.string.example_toggle)
-            setTextColor(getColor(R.color.foreground))
-            textSize = 13f
-            typeface = Typeface.MONOSPACE
-        }
-        toggleRow.addView(toggleLabel, LinearLayout.LayoutParams(
-            0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
-        ))
-        toggleRow.addView(toggle)
-        parent.addView(toggleRow, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        val availableConstantNames = hapticEngine.getAvailableHapticConstants().map { it.constantName }.toSet()
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
+        if ("TOGGLE_ON" in availableConstantNames) {
+            val toggle = HapticToggle(this)
+            val toggleRow = LinearLayout(this).apply {
+                orientation = LinearLayout.HORIZONTAL
+                gravity = Gravity.CENTER_VERTICAL
+                isClickable = true
+                isFocusable = true
+                setOnClickListener { toggle.toggle() }
+            }
+            val toggleLabel = TextView(this).apply {
+                text = getString(R.string.example_toggle)
+                setTextColor(getColor(R.color.foreground))
+                textSize = 13f
+                typeface = Typeface.MONOSPACE
+            }
+            toggleRow.addView(toggleLabel, LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
+            ))
+            toggleRow.addView(toggle)
+            parent.addView(toggleRow, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
+
+            parent.addView(Space(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+            ))
+        }
 
         parent.addView(LongPressButton(this), LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
@@ -281,32 +295,40 @@ class TremorActivity : Activity(), Density {
             LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
         ))
 
-        parent.addView(ScrollWheelView(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        if ("SEGMENT_FREQUENT_TICK" in availableConstantNames) {
+            parent.addView(ScrollWheelView(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
+            parent.addView(Space(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+            ))
+        }
 
-        parent.addView(RiseFallButton(this, hapticEngine::playPrimitive), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        val riseFallSupported = VibrationEffect.Composition.PRIMITIVE_QUICK_RISE in supportedPrimitiveIds &&
+            VibrationEffect.Composition.PRIMITIVE_QUICK_FALL in supportedPrimitiveIds
+        if (riseFallSupported) {
+            parent.addView(RiseFallButton(this, hapticEngine::playPrimitive), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
+            parent.addView(Space(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
+            ))
+        }
 
-        parent.addView(DragThresholdView(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        if ("DRAG_START" in availableConstantNames) {
+            parent.addView(DragThresholdView(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
+            parent.addView(Space(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
+            ))
+        }
     }
 
     private fun buildDeviceInfo(parent: LinearLayout, sectionSpacing: Int) {
@@ -315,10 +337,7 @@ class TremorActivity : Activity(), Density {
         for (info in hapticEngine.getUnavailableHapticConstants()) {
             unavailable.add(info.constantName)
         }
-        for (info in hapticEngine.getUnsupportedEffects()) {
-            unavailable.add(info.constantName)
-        }
-        for (info in hapticEngine.getUnsupportedPrimitives()) {
+        for (info in unsupportedPrimitives) {
             unavailable.add(info.constantName)
         }
 

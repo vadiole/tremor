@@ -18,6 +18,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private val viewHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val tickSpacing = 12f.dp
+    private val tickHapticConstant = HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
 
     private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.surface)
@@ -172,7 +173,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
         if (abs(delta) >= tickSpacing) {
             val ticks = (delta / tickSpacing).toInt()
             lastTickOffset += ticks * tickSpacing
-            performHapticFeedback(HapticFeedbackConstants.SEGMENT_FREQUENT_TICK)
+            performHapticFeedback(tickHapticConstant)
         }
     }
 

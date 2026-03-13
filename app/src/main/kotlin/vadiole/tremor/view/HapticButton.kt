@@ -20,6 +20,7 @@ class HapticButton(
     context: Context,
     private val label: String,
     private val constantName: String,
+    private val isFallback: Boolean = false,
     private val onTrigger: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
@@ -57,9 +58,21 @@ class HapticButton(
     private val pressedColor = context.getColor(R.color.surface_pressed)
     private val normalColor = context.getColor(R.color.surface)
 
+    private val fallbackPaint = if (isFallback) TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = context.getColor(R.color.text_secondary)
+        textSize = 7f.sp
+        typeface = Typeface.MONOSPACE
+        textAlign = Paint.Align.CENTER
+        isSubpixelText = true
+    } else null
+
     private val constantFm = constantPaint.fontMetrics
     private val constantTextHeight = constantFm.descent - constantFm.ascent
+    private val fallbackFm = fallbackPaint?.fontMetrics
+    private val fallbackTextHeight = fallbackFm?.let { it.descent - it.ascent } ?: 0f
     private val gap = 3f.dp
+    private val fallbackGap = 1f.dp
+    private val fallbackText = if (isFallback) context.getString(R.string.effect_fallback_label) else ""
 
     private val rect = RectF()
     private val location = IntArray(2)
@@ -87,7 +100,8 @@ class HapticButton(
         ).toString()
 
         val labelHeight = labelLayout!!.height
-        val totalContentHeight = labelHeight + gap + constantTextHeight
+        val fallbackExtra = if (isFallback) fallbackGap + fallbackTextHeight else 0f
+        val totalContentHeight = labelHeight + gap + constantTextHeight + fallbackExtra
         val height = maxOf(minHeight, (totalContentHeight + verticalPadding * 2).toInt())
         setMeasuredDimension(width, height)
     }
@@ -101,7 +115,8 @@ class HapticButton(
         val layout = labelLayout ?: return
         val centerX = width / 2f
         val maxTextWidth = (width - horizontalPadding * 2).toInt()
-        val totalContentHeight = layout.height + gap + constantTextHeight
+        val fallbackExtra = if (isFallback) fallbackGap + fallbackTextHeight else 0f
+        val totalContentHeight = layout.height + gap + constantTextHeight + fallbackExtra
 
         // label (StaticLayout, centered)
         val labelTop = (height - totalContentHeight) / 2f
@@ -113,6 +128,12 @@ class HapticButton(
         // constant name (single line, baseline from font metrics)
         val constantY = labelTop + layout.height + gap - constantFm.ascent
         canvas.drawText(truncatedConstant, centerX, constantY, constantPaint)
+
+        // fallback label below constant name
+        if (isFallback && fallbackFm != null) {
+            val fbY = constantY + constantFm.descent + fallbackGap - fallbackFm.ascent
+            canvas.drawText(fallbackText, centerX, fbY, fallbackPaint!!)
+        }
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

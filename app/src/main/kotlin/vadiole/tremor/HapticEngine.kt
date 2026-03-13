@@ -43,19 +43,9 @@ class HapticEngine(context: Context) {
         return allHapticConstants.filter { it.minApi > api }
     }
 
-    fun getSupportedEffects(): List<EffectInfo> {
-        val support = vibrator.areEffectsSupported(
-            VibrationEffect.EFFECT_CLICK,
-            VibrationEffect.EFFECT_DOUBLE_CLICK,
-            VibrationEffect.EFFECT_TICK,
-            VibrationEffect.EFFECT_HEAVY_CLICK,
-        )
-        return allEffects.filterIndexed { index, _ ->
-            support[index] != Vibrator.VIBRATION_EFFECT_SUPPORT_NO
-        }
-    }
+    fun getAllEffects(): List<EffectInfo> = allEffects
 
-    fun getUnsupportedEffects(): List<EffectInfo> {
+    fun getFallbackEffectIds(): Set<Int> {
         val support = vibrator.areEffectsSupported(
             VibrationEffect.EFFECT_CLICK,
             VibrationEffect.EFFECT_DOUBLE_CLICK,
@@ -64,7 +54,7 @@ class HapticEngine(context: Context) {
         )
         return allEffects.filterIndexed { index, _ ->
             support[index] == Vibrator.VIBRATION_EFFECT_SUPPORT_NO
-        }
+        }.map { it.effectId }.toSet()
     }
 
     fun getSupportedPrimitives(): List<PrimitiveInfo> {
