@@ -14,6 +14,7 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+        base.archivesName.set("tremor-v$versionName")
     }
     androidResources {
         localeFilters += "en"
@@ -21,6 +22,16 @@ android {
 
     buildTypes {
         release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            vcsInfo.include = false
+            proguardFiles("proguard-rules.pro")
+        }
+
+        create("beta") {
+            initWith(buildTypes.getByName("debug"))
+            applicationIdSuffix = ".beta"
+            isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
             vcsInfo.include = false
