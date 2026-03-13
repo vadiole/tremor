@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">Haptične konstante</string>
+    <string name="section_predefined_effects">Vnaprej določeni učinki</string>
+    <string name="section_primitives">Primitivi</string>
+    <string name="section_examples">Primeri</string>
+    <string name="not_available_on_device">Ni na voljo na tej napravi:\n%s</string>
+    <string name="haptic_disabled_message">Preveri, da je vibriranje omogočeno v <u>sistemskih nastavitvah</u> in da je način »Ne moti« izklopljen.</string>
+    <string name="footer_by_with_love">od %s z &lt;3</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">Preklopnik</string>
+    <string name="example_hold_me">Drži me</string>
+    <string name="example_hold_me_done">Drži me 🤗</string>
+    <string name="example_rise_fall">Vzpon in padec</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">Potrditev</string>
+    <string name="haptic_reject">Zavrnitev</string>
+    <string name="haptic_toggle_on">Vklop</string>
+    <string name="haptic_toggle_off">Izklop</string>
+    <string name="haptic_long_press">Dolg pritisk</string>
+    <string name="haptic_keyboard_press">Pritisk tipke</string>
+    <string name="haptic_keyboard_release">Spust tipke</string>
+    <string name="haptic_clock_tick">Tik ure</string>
+    <string name="haptic_context_click">Kontekstni klik</string>
+    <string name="haptic_gesture_start">Začetek geste</string>
+    <string name="haptic_gesture_end">Konec geste</string>
+    <string name="haptic_gesture_threshold_activate">Aktivacija praga geste</string>
+    <string name="haptic_gesture_threshold_deactivate">Deaktivacija praga geste</string>
+    <string name="haptic_text_handle_move">Premik ročice besedila</string>
+    <string name="haptic_virtual_key">Virtualna tipka</string>
+    <string name="haptic_virtual_key_release">Spust virtualne tipke</string>
+    <string name="haptic_drag_start">Začetek vlečenja</string>
+    <string name="haptic_segment_tick">Tik segmenta</string>
+    <string name="haptic_segment_frequent_tick">Pogost tik segmenta</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">Klik</string>
+    <string name="effect_double_click">Dvojni klik</string>
+    <string name="effect_tick">Tik</string>
+    <string name="effect_heavy_click">Močan klik</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">Klik</string>
+    <string name="primitive_tick">Tik</string>
+    <string name="primitive_low_tick">Nizek tik</string>
+    <string name="primitive_quick_rise">Hiter vzpon</string>
+    <string name="primitive_slow_rise">Počasen vzpon</string>
+    <string name="primitive_quick_fall">Hiter padec</string>
+    <string name="primitive_spin">Vrtenje</string>
+    <string name="primitive_thud">Udarec</string>
+</resources>

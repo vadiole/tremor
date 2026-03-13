@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">हैप्टिक फ़ीडबैक कॉन्स्टेंट</string>
+    <string name="section_predefined_effects">पूर्वनिर्धारित इफ़ेक्ट</string>
+    <string name="section_primitives">प्रिमिटिव</string>
+    <string name="section_examples">उदाहरण</string>
+    <string name="not_available_on_device">इस डिवाइस पर उपलब्ध नहीं:\n%s</string>
+    <string name="haptic_disabled_message">सुनिश्चित करो कि वाइब्रेशन <u>सिस्टम सेटिंग्स</u> में चालू है और DND मोड बंद है।</string>
+    <string name="footer_by_with_love">%s द्वारा &lt;3 के साथ</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">टॉगल</string>
+    <string name="example_hold_me">मुझे पकड़ो</string>
+    <string name="example_hold_me_done">मुझे पकड़ो 🤗</string>
+    <string name="example_rise_fall">उठान और गिरावट</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">पुष्टि</string>
+    <string name="haptic_reject">अस्वीकृति</string>
+    <string name="haptic_toggle_on">टॉगल ऑन</string>
+    <string name="haptic_toggle_off">टॉगल ऑफ़</string>
+    <string name="haptic_long_press">लॉन्ग प्रेस</string>
+    <string name="haptic_keyboard_press">कीबोर्ड प्रेस</string>
+    <string name="haptic_keyboard_release">कीबोर्ड रिलीज़</string>
+    <string name="haptic_clock_tick">क्लॉक टिक</string>
+    <string name="haptic_context_click">कॉन्टेक्स्ट क्लिक</string>
+    <string name="haptic_gesture_start">जेस्चर शुरू</string>
+    <string name="haptic_gesture_end">जेस्चर समाप्त</string>
+    <string name="haptic_gesture_threshold_activate">जेस्चर थ्रेशोल्ड सक्रिय</string>
+    <string name="haptic_gesture_threshold_deactivate">जेस्चर थ्रेशोल्ड निष्क्रिय</string>
+    <string name="haptic_text_handle_move">टेक्स्ट हैंडल मूव</string>
+    <string name="haptic_virtual_key">वर्चुअल की</string>
+    <string name="haptic_virtual_key_release">वर्चुअल की रिलीज़</string>
+    <string name="haptic_drag_start">ड्रैग शुरू</string>
+    <string name="haptic_segment_tick">सेगमेंट टिक</string>
+    <string name="haptic_segment_frequent_tick">सेगमेंट फ़्रीक्वेंट टिक</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">क्लिक</string>
+    <string name="effect_double_click">डबल क्लिक</string>
+    <string name="effect_tick">टिक</string>
+    <string name="effect_heavy_click">हेवी क्लिक</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">क्लिक</string>
+    <string name="primitive_tick">टिक</string>
+    <string name="primitive_low_tick">लो टिक</string>
+    <string name="primitive_quick_rise">क्विक राइज़</string>
+    <string name="primitive_slow_rise">स्लो राइज़</string>
+    <string name="primitive_quick_fall">क्विक फ़ॉल</string>
+    <string name="primitive_spin">स्पिन</string>
+    <string name="primitive_thud">थड</string>
+</resources>

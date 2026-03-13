@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">тремор</string>
+    <string name="section_haptic_feedback_constants">Хаптик константы</string>
+    <string name="section_predefined_effects">Стандартные эффекты</string>
+    <string name="section_primitives">Примитивы</string>
+    <string name="section_examples">Примеры</string>
+    <string name="not_available_on_device">Недоступно на этом устройстве:\n%s</string>
+    <string name="haptic_disabled_message">Убедись, что вибрация включена в <u>настройках системы</u> и режим «Не беспокоить» выключен.</string>
+    <string name="footer_by_with_love">от %s с &lt;3</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">Переключатель</string>
+    <string name="example_hold_me">Держи меня</string>
+    <string name="example_hold_me_done">Держи меня 🤗</string>
+    <string name="example_rise_fall">Нарастание и спад</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">Подтверждение</string>
+    <string name="haptic_reject">Отклонение</string>
+    <string name="haptic_toggle_on">Включение</string>
+    <string name="haptic_toggle_off">Выключение</string>
+    <string name="haptic_long_press">Долгое нажатие</string>
+    <string name="haptic_keyboard_press">Нажатие клавиши</string>
+    <string name="haptic_keyboard_release">Отпускание клавиши</string>
+    <string name="haptic_clock_tick">Тик часов</string>
+    <string name="haptic_context_click">Контекстный клик</string>
+    <string name="haptic_gesture_start">Начало жеста</string>
+    <string name="haptic_gesture_end">Конец жеста</string>
+    <string name="haptic_gesture_threshold_activate">Активация порога жеста</string>
+    <string name="haptic_gesture_threshold_deactivate">Деактивация порога жеста</string>
+    <string name="haptic_text_handle_move">Перемещение маркера текста</string>
+    <string name="haptic_virtual_key">Виртуальная клавиша</string>
+    <string name="haptic_virtual_key_release">Отпускание виртуальной клавиши</string>
+    <string name="haptic_drag_start">Начало перетаскивания</string>
+    <string name="haptic_segment_tick">Тик сегмента</string>
+    <string name="haptic_segment_frequent_tick">Частый тик сегмента</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">Клик</string>
+    <string name="effect_double_click">Двойной клик</string>
+    <string name="effect_tick">Тик</string>
+    <string name="effect_heavy_click">Тяжёлый клик</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">Клик</string>
+    <string name="primitive_tick">Тик</string>
+    <string name="primitive_low_tick">Низкий тик</string>
+    <string name="primitive_quick_rise">Быстрое нарастание</string>
+    <string name="primitive_slow_rise">Медленное нарастание</string>
+    <string name="primitive_quick_fall">Быстрый спад</string>
+    <string name="primitive_spin">Вращение</string>
+    <string name="primitive_thud">Стук</string>
+</resources>

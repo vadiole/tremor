@@ -34,7 +34,7 @@ class FooterView(
     }
 
     private val linkText = context.getString(R.string.footer_vadiole)
-    private val fullText = context.getString(R.string.footer_template, linkText)
+    private val fullText = context.getString(R.string.footer_by_with_love, linkText)
     private val linkStart = fullText.indexOf(linkText)
     private val linkEnd = linkStart + linkText.length
 

@@ -46,12 +46,8 @@ class HapticEngine(context: Context) {
     fun getAllEffects(): List<EffectInfo> = allEffects
 
     fun getFallbackEffectIds(): Set<Int> {
-        val support = vibrator.areEffectsSupported(
-            VibrationEffect.EFFECT_CLICK,
-            VibrationEffect.EFFECT_DOUBLE_CLICK,
-            VibrationEffect.EFFECT_TICK,
-            VibrationEffect.EFFECT_HEAVY_CLICK,
-        )
+        val ids = allEffects.map { it.effectId }.toIntArray()
+        val support = vibrator.areEffectsSupported(*ids)
         return allEffects.filterIndexed { index, _ ->
             support[index] == Vibrator.VIBRATION_EFFECT_SUPPORT_NO
         }.map { it.effectId }.toSet()

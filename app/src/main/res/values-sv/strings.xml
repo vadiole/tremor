@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">Haptiska konstanter</string>
+    <string name="section_predefined_effects">Fördefinierade effekter</string>
+    <string name="section_primitives">Primitiver</string>
+    <string name="section_examples">Exempel</string>
+    <string name="not_available_on_device">Inte tillgängligt på den här enheten:\n%s</string>
+    <string name="haptic_disabled_message">Se till att vibration är aktiverad i <u>systeminställningarna</u> och att Stör ej-läget är avstängt.</string>
+    <string name="footer_by_with_love">av %s med &lt;3</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">Växla</string>
+    <string name="example_hold_me">Håll mig</string>
+    <string name="example_hold_me_done">Håll mig 🤗</string>
+    <string name="example_rise_fall">Stigning &amp; fall</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">Bekräfta</string>
+    <string name="haptic_reject">Avvisa</string>
+    <string name="haptic_toggle_on">Växla på</string>
+    <string name="haptic_toggle_off">Växla av</string>
+    <string name="haptic_long_press">Långt tryck</string>
+    <string name="haptic_keyboard_press">Tangentbordstryck</string>
+    <string name="haptic_keyboard_release">Tangentbordssläpp</string>
+    <string name="haptic_clock_tick">Klocktick</string>
+    <string name="haptic_context_click">Kontextklick</string>
+    <string name="haptic_gesture_start">Geststart</string>
+    <string name="haptic_gesture_end">Gestslut</string>
+    <string name="haptic_gesture_threshold_activate">Gesttröskeln aktiverad</string>
+    <string name="haptic_gesture_threshold_deactivate">Gesttröskeln avaktiverad</string>
+    <string name="haptic_text_handle_move">Texthandtagsflytt</string>
+    <string name="haptic_virtual_key">Virtuell tangent</string>
+    <string name="haptic_virtual_key_release">Virtuellt tangentsläpp</string>
+    <string name="haptic_drag_start">Dragstart</string>
+    <string name="haptic_segment_tick">Segmenttick</string>
+    <string name="haptic_segment_frequent_tick">Tätt segmenttick</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">Klick</string>
+    <string name="effect_double_click">Dubbelklick</string>
+    <string name="effect_tick">Tick</string>
+    <string name="effect_heavy_click">Tungt klick</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">Klick</string>
+    <string name="primitive_tick">Tick</string>
+    <string name="primitive_low_tick">Lågt tick</string>
+    <string name="primitive_quick_rise">Snabb stigning</string>
+    <string name="primitive_slow_rise">Långsam stigning</string>
+    <string name="primitive_quick_fall">Snabbt fall</string>
+    <string name="primitive_spin">Snurr</string>
+    <string name="primitive_thud">Duns</string>
+</resources>

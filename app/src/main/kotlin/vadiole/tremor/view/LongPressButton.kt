@@ -48,8 +48,8 @@ class LongPressButton(context: Context) : View(context), Density {
     private val pressedColor = context.getColor(R.color.surface_pressed)
     private val normalColor = context.getColor(R.color.surface)
 
-    private val labelHoldMe = context.getString(R.string.example_hold_me)
-    private val labelTriggered = context.getString(R.string.example_hold_me_done)
+    private val labelHoldMe = context.getString(R.string.example_hold_me).uppercase()
+    private val labelTriggered = context.getString(R.string.example_hold_me_done).uppercase()
 
     private val rect = RectF()
     private val progressRect = RectF()

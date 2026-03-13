@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">触觉反馈常量</string>
+    <string name="section_predefined_effects">预定义效果</string>
+    <string name="section_primitives">原语</string>
+    <string name="section_examples">示例</string>
+    <string name="not_available_on_device">在此设备上不可用：\n%s</string>
+    <string name="haptic_disabled_message">请确保在<u>系统设置</u>中开启了振动，并关闭了勿扰模式。</string>
+    <string name="footer_by_with_love">由 %s 用 &lt;3 制作</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">开关</string>
+    <string name="example_hold_me">按住我</string>
+    <string name="example_hold_me_done">按住我 🤗</string>
+    <string name="example_rise_fall">上升与下降</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">确认</string>
+    <string name="haptic_reject">拒绝</string>
+    <string name="haptic_toggle_on">开启</string>
+    <string name="haptic_toggle_off">关闭</string>
+    <string name="haptic_long_press">长按</string>
+    <string name="haptic_keyboard_press">键盘按下</string>
+    <string name="haptic_keyboard_release">键盘松开</string>
+    <string name="haptic_clock_tick">时钟滴答</string>
+    <string name="haptic_context_click">上下文点击</string>
+    <string name="haptic_gesture_start">手势开始</string>
+    <string name="haptic_gesture_end">手势结束</string>
+    <string name="haptic_gesture_threshold_activate">手势阈值激活</string>
+    <string name="haptic_gesture_threshold_deactivate">手势阈值取消激活</string>
+    <string name="haptic_text_handle_move">文本手柄移动</string>
+    <string name="haptic_virtual_key">虚拟按键</string>
+    <string name="haptic_virtual_key_release">虚拟按键松开</string>
+    <string name="haptic_drag_start">拖动开始</string>
+    <string name="haptic_segment_tick">分段刻度</string>
+    <string name="haptic_segment_frequent_tick">分段频繁刻度</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">点击</string>
+    <string name="effect_double_click">双击</string>
+    <string name="effect_tick">滴答</string>
+    <string name="effect_heavy_click">重击</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">点击</string>
+    <string name="primitive_tick">滴答</string>
+    <string name="primitive_low_tick">低频滴答</string>
+    <string name="primitive_quick_rise">快速上升</string>
+    <string name="primitive_slow_rise">缓慢上升</string>
+    <string name="primitive_quick_fall">快速下降</string>
+    <string name="primitive_spin">旋转</string>
+    <string name="primitive_thud">闷响</string>
+</resources>

@@ -118,10 +118,6 @@ class TremorActivity : Activity(), Density {
         setContentView(root)
     }
 
-    override fun onResume() {
-        super.onResume()
-    }
-
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
         if (hasFocus && !bannerShown) {
@@ -408,7 +404,7 @@ class TremorActivity : Activity(), Density {
 
     private fun createSectionLabel(text: String): TextView {
         return TextView(this).apply {
-            this.text = text
+            this.text = text.uppercase()
             setTextColor(getColor(R.color.text_muted))
             textSize = 11f
             typeface = Typeface.MONOSPACE

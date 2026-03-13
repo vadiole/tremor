@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">Constantes de retroalimentación háptica</string>
+    <string name="section_predefined_effects">Efectos predefinidos</string>
+    <string name="section_primitives">Primitivas</string>
+    <string name="section_examples">Ejemplos</string>
+    <string name="not_available_on_device">No disponible en este dispositivo:\n%s</string>
+    <string name="haptic_disabled_message">Asegúrate de que la vibración esté activada en los <u>ajustes del sistema</u> y el modo No molestar esté desactivado.</string>
+    <string name="footer_by_with_love">por %s con &lt;3</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">Interruptor</string>
+    <string name="example_hold_me">Sostenme</string>
+    <string name="example_hold_me_done">Sostenme 🤗</string>
+    <string name="example_rise_fall">Subida y caída</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">Confirmar</string>
+    <string name="haptic_reject">Rechazar</string>
+    <string name="haptic_toggle_on">Activar</string>
+    <string name="haptic_toggle_off">Desactivar</string>
+    <string name="haptic_long_press">Pulsación larga</string>
+    <string name="haptic_keyboard_press">Pulsación de tecla</string>
+    <string name="haptic_keyboard_release">Soltar tecla</string>
+    <string name="haptic_clock_tick">Tic de reloj</string>
+    <string name="haptic_context_click">Clic contextual</string>
+    <string name="haptic_gesture_start">Inicio de gesto</string>
+    <string name="haptic_gesture_end">Fin de gesto</string>
+    <string name="haptic_gesture_threshold_activate">Activación de umbral de gesto</string>
+    <string name="haptic_gesture_threshold_deactivate">Desactivación de umbral de gesto</string>
+    <string name="haptic_text_handle_move">Mover asa de texto</string>
+    <string name="haptic_virtual_key">Tecla virtual</string>
+    <string name="haptic_virtual_key_release">Soltar tecla virtual</string>
+    <string name="haptic_drag_start">Inicio de arrastre</string>
+    <string name="haptic_segment_tick">Tic de segmento</string>
+    <string name="haptic_segment_frequent_tick">Tic frecuente de segmento</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">Clic</string>
+    <string name="effect_double_click">Doble clic</string>
+    <string name="effect_tick">Tic</string>
+    <string name="effect_heavy_click">Clic fuerte</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">Clic</string>
+    <string name="primitive_tick">Tic</string>
+    <string name="primitive_low_tick">Tic grave</string>
+    <string name="primitive_quick_rise">Subida rápida</string>
+    <string name="primitive_slow_rise">Subida lenta</string>
+    <string name="primitive_quick_fall">Caída rápida</string>
+    <string name="primitive_spin">Giro</string>
+    <string name="primitive_thud">Golpe</string>
+</resources>

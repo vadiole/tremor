@@ -52,7 +52,7 @@ class RiseFallButton(
     }
 
     private val foregroundColor = context.getColor(R.color.foreground)
-    private val labelText = context.getString(R.string.example_rise_fall)
+    private val labelText = context.getString(R.string.example_rise_fall).uppercase()
 
     private val rect = RectF()
     private val fillRect = RectF()
