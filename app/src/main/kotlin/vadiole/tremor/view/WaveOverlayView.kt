@@ -121,6 +121,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     private fun drawFallback(canvas: Canvas, now: Long) {
+        val strokeWidth = 1f.dp
         for (wave in waves) {
             val elapsed = (now - wave.startTime).toFloat()
             val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
@@ -129,11 +130,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
             val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
             val easeOut = 1f - progress * progress
-            val alpha = (easeOut * wave.intensityMultiplier * 0.1f * 255).toInt().coerceIn(0, 255)
+            val alpha = (easeOut * wave.intensityMultiplier * 0.8f * 255).toInt().coerceIn(0, 255)
 
             fallbackPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
-            fallbackPaint.strokeWidth = wave.ringWidth
-            if (radius > wave.ringWidth / 2f) {
+            fallbackPaint.strokeWidth = strokeWidth
+            if (radius > strokeWidth / 2f) {
                 canvas.drawCircle(wave.x, wave.y, radius, fallbackPaint)
             }
         }
