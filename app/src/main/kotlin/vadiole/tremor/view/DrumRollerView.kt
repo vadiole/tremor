@@ -105,7 +105,12 @@ class DrumRollerView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        setMeasuredDimension(touchWidth, touchHeight)
+        val h = if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY) {
+            MeasureSpec.getSize(heightMeasureSpec)
+        } else {
+            touchHeight
+        }
+        setMeasuredDimension(touchWidth, h)
     }
 
     override fun onDraw(canvas: Canvas) {
