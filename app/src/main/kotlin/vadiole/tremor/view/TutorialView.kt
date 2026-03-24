@@ -21,7 +21,7 @@ class TutorialView(context: Context) : TextView(context), Density {
     private val borderHeight = 1f.dp
 
     init {
-        text = context.getString(R.string.haptic_disabled_message)
+        text = context.getText(R.string.haptic_disabled_message)
         setTextColor(context.getColor(R.color.foreground))
         textSize = 12f
         typeface = Typeface.MONOSPACE
