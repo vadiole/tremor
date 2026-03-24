@@ -9,7 +9,6 @@ import android.view.HapticFeedbackConstants
 import android.view.Gravity
 import android.view.View
 import android.view.WindowInsets
-import android.view.WindowManager
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -45,7 +44,8 @@ class TremorActivity : Activity(), Density {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        @Suppress("DEPRECATION")
+        window.setDecorFitsSystemWindows(false)
 
         hapticEngine = HapticEngine(this)
         fallbackEffectIds = hapticEngine.getFallbackEffectIds()
@@ -72,7 +72,7 @@ class TremorActivity : Activity(), Density {
             orientation = LinearLayout.VERTICAL
             setPadding(padding, padding, padding, 0)
             setOnApplyWindowInsetsListener { v, insets ->
-                val systemBars = insets.getInsets(WindowInsets.Type.systemBars())
+                val systemBars = insets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
                 v.setPadding(padding, padding + systemBars.top, padding, systemBars.bottom)
                 insets
             }

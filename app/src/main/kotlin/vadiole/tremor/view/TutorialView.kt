@@ -29,7 +29,7 @@ class TutorialView(context: Context) : TextView(context), Density {
         setBackgroundColor(context.getColor(R.color.surface))
         setPadding(16.dp, 12.dp, 16.dp, 12.dp)
         setOnApplyWindowInsetsListener { v, insets ->
-            val navBar = insets.getInsets(WindowInsets.Type.systemBars()).bottom
+            val navBar = insets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()).bottom
             v.setPadding(16.dp, 12.dp, 16.dp, 12.dp + navBar)
             insets
         }
