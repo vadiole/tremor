@@ -46,10 +46,7 @@ android {
         resources {
             excludes += "kotlin/**"
             excludes += "DebugProbesKt.bin"
-            excludes += "META-INF/*.version"
-            excludes += "META-INF/services/**"
-            excludes += "META-INF/version-control-info.textproto"
-            excludes += "META-INF/com/**"
+            excludes += "META-INF/**"
         }
     }
 }
