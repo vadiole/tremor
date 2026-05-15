@@ -111,6 +111,7 @@ class TremorActivity : Activity(), Density {
         ))
 
         waveOverlay = WaveOverlayView(this).apply {
+            setDistortionTarget(contentLayer)
             isClickable = false
             isFocusable = false
         }
