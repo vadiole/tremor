@@ -11,9 +11,8 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
-import vadiole.tremor.animatePress
-import vadiole.tremor.animateRelease
 
 class HapticCounter(context: Context) : View(context), Density {
 
@@ -67,6 +66,17 @@ class HapticCounter(context: Context) : View(context), Density {
 
     init {
         isClickable = true
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.02f,
+                rubberBandDrag = true,
+                maxDragPx = 5f.dp,
+                dragDamping = 0.06f,
+            ) { view, event ->
+                val thirdW = view.width / 3f
+                event.x < thirdW || event.x > thirdW * 2
+            },
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -118,7 +128,6 @@ class HapticCounter(context: Context) : View(context), Density {
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = -1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        animatePress()
                         invalidate()
                     }
                     event.x > thirdW * 2 -> {
@@ -126,15 +135,11 @@ class HapticCounter(context: Context) : View(context), Density {
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = 1
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        animatePress()
                         invalidate()
                     }
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                if (pressedZone != 0) {
-                    animateRelease()
-                }
                 pressedZone = 0
                 invalidate()
             }

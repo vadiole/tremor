@@ -9,9 +9,9 @@ import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
-import vadiole.tremor.ScaleFeedback
-import vadiole.tremor.UiConstants
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
+import vadiole.tremor.UiConstants
 
 class KeyButton(
     context: Context,
@@ -47,7 +47,13 @@ class KeyButton(
 
     init {
         isClickable = true
-        setOnTouchListener(ScaleFeedback(scale = 0.87f))
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.08f,
+                rubberBandDrag = true,
+                maxDragPx = 5f.dp,
+            ),
+        )
     }
 
     override fun onDraw(canvas: Canvas) {

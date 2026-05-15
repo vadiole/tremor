@@ -13,6 +13,11 @@ class FlowLayout(
 
     private var rowHeights = IntArray(0)
 
+    init {
+        clipChildren = false
+        clipToPadding = false
+    }
+
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val availableWidth = MeasureSpec.getSize(widthMeasureSpec)
         val totalGaps = (columns - 1) * horizontalGap

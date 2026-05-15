@@ -15,8 +15,8 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
-import vadiole.tremor.ScaleFeedback
 
 class RiseFallButton(
     context: Context,
@@ -64,7 +64,14 @@ class RiseFallButton(
     init {
         isClickable = true
         isFocusable = true
-        setOnTouchListener(ScaleFeedback())
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.02f,
+                rubberBandDrag = true,
+                maxDragPx = 6f.dp,
+                dragDamping = 0.06f,
+            ),
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

@@ -59,10 +59,13 @@ class TremorActivity : Activity(), Density {
 
         val root = FrameLayout(this).apply {
             setBackgroundColor(getColor(R.color.background))
+            clipChildren = false
+            clipToPadding = false
         }
 
         val scrollView = ScrollView(this).apply {
             isVerticalScrollBarEnabled = false
+            clipChildren = false
             clipToPadding = false
             isVerticalFadingEdgeEnabled = true
             setFadingEdgeLength(48.dp)
@@ -70,6 +73,8 @@ class TremorActivity : Activity(), Density {
 
         val content = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
+            clipChildren = false
+            clipToPadding = false
             setPadding(padding, padding, padding, 0)
             setOnApplyWindowInsetsListener { v, insets ->
                 val systemBars = insets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout())
@@ -90,7 +95,17 @@ class TremorActivity : Activity(), Density {
             FrameLayout.LayoutParams.WRAP_CONTENT,
         ))
 
-        root.addView(scrollView, FrameLayout.LayoutParams(
+        val contentLayer = FrameLayout(this).apply {
+            setBackgroundColor(getColor(R.color.background))
+            clipChildren = false
+            clipToPadding = false
+        }
+        contentLayer.addView(scrollView, FrameLayout.LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT,
+        ))
+
+        root.addView(contentLayer, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
@@ -240,6 +255,8 @@ class TremorActivity : Activity(), Density {
             val toggleRow = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
+                clipChildren = false
+                clipToPadding = false
                 isClickable = true
                 isFocusable = true
                 setOnClickListener { toggle.toggle() }

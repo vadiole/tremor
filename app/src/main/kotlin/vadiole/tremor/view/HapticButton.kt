@@ -13,8 +13,8 @@ import android.view.MotionEvent
 import android.view.View
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
-import vadiole.tremor.ScaleFeedback
 
 class HapticButton(
     context: Context,
@@ -82,7 +82,13 @@ class HapticButton(
     init {
         isClickable = true
         isFocusable = true
-        setOnTouchListener(ScaleFeedback())
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.035f,
+                rubberBandDrag = true,
+                maxDragPx = 4f.dp,
+            ),
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

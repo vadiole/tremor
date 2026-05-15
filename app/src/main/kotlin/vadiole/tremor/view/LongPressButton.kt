@@ -12,8 +12,8 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
-import vadiole.tremor.ScaleFeedback
 
 class LongPressButton(context: Context) : View(context), Density {
 
@@ -62,7 +62,14 @@ class LongPressButton(context: Context) : View(context), Density {
     init {
         isClickable = true
         isFocusable = true
-        setOnTouchListener(ScaleFeedback())
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.02f,
+                rubberBandDrag = true,
+                maxDragPx = 5f.dp,
+                dragDamping = 0.06f,
+            ),
+        )
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {

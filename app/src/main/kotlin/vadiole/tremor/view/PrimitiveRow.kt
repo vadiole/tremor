@@ -11,8 +11,8 @@ import android.view.MotionEvent
 import android.view.ViewGroup
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
-import vadiole.tremor.ScaleFeedback
 
 class PrimitiveRow(
     context: Context,
@@ -76,8 +76,17 @@ class PrimitiveRow(
     private var cachedValueText = String.format("%.2f", drum.value)
 
     init {
+        clipChildren = false
+        clipToPadding = false
         setWillNotDraw(false)
-        setOnTouchListener(ScaleFeedback(0.98f))
+        setOnTouchListener(
+            TouchEffect(
+                pressedScale = 1.02f,
+                rubberBandDrag = true,
+                maxDragPx = 6f.dp,
+                dragDamping = 0.06f,
+            ),
+        )
         drum.onValueChanged = {
             cachedValueText = String.format("%.2f", it)
             invalidate()
