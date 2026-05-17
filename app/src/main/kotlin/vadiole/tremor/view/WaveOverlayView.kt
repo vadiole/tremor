@@ -24,7 +24,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val baseDurationMs = 600f
     private val baseExpandSpeed = 800f.dp
     private val baseRingWidth = 40f.dp
-    private val baseDistortionAmplitude = 1.4f.dp
+    private val baseDistortionAmplitude = 14f.dp
 
     private val useShader = Build.VERSION.SDK_INT >= 33
     private var shader: RuntimeShader? = null
@@ -38,12 +38,15 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val shaderRadii = FloatArray(maxWaves)
     private val shaderIntensities = FloatArray(maxWaves)
     private val shaderRingWidths = FloatArray(maxWaves)
+    private val shaderInnerSq = FloatArray(maxWaves)
+    private val shaderOuterSq = FloatArray(maxWaves)
 
     private val distortionOrigins = FloatArray(maxWaves * 2)
     private val distortionAges = FloatArray(maxWaves)
     private val distortionAmplitudes = FloatArray(maxWaves)
     private val distortionSpeeds = FloatArray(maxWaves)
     private val distortionIntensities = FloatArray(maxWaves)
+    private val distortionReachSq = FloatArray(maxWaves)
 
     private val waveColor = context.getColor(R.color.foreground)
     private val waveColorR = ((waveColor shr 16) and 0xFF) / 255f
@@ -57,7 +60,6 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
     private val locationScratch = IntArray(2)
     private val targetLocationScratch = IntArray(2)
-    private var distortionEffect: RenderEffect? = null
     private var lastResolutionWidth = -1
     private var lastResolutionHeight = -1
 
@@ -115,7 +117,13 @@ class WaveOverlayView(context: Context) : View(context), Density {
             clearDistortionEffect()
             return
         }
-        waves.removeAll { scaledElapsedMs(now, it, durationScale) > it.totalDurationMs }
+        var i = waves.size - 1
+        while (i >= 0) {
+            if (scaledElapsedMs(now, waves[i], durationScale) > waves[i].totalDurationMs) {
+                waves.removeAt(i)
+            }
+            i--
+        }
 
         if (waves.isEmpty()) {
             clearDistortionEffect()
@@ -164,6 +172,13 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
             shaderIntensities[i] = intensity
 
+            // Ring contribution is non-zero only for |dist - radius| < ringW * 1.5 * 0.5 = ringW * 0.75
+            val halfRing = ringW * 0.5f
+            val innerEdge = radius - halfRing * 1.5f
+            val outerEdge = radius + halfRing * 1.5f
+            shaderInnerSq[i] = if (innerEdge <= 0f) 0f else innerEdge * innerEdge
+            shaderOuterSq[i] = outerEdge * outerEdge
+
             if (intensity > 0.001f) {
                 val outer = radius + ringW * 0.75f
                 if (wave.x - outer < minX) minX = wave.x - outer
@@ -177,6 +192,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("radii", shaderRadii)
         s.setFloatUniform("intensities", shaderIntensities)
         s.setFloatUniform("ringWidths", shaderRingWidths)
+        s.setFloatUniform("innerSq", shaderInnerSq)
+        s.setFloatUniform("outerSq", shaderOuterSq)
         s.setFloatUniform("waveColor", waveColorR, waveColorG, waveColorB)
         shaderPaint.shader = s
 
@@ -205,6 +222,10 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
         target.getLocationOnScreen(targetLocationScratch)
         var hasVisibleWave = false
+        var bboxMinX = Float.POSITIVE_INFINITY
+        var bboxMinY = Float.POSITIVE_INFINITY
+        var bboxMaxX = Float.NEGATIVE_INFINITY
+        var bboxMaxY = Float.NEGATIVE_INFINITY
 
         for (i in 0 until count) {
             val wave = waves[i]
@@ -214,15 +235,27 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val easeOut = 1f - progress * progress
             val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
 
-            distortionOrigins[i * 2] = wave.screenX - targetLocationScratch[0]
-            distortionOrigins[i * 2 + 1] = wave.screenY - targetLocationScratch[1]
-            distortionAges[i] = effectiveElapsed / 1000f
+            val originX = wave.screenX - targetLocationScratch[0]
+            val originY = wave.screenY - targetLocationScratch[1]
+            val ageSec = effectiveElapsed / 1000f
+            // dist must satisfy dist < ageSec * max(speed, 1) for localTime > 0
+            val safeSpeed = if (wave.expandSpeed < 1f) 1f else wave.expandSpeed
+            val reach = ageSec * safeSpeed
+
+            distortionOrigins[i * 2] = originX
+            distortionOrigins[i * 2 + 1] = originY
+            distortionAges[i] = ageSec
             distortionAmplitudes[i] = wave.distortionAmplitude
             distortionSpeeds[i] = wave.expandSpeed
             distortionIntensities[i] = intensity
+            distortionReachSq[i] = reach * reach
 
-            if (intensity > 0.001f && wave.distortionAmplitude > 0.001f) {
+            if (intensity > 0.001f && wave.distortionAmplitude > 0.001f && reach > 0f) {
                 hasVisibleWave = true
+                if (originX - reach < bboxMinX) bboxMinX = originX - reach
+                if (originX + reach > bboxMaxX) bboxMaxX = originX + reach
+                if (originY - reach < bboxMinY) bboxMinY = originY - reach
+                if (originY + reach > bboxMaxY) bboxMaxY = originY + reach
             }
         }
 
@@ -242,11 +275,33 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("amplitudes", distortionAmplitudes)
         s.setFloatUniform("speeds", distortionSpeeds)
         s.setFloatUniform("intensities", distortionIntensities)
+        s.setFloatUniform("reachSq", distortionReachSq)
+        s.setFloatUniform("bbox", bboxMinX, bboxMinY, bboxMaxX, bboxMaxY)
 
-        val effect = distortionEffect ?: RenderEffect.createRuntimeShaderEffect(s, "content").also {
-            distortionEffect = it
-        }
-        target.setRenderEffect(effect)
+        // DO NOT cache and reuse this RenderEffect across frames.
+        //
+        // The morph (the ripple displacement of the content underneath the wave) depends on
+        // the shader's uniforms being read fresh every frame. Two cache strategies have been
+        // tried and BOTH silently freeze the morph while still appearing to animate the ring:
+        //
+        //   1) Keeping a single cached effect and re-binding it every frame.
+        //      setRenderEffect(sameInstance) is a no-op: the framework compares pointers,
+        //      sees no change, and skips invalidation. Result: distortion is rendered once
+        //      and that output is reused; the ring (drawn separately on this view) keeps
+        //      animating, so it LOOKS like the wave works.
+        //
+        //   2) Alternating between two cached effects (A/B/A/B/...).
+        //      The pointer differs each frame, but the framework still appears to cache
+        //      per-effect output and the displacement does not visibly update. The ring
+        //      animates and GPU time drops, but if you crank baseDistortionAmplitude up,
+        //      no morph is visible — only the ring.
+        //
+        // Allocating a fresh RenderEffect every frame is the only approach that has been
+        // observed to actually re-run the distortion shader against the latest uniforms.
+        // Yes, it costs ~1ms/frame in allocation overhead. That is the price of a
+        // correct morph. If you "optimize" this, verify visually with a tap on a primitive
+        // row at peak amplitude — the content under the ring MUST visibly displace.
+        target.setRenderEffect(RenderEffect.createRuntimeShaderEffect(s, "content"))
         distortionActive = true
     }
 
@@ -356,6 +411,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             uniform float amplitudes[10];
             uniform float speeds[10];
             uniform float intensities[10];
+            uniform float reachSq[10];
+            uniform float4 bbox;
 
             const float frequency = 34.0;
             const float decay = 5.2;
@@ -363,6 +420,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
             const float distanceDecay = 1800.0;
 
             half4 main(float2 fragCoord) {
+                if (fragCoord.x < bbox.x || fragCoord.x > bbox.z ||
+                    fragCoord.y < bbox.y || fragCoord.y > bbox.w) {
+                    return content.eval(fragCoord);
+                }
+
                 float2 sampleCoord = fragCoord;
 
                 for (int i = 0; i < 10; i++) {
@@ -373,7 +435,10 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
                     float2 origin = float2(origins[i * 2], origins[i * 2 + 1]);
                     float2 delta = fragCoord - origin;
-                    float dist = length(delta);
+                    float distSq = dot(delta, delta);
+                    if (distSq >= reachSq[i]) continue;
+
+                    float dist = sqrt(distSq);
                     float localTime = ages[i] - dist / max(speeds[i], 1.0);
                     if (localTime <= 0.0) continue;
 
@@ -402,6 +467,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             uniform float radii[10];
             uniform float intensities[10];
             uniform float ringWidths[10];
+            uniform float innerSq[10];
+            uniform float outerSq[10];
             uniform float3 waveColor;
 
             half4 main(float2 fragCoord) {
@@ -410,8 +477,15 @@ class WaveOverlayView(context: Context) : View(context), Density {
                 for (int i = 0; i < 10; i++) {
                     if (i >= waveCount) break;
 
+                    float intensity = intensities[i];
+                    if (intensity <= 0.001) continue;
+
                     float2 origin = float2(origins[i * 2], origins[i * 2 + 1]);
-                    float dist = distance(fragCoord, origin);
+                    float2 delta = fragCoord - origin;
+                    float distSq = dot(delta, delta);
+                    if (distSq < innerSq[i] || distSq > outerSq[i]) continue;
+
+                    float dist = sqrt(distSq);
                     float r = radii[i];
                     float halfRing = ringWidths[i] * 0.5;
 
@@ -421,7 +495,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
                     float ringShape = smoothstep(inner - halfRing * 0.5, r, dist)
                                     * smoothstep(outer + halfRing * 0.5, r, dist);
 
-                    brightness += ringShape * intensities[i] * 0.1;
+                    brightness += ringShape * intensity * 0.1;
                 }
 
                 brightness = clamp(brightness, 0.0, 1.0);
