@@ -16,6 +16,7 @@ import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.DragThresholdView
 import vadiole.tremor.view.TutorialView
+import vadiole.tremor.view.FadeOverlayView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.FooterView
 import vadiole.tremor.view.HapticButton
@@ -66,8 +67,6 @@ class TremorActivity : Activity(), Density {
             isVerticalScrollBarEnabled = false
             clipChildren = false
             clipToPadding = false
-            isVerticalFadingEdgeEnabled = true
-            setFadingEdgeLength(48.dp)
         }
 
         val content = LinearLayout(this).apply {
@@ -102,6 +101,13 @@ class TremorActivity : Activity(), Density {
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.MATCH_PARENT,
         ))
+        contentLayer.addView(
+            FadeOverlayView(this, scrollView, getColor(R.color.background), 48.dp),
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT,
+            ),
+        )
 
         root.addView(contentLayer, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
