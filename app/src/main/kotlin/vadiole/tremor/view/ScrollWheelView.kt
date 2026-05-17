@@ -19,17 +19,11 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val tickSpacing = 12f.dp
     private val tickHapticConstant = HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
-
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private val tickPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -72,6 +66,8 @@ class ScrollWheelView(context: Context) : View(context), Density {
 
     init {
         isClickable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -80,10 +76,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
+        rect.set(surfaceInset, surfaceInset, width - surfaceInset, height - surfaceInset)
 
         canvas.save()
         canvas.clipRect(rect)
@@ -140,6 +133,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
                 lastMoveTime = SystemClock.uptimeMillis()
                 velocity = 0f
                 lastTickOffset = scrollOffset
+                isPressed = true
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -158,10 +152,12 @@ class ScrollWheelView(context: Context) : View(context), Density {
                     isFlung = true
                     postOnAnimation(flingRunnable)
                 }
+                isPressed = false
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
             MotionEvent.ACTION_CANCEL -> {
                 isFlung = false
+                isPressed = false
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
         }
@@ -178,6 +174,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
     }
 
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
         removeCallbacks(flingRunnable)
     }

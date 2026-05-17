@@ -3,7 +3,6 @@ package vadiole.tremor.view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.Layout
 import android.text.StaticLayout
@@ -24,21 +23,14 @@ class HapticButton(
     private val onTrigger: (screenX: Float, screenY: Float) -> Unit,
 ) : View(context), Density {
 
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val minHeight = 56.dp
     private val horizontalPadding = 8f.dp
     private val verticalPadding = 8f.dp
 
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(UiConstants.CORNER_RADIUS_DP.dp.toInt()),
+    )
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -54,9 +46,6 @@ class HapticButton(
         textAlign = Paint.Align.CENTER
         isSubpixelText = true
     }
-
-    private val pressedColor = context.getColor(R.color.surface_pressed)
-    private val normalColor = context.getColor(R.color.surface)
 
     private val fallbackPaint = if (isFallback) TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_secondary)
@@ -74,7 +63,6 @@ class HapticButton(
     private val fallbackGap = 1f.dp
     private val fallbackText = if (isFallback) context.getString(R.string.effect_fallback_label) else ""
 
-    private val rect = RectF()
     private val location = IntArray(2)
     private var labelLayout: StaticLayout? = null
     private var truncatedConstant: String = constantName
@@ -82,6 +70,8 @@ class HapticButton(
     init {
         isClickable = true
         isFocusable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setOnTouchListener(
             TouchEffect(
                 pressedScale = 1.035f,
@@ -113,11 +103,6 @@ class HapticButton(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
-
         val layout = labelLayout ?: return
         val centerX = width / 2f
         val maxTextWidth = (width - horizontalPadding * 2).toInt()
@@ -145,18 +130,21 @@ class HapticButton(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                bgPaint.color = pressedColor
-                invalidate()
+                isPressed = true
                 getLocationOnScreen(location)
                 val screenX = location[0] + event.x
                 val screenY = location[1] + event.y
                 onTrigger(screenX, screenY)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                bgPaint.color = normalColor
-                invalidate()
+                isPressed = false
             }
         }
         return true
+    }
+
+    override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
+        super.onDetachedFromWindow()
     }
 }

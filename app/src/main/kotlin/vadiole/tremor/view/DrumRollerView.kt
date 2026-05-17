@@ -5,6 +5,7 @@ import android.graphics.Canvas
 import android.os.SystemClock
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
@@ -32,6 +33,10 @@ class DrumRollerView(
     private val touchHeight = 64.dp
     private val lineSpacing = 8f.dp
     private val borderRadius = 4f.dp
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(borderRadius.toInt()),
+    )
     private val tickHapticConstant = if (Build.VERSION.SDK_INT >= 34) {
         HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
     } else {
@@ -42,17 +47,6 @@ class DrumRollerView(
         color = context.getColor(R.color.foreground)
         strokeWidth = 1f.dp
         style = Paint.Style.STROKE
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
-
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
     }
 
     private val rect = RectF()
@@ -102,6 +96,7 @@ class DrumRollerView(
 
     init {
         isClickable = true
+        surfaceDrawable.callback = this
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -118,8 +113,8 @@ class DrumRollerView(
         val offsetY = (height - visualHeight) / 2f
 
         rect.set(offsetX, offsetY, offsetX + visualWidth, offsetY + visualHeight)
-        canvas.drawRoundRect(rect, borderRadius, borderRadius, bgPaint)
-        canvas.drawRoundRect(rect, borderRadius, borderRadius, borderPaint)
+        surfaceDrawable.setBounds(rect.left.toInt(), rect.top.toInt(), rect.right.toInt(), rect.bottom.toInt())
+        surfaceDrawable.draw(canvas)
 
         canvas.save()
         canvas.clipRect(rect)
@@ -161,6 +156,7 @@ class DrumRollerView(
                 lastTouchY = event.y
                 lastMoveTime = SystemClock.uptimeMillis()
                 velocity = 0f
+                isPressed = true
                 parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
@@ -199,11 +195,13 @@ class DrumRollerView(
                     scrollOffset = 0f
                     invalidate()
                 }
+                isPressed = false
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
             MotionEvent.ACTION_CANCEL -> {
                 isFlung = false
                 scrollOffset = 0f
+                isPressed = false
                 invalidate()
                 parent?.requestDisallowInterceptTouchEvent(false)
             }
@@ -217,9 +215,24 @@ class DrumRollerView(
         onValueChanged?.invoke(value)
     }
 
+    override fun drawableStateChanged() {
+        super.drawableStateChanged()
+        surfaceDrawable.state = drawableState
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        surfaceDrawable.callback = this
+    }
+
+    override fun verifyDrawable(who: Drawable): Boolean {
+        return who === surfaceDrawable || super.verifyDrawable(who)
+    }
+
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
+        surfaceDrawable.callback = null
         super.onDetachedFromWindow()
         removeCallbacks(flingRunnable)
     }
-
 }

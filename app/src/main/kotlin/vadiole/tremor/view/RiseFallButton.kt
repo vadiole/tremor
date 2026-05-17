@@ -27,17 +27,11 @@ class RiseFallButton(
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val riseDurationMs = 400L
     private val fallDurationMs = 300L
-
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private val fillPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -54,7 +48,6 @@ class RiseFallButton(
     private val foregroundColor = context.getColor(R.color.foreground)
     private val labelText = context.getString(R.string.example_rise_fall).uppercase()
 
-    private val rect = RectF()
     private val fillRect = RectF()
     private val clipPath = Path()
     private var fillProgress = 0f
@@ -64,6 +57,8 @@ class RiseFallButton(
     init {
         isClickable = true
         isFocusable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setOnTouchListener(
             TouchEffect(
                 pressedScale = 1.02f,
@@ -90,23 +85,19 @@ class RiseFallButton(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
+        val halfStroke = surfaceInset
 
         if (fillProgress > 0f) {
             val fillHeight = (height - 2 * halfStroke) * fillProgress
             fillRect.set(halfStroke, height - halfStroke - fillHeight, width - halfStroke, height - halfStroke)
 
             canvas.save()
-            clipPath.reset()
-            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
-            canvas.clipPath(clipPath)
+            if (surfaceDrawable.copySurfacePath(clipPath)) {
+                canvas.clipPath(clipPath)
+            }
             canvas.drawRect(fillRect, fillPaint)
             canvas.restore()
         }
-
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val cx = width / 2f
         val cy = height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f
@@ -116,9 +107,11 @@ class RiseFallButton(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                isPressed = true
                 startRise()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isPressed = false
                 startFall()
             }
         }
@@ -160,6 +153,7 @@ class RiseFallButton(
     }
 
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
         riseAnimator?.cancel()
         fallAnimator?.cancel()

@@ -23,17 +23,11 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handlePadding = 6f.dp
     private val handleCornerRadius = 8f.dp
     private val thresholdFraction = 0.75f
-
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private val thresholdPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_muted)
@@ -112,6 +106,8 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     init {
         isClickable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -124,10 +120,8 @@ class DragThresholdView(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
+        val halfStroke = surfaceInset
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
 
         // threshold line (centered vertically)
         val thresholdX = width * thresholdFraction
@@ -148,9 +142,9 @@ class DragThresholdView(context: Context) : View(context), Density {
 
         // clip to container bounds
         canvas.save()
-        clipPath.reset()
-        clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
-        canvas.clipPath(clipPath)
+        if (surfaceDrawable.copySurfacePath(clipPath)) {
+            canvas.clipPath(clipPath)
+        }
 
         // apply scale around handle center
         if (handleScale != 1f) {
@@ -196,6 +190,7 @@ class DragThresholdView(context: Context) : View(context), Density {
                     handleStartX = handleX
                     gestureStarted = false
                     activated = false
+                    isPressed = true
                     parent?.requestDisallowInterceptTouchEvent(true)
                 }
             }
@@ -228,6 +223,7 @@ class DragThresholdView(context: Context) : View(context), Density {
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (isDragging) {
                     isDragging = false
+                    isPressed = false
                     if (gestureStarted) {
                         performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
                     }
@@ -249,6 +245,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     }
 
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
         removeCallbacks(springRunnable)
         scaleAnimator?.cancel()

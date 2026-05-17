@@ -4,6 +4,7 @@ import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.RectF
 import android.graphics.Typeface
 import android.view.HapticFeedbackConstants
@@ -21,16 +22,11 @@ class LongPressButton(context: Context) : View(context), Density {
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val longPressDelay = 500L
 
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -45,16 +41,13 @@ class LongPressButton(context: Context) : View(context), Density {
         isSubpixelText = true
     }
 
-    private val pressedColor = context.getColor(R.color.surface_pressed)
-    private val normalColor = context.getColor(R.color.surface)
-
     private val labelHoldMe = context.getString(R.string.example_hold_me).uppercase()
     private val labelTriggered = context.getString(R.string.example_hold_me_done).uppercase()
 
-    private val rect = RectF()
     private val progressRect = RectF()
+    private val clipPath = Path()
     private var progress = 0f
-    private var isPressed = false
+    private var isHolding = false
     private var triggered = false
 
     private var progressAnimator: ValueAnimator? = null
@@ -62,6 +55,8 @@ class LongPressButton(context: Context) : View(context), Density {
     init {
         isClickable = true
         isFocusable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setOnTouchListener(
             TouchEffect(
                 pressedScale = 1.02f,
@@ -78,18 +73,22 @@ class LongPressButton(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-
-        if (isPressed && !triggered && progress > 0f) {
+        if (isHolding && !triggered && progress > 0f) {
             progressPaint.alpha = (255 * 0.15f).toInt()
-            progressRect.set(halfStroke, halfStroke, halfStroke + (width - 2 * halfStroke) * progress, height - halfStroke)
+            progressRect.set(
+                surfaceInset,
+                surfaceInset,
+                surfaceInset + (width - 2 * surfaceInset) * progress,
+                height - surfaceInset,
+            )
+            canvas.save()
+            if (surfaceDrawable.copySurfacePath(clipPath)) {
+                canvas.clipPath(clipPath)
+            }
             canvas.drawRoundRect(progressRect, cornerRadius, cornerRadius, progressPaint)
+            canvas.restore()
             progressPaint.alpha = 255
         }
-
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val label = if (triggered) labelTriggered else labelHoldMe
         val centerX = width / 2f
@@ -100,16 +99,16 @@ class LongPressButton(context: Context) : View(context), Density {
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
+                isHolding = true
                 isPressed = true
                 triggered = false
                 progress = 0f
-                bgPaint.color = pressedColor
                 startProgressAnimation()
                 invalidate()
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                isHolding = false
                 isPressed = false
-                bgPaint.color = normalColor
                 cancelProgressAnimation()
                 if (!triggered) {
                     performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
@@ -130,7 +129,7 @@ class LongPressButton(context: Context) : View(context), Density {
             addUpdateListener {
                 progress = it.animatedValue as Float
                 invalidate()
-                if (progress >= 1f && isPressed && !triggered) {
+                if (progress >= 1f && isHolding && !triggered) {
                     triggered = true
                     performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     invalidate()
@@ -146,6 +145,7 @@ class LongPressButton(context: Context) : View(context), Density {
     }
 
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
         cancelProgressAnimation()
     }

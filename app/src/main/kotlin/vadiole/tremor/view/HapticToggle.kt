@@ -17,6 +17,11 @@ class HapticToggle(context: Context) : View(context), Density {
     private val trackHeight = 32.dp
     private val thumbRadius = 12f.dp
     private val thumbPadding = 4f.dp
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private var isOn = false
     private var thumbPosition = 0f
@@ -25,19 +30,12 @@ class HapticToggle(context: Context) : View(context), Density {
         style = Paint.Style.FILL
     }
 
-    private val trackBorderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
-
     private val thumbPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
         style = Paint.Style.FILL
     }
 
     private val onColor = context.getColor(R.color.foreground)
-    private val offColor = context.getColor(R.color.surface)
     private val thumbOnColor = context.getColor(R.color.background)
     private val thumbOffColor = context.getColor(R.color.foreground)
 
@@ -47,6 +45,8 @@ class HapticToggle(context: Context) : View(context), Density {
     init {
         isClickable = true
         isFocusable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setOnClickListener { toggle() }
     }
 
@@ -77,14 +77,13 @@ class HapticToggle(context: Context) : View(context), Density {
 
     override fun onDraw(canvas: Canvas) {
         val cornerRadius = height / 2f
-        val halfStroke = trackBorderPaint.strokeWidth / 2f
+        val halfStroke = surfaceInset
 
-        trackPaint.color = blendColor(offColor, onColor, thumbPosition)
+        trackPaint.color = blendColor(TRANSPARENT, onColor, thumbPosition)
         thumbPaint.color = blendColor(thumbOffColor, thumbOnColor, thumbPosition)
 
         rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, trackPaint)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, trackBorderPaint)
 
         val centerY = height / 2f
         val offX = thumbPadding + thumbRadius + halfStroke
@@ -111,11 +110,13 @@ class HapticToggle(context: Context) : View(context), Density {
     }
 
     override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
         thumbAnimator?.cancel()
     }
 
     private companion object {
+        const val TRANSPARENT = 0x00000000
         val thumbInterpolator = DecelerateInterpolator(2f)
     }
 }

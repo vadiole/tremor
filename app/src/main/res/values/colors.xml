@@ -5,6 +5,10 @@
     <color name="surface">#FFF5F5F5</color>
     <color name="surface_pressed">#FFEBEBEB</color>
     <color name="border">#FFDDDDDD</color>
+    <color name="floating_surface">#FFFFFFFF</color>
+    <color name="floating_pressed_overlay">#0A000000</color>
+    <color name="floating_border">#FFA5A5A5</color>
+    <color name="floating_shadow">#0B000000</color>
     <color name="text_secondary">#FF777777</color>
     <color name="text_muted">#FF999999</color>
     <color name="text_disabled">#FFAAAAAA</color>

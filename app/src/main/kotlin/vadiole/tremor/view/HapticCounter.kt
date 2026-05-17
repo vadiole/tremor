@@ -22,16 +22,11 @@ class HapticCounter(context: Context) : View(context), Density {
     private val prefs = context.getSharedPreferences("tremor", Context.MODE_PRIVATE)
     private var count = prefs.getInt("counter", 0)
 
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
+    )
+    private val surfaceInset = Floating.borderWidthPx(context) / 2f
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -66,6 +61,8 @@ class HapticCounter(context: Context) : View(context), Density {
 
     init {
         isClickable = true
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setOnTouchListener(
             TouchEffect(
                 pressedScale = 1.02f,
@@ -85,16 +82,15 @@ class HapticCounter(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
+        val halfStroke = surfaceInset
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
 
         if (pressedZone != 0) {
             val thirdW = width / 3f
             canvas.save()
-            clipPath.reset()
-            clipPath.addRoundRect(rect, cornerRadius, cornerRadius, Path.Direction.CW)
-            canvas.clipPath(clipPath)
+            if (surfaceDrawable.copySurfacePath(clipPath)) {
+                canvas.clipPath(clipPath)
+            }
             if (pressedZone == -1) {
                 pressedRect.set(halfStroke, halfStroke, thirdW, height - halfStroke)
             } else {
@@ -103,8 +99,6 @@ class HapticCounter(context: Context) : View(context), Density {
             canvas.drawRect(pressedRect, pressedPaint)
             canvas.restore()
         }
-
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
 
         val thirdW = width / 3f
         val centerY = height / 2f - (buttonPaint.ascent() + buttonPaint.descent()) / 2f
@@ -127,6 +121,7 @@ class HapticCounter(context: Context) : View(context), Density {
                         count--
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = -1
+                        isPressed = true
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                         invalidate()
                     }
@@ -134,6 +129,7 @@ class HapticCounter(context: Context) : View(context), Density {
                         count++
                         prefs.edit().putInt("counter", count).apply()
                         pressedZone = 1
+                        isPressed = true
                         performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                         invalidate()
                     }
@@ -141,9 +137,15 @@ class HapticCounter(context: Context) : View(context), Density {
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 pressedZone = 0
+                isPressed = false
                 invalidate()
             }
         }
         return true
+    }
+
+    override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
+        super.onDetachedFromWindow()
     }
 }

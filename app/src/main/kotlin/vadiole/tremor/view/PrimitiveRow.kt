@@ -3,7 +3,6 @@ package vadiole.tremor.view
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.RectF
 import android.graphics.Typeface
 import android.text.TextPaint
 import android.text.TextUtils
@@ -22,22 +21,15 @@ class PrimitiveRow(
 ) : ViewGroup(context), Density {
 
     private val minRowHeight = 64.dp
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val padding = 12.dp
     private val textSpacing = 2.dp
     private val drumMarginStart = 8.dp
     private val textEndMargin = 4.dp
 
-    private val bgPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.surface)
-        style = Paint.Style.FILL
-    }
-
-    private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.STROKE
-        strokeWidth = 1f.dp
-    }
+    private val surfaceDrawable = FloatingSurfaceDrawable(
+        context = context,
+        pathProvider = FloatingSurfaceDrawable.squircle(UiConstants.CORNER_RADIUS_DP.dp.toInt()),
+    )
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -63,10 +55,6 @@ class PrimitiveRow(
 
     private val maxValueWidth = valuePaint.measureText("0.00")
 
-    private val pressedColor = context.getColor(R.color.surface_pressed)
-    private val normalColor = context.getColor(R.color.surface)
-
-    private val rect = RectF()
     private val location = IntArray(2)
     private var ellipsizedLabel: CharSequence = label
     private var ellipsizedConstant: CharSequence = constantName
@@ -78,6 +66,8 @@ class PrimitiveRow(
     init {
         clipChildren = false
         clipToPadding = false
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setWillNotDraw(false)
         setOnTouchListener(
             TouchEffect(
@@ -122,11 +112,6 @@ class PrimitiveRow(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = borderPaint.strokeWidth / 2f
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, bgPaint)
-        canvas.drawRoundRect(rect, cornerRadius, cornerRadius, borderPaint)
-
         val labelX = padding.toFloat()
         val labelHeight = labelPaint.descent() - labelPaint.ascent()
         val constantHeight = constantPaint.descent() - constantPaint.ascent()
@@ -150,19 +135,22 @@ class PrimitiveRow(
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                bgPaint.color = pressedColor
-                invalidate()
+                isPressed = true
                 getLocationOnScreen(location)
                 val screenX = location[0] + event.x
                 val screenY = location[1] + event.y
                 onTrigger(drum.value, screenX, screenY)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
-                bgPaint.color = normalColor
-                invalidate()
+                isPressed = false
             }
         }
         return true
+    }
+
+    override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
+        super.onDetachedFromWindow()
     }
 
     private fun isDrumTouch(ev: MotionEvent): Boolean {
