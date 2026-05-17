@@ -7,7 +7,6 @@ import android.view.ViewConfiguration
 import android.view.animation.DecelerateInterpolator
 import android.view.animation.OvershootInterpolator
 import kotlin.math.abs
-import kotlin.math.max
 import kotlin.math.sign
 
 class TouchEffect(
@@ -18,7 +17,6 @@ class TouchEffect(
     private val maxDragPx: Float = 0f,
     private val dragDamping: Float = DEFAULT_DRAG_DAMPING,
     private val pressDurationMs: Long = DEFAULT_PRESS_DURATION_MS,
-    private val pressedTranslationZDp: Float = DEFAULT_PRESSED_TRANSLATION_Z_DP,
     private val shouldHandleDown: (View, MotionEvent) -> Boolean = { _, _ -> true },
 ) : View.OnTouchListener {
 
@@ -27,9 +25,6 @@ class TouchEffect(
     private var dragging = false
     private var touchSlop = 0
     private var active = false
-    private var restingTranslationZ = 0f
-    private var hasRestingTranslationZ = false
-    private var restoreTranslationZ: Runnable? = null
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
         when (event.actionMasked) {
@@ -48,13 +43,6 @@ class TouchEffect(
 
     fun press(view: View) {
         view.animate().cancel()
-        restoreTranslationZ?.let(view::removeCallbacks)
-        restoreTranslationZ = null
-        if (!hasRestingTranslationZ) {
-            restingTranslationZ = view.translationZ
-            hasRestingTranslationZ = true
-        }
-        view.translationZ = max(restingTranslationZ, pressedTranslationZDp * view.resources.displayMetrics.density)
         view.translationX = 0f
         view.translationY = 0f
         view.animate()
@@ -75,19 +63,6 @@ class TouchEffect(
             .setDuration(releaseDurationMs)
             .setInterpolator(releaseInterpolator)
             .start()
-        scheduleTranslationZRestore(view)
-    }
-
-    private fun scheduleTranslationZRestore(view: View) {
-        if (!hasRestingTranslationZ) return
-        val targetTranslationZ = restingTranslationZ
-        val restore = Runnable {
-            view.translationZ = targetTranslationZ
-            hasRestingTranslationZ = false
-            restoreTranslationZ = null
-        }
-        restoreTranslationZ = restore
-        view.postDelayed(restore, releaseDurationMs)
     }
 
     private fun onDown(view: View, event: MotionEvent) {
@@ -119,7 +94,6 @@ class TouchEffect(
         const val DEFAULT_PRESS_DURATION_MS = 80L
         const val DEFAULT_RELEASE_DURATION_MS = 180L
         const val DEFAULT_DRAG_DAMPING = 0.08f
-        const val DEFAULT_PRESSED_TRANSLATION_Z_DP = 8f
 
         val PRESS_INTERPOLATOR: TimeInterpolator = DecelerateInterpolator(1.8f)
         val DEFAULT_RELEASE_INTERPOLATOR: TimeInterpolator = OvershootInterpolator(1.4f)

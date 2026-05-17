@@ -10,6 +10,10 @@ import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import android.view.View
+import kotlin.math.ceil
+import kotlin.math.floor
+import kotlin.math.max
+import kotlin.math.min
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
@@ -42,11 +46,20 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val distortionIntensities = FloatArray(maxWaves)
 
     private val waveColor = context.getColor(R.color.foreground)
+    private val waveColorR = ((waveColor shr 16) and 0xFF) / 255f
+    private val waveColorG = ((waveColor shr 8) and 0xFF) / 255f
+    private val waveColorB = (waveColor and 0xFF) / 255f
 
     private val fallbackPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
         color = waveColor
     }
+
+    private val locationScratch = IntArray(2)
+    private val targetLocationScratch = IntArray(2)
+    private var distortionEffect: RenderEffect? = null
+    private var lastResolutionWidth = -1
+    private var lastResolutionHeight = -1
 
     init {
         isClickable = false
@@ -70,10 +83,9 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     fun spawnWave(screenX: Float, screenY: Float, strength: Float = 0.5f, style: WaveStyle = WaveStyle.DEFAULT) {
-        val loc = IntArray(2)
-        getLocationOnScreen(loc)
-        val localX = screenX - loc[0]
-        val localY = screenY - loc[1]
+        getLocationOnScreen(locationScratch)
+        val localX = screenX - locationScratch[0]
+        val localY = screenY - locationScratch[1]
 
         if (waves.size >= maxWaves) {
             waves.removeAt(0)
@@ -130,33 +142,53 @@ class WaveOverlayView(context: Context) : View(context), Density {
         val count = waves.size.coerceAtMost(maxWaves)
         s.setIntUniform("waveCount", count)
 
+        var minX = Float.POSITIVE_INFINITY
+        var minY = Float.POSITIVE_INFINITY
+        var maxX = Float.NEGATIVE_INFINITY
+        var maxY = Float.NEGATIVE_INFINITY
+
         for (i in 0 until count) {
             val wave = waves[i]
             val elapsed = scaledElapsedMs(now, wave, durationScale)
             val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
             val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
+            val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
+            val ringW = wave.ringWidth
 
             shaderOrigins[i * 2] = wave.x
             shaderOrigins[i * 2 + 1] = wave.y
-            shaderRadii[i] = progress * wave.expandSpeed * (wave.durationMs / 1000f)
-            shaderRingWidths[i] = wave.ringWidth
+            shaderRadii[i] = radius
+            shaderRingWidths[i] = ringW
 
             val easeOut = 1f - progress * progress
-            shaderIntensities[i] = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
+            val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
+            shaderIntensities[i] = intensity
+
+            if (intensity > 0.001f) {
+                val outer = radius + ringW * 0.75f
+                if (wave.x - outer < minX) minX = wave.x - outer
+                if (wave.x + outer > maxX) maxX = wave.x + outer
+                if (wave.y - outer < minY) minY = wave.y - outer
+                if (wave.y + outer > maxY) maxY = wave.y + outer
+            }
         }
 
         s.setFloatUniform("origins", shaderOrigins)
         s.setFloatUniform("radii", shaderRadii)
         s.setFloatUniform("intensities", shaderIntensities)
         s.setFloatUniform("ringWidths", shaderRingWidths)
-        s.setFloatUniform(
-            "waveColor",
-            ((waveColor shr 16) and 0xFF) / 255f,
-            ((waveColor shr 8) and 0xFF) / 255f,
-            (waveColor and 0xFF) / 255f,
-        )
+        s.setFloatUniform("waveColor", waveColorR, waveColorG, waveColorB)
         shaderPaint.shader = s
-        canvas.drawRect(0f, 0f, width.toFloat(), height.toFloat(), shaderPaint)
+
+        if (minX == Float.POSITIVE_INFINITY) return
+
+        val clipLeft = max(0f, floor(minX))
+        val clipTop = max(0f, floor(minY))
+        val clipRight = min(width.toFloat(), ceil(maxX))
+        val clipBottom = min(height.toFloat(), ceil(maxY))
+        if (clipRight <= clipLeft || clipBottom <= clipTop) return
+
+        canvas.drawRect(clipLeft, clipTop, clipRight, clipBottom, shaderPaint)
     }
 
     private fun updateDistortionEffect(now: Long, durationScale: Float) {
@@ -171,8 +203,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
 
-        val targetLocation = IntArray(2)
-        target.getLocationOnScreen(targetLocation)
+        target.getLocationOnScreen(targetLocationScratch)
         var hasVisibleWave = false
 
         for (i in 0 until count) {
@@ -183,8 +214,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val easeOut = 1f - progress * progress
             val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
 
-            distortionOrigins[i * 2] = wave.screenX - targetLocation[0]
-            distortionOrigins[i * 2 + 1] = wave.screenY - targetLocation[1]
+            distortionOrigins[i * 2] = wave.screenX - targetLocationScratch[0]
+            distortionOrigins[i * 2 + 1] = wave.screenY - targetLocationScratch[1]
             distortionAges[i] = effectiveElapsed / 1000f
             distortionAmplitudes[i] = wave.distortionAmplitude
             distortionSpeeds[i] = wave.expandSpeed
@@ -200,7 +231,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
 
-        s.setFloatUniform("resolution", target.width.toFloat(), target.height.toFloat())
+        if (lastResolutionWidth != target.width || lastResolutionHeight != target.height) {
+            s.setFloatUniform("resolution", target.width.toFloat(), target.height.toFloat())
+            lastResolutionWidth = target.width
+            lastResolutionHeight = target.height
+        }
         s.setIntUniform("waveCount", count)
         s.setFloatUniform("origins", distortionOrigins)
         s.setFloatUniform("ages", distortionAges)
@@ -208,7 +243,10 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("speeds", distortionSpeeds)
         s.setFloatUniform("intensities", distortionIntensities)
 
-        target.setRenderEffect(RenderEffect.createRuntimeShaderEffect(s, "content"))
+        val effect = distortionEffect ?: RenderEffect.createRuntimeShaderEffect(s, "content").also {
+            distortionEffect = it
+        }
+        target.setRenderEffect(effect)
         distortionActive = true
     }
 

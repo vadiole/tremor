@@ -2,6 +2,7 @@ package vadiole.tremor.view
 
 import android.animation.ValueAnimator
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.ColorFilter
 import android.graphics.Outline
@@ -11,23 +12,30 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
+import kotlin.math.abs
+import kotlin.math.ceil
 import vadiole.tremor.R
 
 class FloatingSurfaceDrawable(
     context: Context,
     private val pathProvider: PathProvider? = null,
-    surfaceColor: Int = context.getColor(R.color.floating_surface),
+    private val surfaceColor: Int = context.getColor(R.color.floating_surface),
     pressedOverlayColor: Int = context.getColor(R.color.floating_pressed_overlay),
-    shadowColor: Int = context.getColor(R.color.floating_shadow),
-    borderColor: Int = context.getColor(R.color.floating_border),
+    private val shadowColor: Int = context.getColor(R.color.floating_shadow),
+    private val borderColor: Int = context.getColor(R.color.floating_border),
 ) : Drawable() {
     fun interface PathProvider {
         fun update(bounds: Rect, borderInset: Float, surfacePath: Path, borderPath: Path)
     }
 
+    interface ShapeWithCacheKey : PathProvider {
+        val cacheKey: String
+    }
+
     private val borderWidth = Floating.borderWidthPx(context)
     private val shadowRadius = Floating.SHADOW_RADIUS_DP.dp(context)
     private val shadowDy = Floating.SHADOW_DY_DP.dp(context)
+    private val outsetPx: Int = ceil(shadowRadius + abs(shadowDy)).toInt()
 
     private val surfacePath = Path()
     private val borderPath = Path()
@@ -66,6 +74,8 @@ class FloatingSurfaceDrawable(
         }
     }
 
+    private var cachedBitmap: Bitmap? = null
+
     override fun isStateful(): Boolean = true
 
     override fun onStateChange(state: IntArray): Boolean {
@@ -91,12 +101,50 @@ class FloatingSurfaceDrawable(
 
     override fun onBoundsChange(bounds: Rect) {
         updatePaths(bounds)
+        updateCachedBitmap(bounds)
     }
 
     private fun updatePaths(bounds: Rect) {
         surfacePath.rewind()
         borderPath.rewind()
         pathProvider?.update(bounds, borderWidth / 2f, surfacePath, borderPath)
+    }
+
+    private fun updateCachedBitmap(bounds: Rect) {
+        val provider = pathProvider
+        if (provider == null || bounds.width() <= 0 || bounds.height() <= 0) {
+            cachedBitmap = null
+            return
+        }
+        val shapeKey = (provider as? ShapeWithCacheKey)?.cacheKey
+            ?: "instance:${System.identityHashCode(provider)}"
+        val key = FloatingSurfaceCacheKey(
+            width = bounds.width(),
+            height = bounds.height(),
+            shapeKey = shapeKey,
+            surfaceColor = surfaceColor,
+            borderColor = borderColor,
+            shadowColor = shadowColor,
+            shadowRadiusQ = (shadowRadius * 100f).toInt(),
+            shadowDyQ = (shadowDy * 100f).toInt(),
+            borderWidthQ = (borderWidth * 100f).toInt(),
+            outsetPx = outsetPx,
+        )
+        cachedBitmap = FloatingSurfaceBitmapCache.get(key) { canvas ->
+            renderBaseLayer(canvas, bounds.width(), bounds.height())
+        }
+    }
+
+    private fun renderBaseLayer(canvas: Canvas, width: Int, height: Int) {
+        val provider = pathProvider ?: return
+        val localSurface = Path()
+        val localBorder = Path()
+        val localBounds = Rect(outsetPx, outsetPx, outsetPx + width, outsetPx + height)
+        provider.update(localBounds, borderWidth / 2f, localSurface, localBorder)
+        if (localSurface.isEmpty) return
+        canvas.drawPath(localSurface, shadowPaint)
+        canvas.drawPath(localSurface, surfacePaint)
+        canvas.drawPath(localBorder, borderPaint)
     }
 
     override fun getOutline(outline: Outline) {
@@ -118,10 +166,14 @@ class FloatingSurfaceDrawable(
     }
 
     override fun draw(canvas: Canvas) {
+        val bitmap = cachedBitmap ?: return
         if (surfacePath.isEmpty) return
-        canvas.drawPath(surfacePath, shadowPaint)
-        canvas.drawPath(surfacePath, surfacePaint)
-        canvas.drawPath(borderPath, borderPaint)
+        canvas.drawBitmap(
+            bitmap,
+            (bounds.left - outsetPx).toFloat(),
+            (bounds.top - outsetPx).toFloat(),
+            null,
+        )
         if (pressedOverlayAlpha > 0) {
             canvas.drawPath(surfacePath, pressedOverlayPaint)
         }
@@ -147,19 +199,22 @@ class FloatingSurfaceDrawable(
     }
 
     companion object {
-        fun squircle(cornerRadius: Int = Int.MAX_VALUE): PathProvider {
+        fun squircle(cornerRadius: Int = Int.MAX_VALUE): ShapeWithCacheKey {
             val surface = Squircle(cornerRadius)
             val border = Squircle(cornerRadius)
-            return PathProvider { bounds, borderInset, surfacePath, borderPath ->
-                surface.setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom)
-                border.setBounds(
-                    bounds.left + borderInset,
-                    bounds.top + borderInset,
-                    bounds.right - borderInset,
-                    bounds.bottom - borderInset
-                )
-                surfacePath.set(surface.path)
-                borderPath.set(border.path)
+            return object : ShapeWithCacheKey {
+                override val cacheKey: String = "sq:$cornerRadius"
+                override fun update(bounds: Rect, borderInset: Float, surfacePath: Path, borderPath: Path) {
+                    surface.setBounds(bounds.left, bounds.top, bounds.right, bounds.bottom)
+                    border.setBounds(
+                        bounds.left + borderInset,
+                        bounds.top + borderInset,
+                        bounds.right - borderInset,
+                        bounds.bottom - borderInset
+                    )
+                    surfacePath.set(surface.path)
+                    borderPath.set(border.path)
+                }
             }
         }
 

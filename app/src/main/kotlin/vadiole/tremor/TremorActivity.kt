@@ -58,7 +58,6 @@ class TremorActivity : Activity(), Density {
         val itemSpacing = UiConstants.ITEM_SPACING_DP.dp
 
         val root = FrameLayout(this).apply {
-            setBackgroundColor(getColor(R.color.background))
             clipChildren = false
             clipToPadding = false
         }
@@ -96,7 +95,6 @@ class TremorActivity : Activity(), Density {
         ))
 
         val contentLayer = FrameLayout(this).apply {
-            setBackgroundColor(getColor(R.color.background))
             clipChildren = false
             clipToPadding = false
         }
