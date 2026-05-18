@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
 import android.view.View
+import android.view.ViewTreeObserver
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.max
@@ -24,9 +25,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
     private val baseDurationMs = 600f
     private val baseExpandSpeed = 800f.dp
     private val baseRingWidth = 40f.dp
-    private val baseDistortionAmplitude = 14f.dp
+    private val baseDistortionAmplitude = 4f.dp
 
-    private val useShader = Build.VERSION.SDK_INT >= 33
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
 
@@ -60,18 +60,32 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
     private val locationScratch = IntArray(2)
     private val targetLocationScratch = IntArray(2)
+    private var targetScreenX = 0
+    private var targetScreenY = 0
+    private var targetPositionDirty = true
+    private var targetScrollObserver: ViewTreeObserver? = null
+    private val targetLayoutChangeListener = View.OnLayoutChangeListener { _, _, _, _, _, _, _, _, _ ->
+        targetPositionDirty = true
+    }
+    private val targetScrollChangeListener = ViewTreeObserver.OnScrollChangedListener {
+        targetPositionDirty = true
+    }
+    private val targetAttachStateListener = object : View.OnAttachStateChangeListener {
+        override fun onViewAttachedToWindow(v: View) {
+            targetPositionDirty = true
+            registerTargetScrollListener(v)
+        }
+
+        override fun onViewDetachedFromWindow(v: View) {
+            unregisterTargetScrollListener()
+        }
+    }
     private var lastResolutionWidth = -1
     private var lastResolutionHeight = -1
 
     init {
         isClickable = false
         isFocusable = false
-        if (useShader) {
-            initShader()
-        }
-    }
-
-    private fun initShader() {
         if (Build.VERSION.SDK_INT >= 33) {
             shader = RuntimeShader(WAVE_SHADER)
             distortionShader = RuntimeShader(DISTORTION_SHADER)
@@ -79,9 +93,22 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     fun setDistortionTarget(target: View?) {
-        if (distortionTarget === target) return
+        if (Build.VERSION.SDK_INT < 33 || distortionTarget === target) return
         clearDistortionEffect()
+        distortionTarget?.removeOnLayoutChangeListener(targetLayoutChangeListener)
+        distortionTarget?.removeOnAttachStateChangeListener(targetAttachStateListener)
+        unregisterTargetScrollListener()
+
         distortionTarget = target
+        targetPositionDirty = true
+        lastResolutionWidth = -1
+        lastResolutionHeight = -1
+
+        target?.addOnLayoutChangeListener(targetLayoutChangeListener)
+        target?.addOnAttachStateChangeListener(targetAttachStateListener)
+        if (target?.isAttachedToWindow == true) {
+            registerTargetScrollListener(target)
+        }
     }
 
     fun spawnWave(screenX: Float, screenY: Float, strength: Float = 0.5f, style: WaveStyle = WaveStyle.DEFAULT) {
@@ -98,8 +125,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
         val now = SystemClock.elapsedRealtime()
-        waves.add(Wave(localX, localY, screenX, screenY, now, strength.coerceIn(0f, 1f), style))
-        updateDistortionEffect(now, durationScale)
+        waves.add(Wave(localX, localY, screenX, screenY, now, durationScale, strength.coerceIn(0f, 1f), style))
+        updateDistortionEffect(now)
         postInvalidateOnAnimation()
     }
 
@@ -111,15 +138,9 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
     override fun onDraw(canvas: Canvas) {
         val now = SystemClock.elapsedRealtime()
-        val durationScale = systemAnimationDurationScale()
-        if (durationScale <= 0f) {
-            waves.clear()
-            clearDistortionEffect()
-            return
-        }
         var i = waves.size - 1
         while (i >= 0) {
-            if (scaledElapsedMs(now, waves[i], durationScale) > waves[i].totalDurationMs) {
+            if (waves[i].elapsedMs(now) > waves[i].totalDurationMs) {
                 waves.removeAt(i)
             }
             i--
@@ -130,22 +151,20 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
 
-        updateDistortionEffect(now, durationScale)
+        updateDistortionEffect(now)
 
-        if (useShader && shader != null && Build.VERSION.SDK_INT >= 33) {
-            drawWithShader(canvas, now, durationScale)
+        if (Build.VERSION.SDK_INT >= 33 && shader != null) {
+            drawWithShader(canvas, now)
         } else {
-            drawFallback(canvas, now, durationScale)
+            drawFallback(canvas, now)
         }
 
         postInvalidateOnAnimation()
     }
 
-    private fun drawWithShader(canvas: Canvas, now: Long, durationScale: Float) {
+    private fun drawWithShader(canvas: Canvas, now: Long) {
         if (Build.VERSION.SDK_INT < 33) return
         val s = shader ?: return
-
-        s.setFloatUniform("resolution", width.toFloat(), height.toFloat())
 
         val count = waves.size.coerceAtMost(maxWaves)
         s.setIntUniform("waveCount", count)
@@ -157,10 +176,9 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
         for (i in 0 until count) {
             val wave = waves[i]
-            val elapsed = scaledElapsedMs(now, wave, durationScale)
-            val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
-            val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
-            val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
+            val effectiveElapsed = wave.effectiveElapsedMs(now)
+            val progress = wave.progress(effectiveElapsed)
+            val radius = progress * wave.maxRadius
             val ringW = wave.ringWidth
 
             shaderOrigins[i * 2] = wave.x
@@ -168,8 +186,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             shaderRadii[i] = radius
             shaderRingWidths[i] = ringW
 
-            val easeOut = 1f - progress * progress
-            val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
+            val intensity = wave.intensity(progress, effectiveElapsed)
             shaderIntensities[i] = intensity
 
             // Ring contribution is non-zero only for |dist - radius| < ringW * 1.5 * 0.5 = ringW * 0.75
@@ -208,8 +225,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
         canvas.drawRect(clipLeft, clipTop, clipRight, clipBottom, shaderPaint)
     }
 
-    private fun updateDistortionEffect(now: Long, durationScale: Float) {
-        if (!useShader || Build.VERSION.SDK_INT < 33) return
+    private fun updateDistortionEffect(now: Long) {
+        if (Build.VERSION.SDK_INT < 33) return
         val target = distortionTarget ?: return
         val s = distortionShader ?: return
         if (target.width <= 0 || target.height <= 0) return
@@ -220,7 +237,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
 
-        target.getLocationOnScreen(targetLocationScratch)
+        updateTargetPosition(target)
         var hasVisibleWave = false
         var bboxMinX = Float.POSITIVE_INFINITY
         var bboxMinY = Float.POSITIVE_INFINITY
@@ -229,18 +246,14 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
         for (i in 0 until count) {
             val wave = waves[i]
-            val elapsed = scaledElapsedMs(now, wave, durationScale)
-            val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
-            val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
-            val easeOut = 1f - progress * progress
-            val intensity = if (effectiveElapsed <= 0f) 0f else easeOut * wave.intensityMultiplier
+            val effectiveElapsed = wave.effectiveElapsedMs(now)
+            val progress = wave.progress(effectiveElapsed)
+            val intensity = wave.intensity(progress, effectiveElapsed)
 
-            val originX = wave.screenX - targetLocationScratch[0]
-            val originY = wave.screenY - targetLocationScratch[1]
+            val originX = wave.screenX - targetScreenX
+            val originY = wave.screenY - targetScreenY
             val ageSec = effectiveElapsed / 1000f
-            // dist must satisfy dist < ageSec * max(speed, 1) for localTime > 0
-            val safeSpeed = if (wave.expandSpeed < 1f) 1f else wave.expandSpeed
-            val reach = ageSec * safeSpeed
+            val reach = ageSec * wave.expandSpeed
 
             distortionOrigins[i * 2] = originX
             distortionOrigins[i * 2 + 1] = originY
@@ -278,29 +291,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
         s.setFloatUniform("reachSq", distortionReachSq)
         s.setFloatUniform("bbox", bboxMinX, bboxMinY, bboxMaxX, bboxMaxY)
 
-        // DO NOT cache and reuse this RenderEffect across frames.
-        //
-        // The morph (the ripple displacement of the content underneath the wave) depends on
-        // the shader's uniforms being read fresh every frame. Two cache strategies have been
-        // tried and BOTH silently freeze the morph while still appearing to animate the ring:
-        //
-        //   1) Keeping a single cached effect and re-binding it every frame.
-        //      setRenderEffect(sameInstance) is a no-op: the framework compares pointers,
-        //      sees no change, and skips invalidation. Result: distortion is rendered once
-        //      and that output is reused; the ring (drawn separately on this view) keeps
-        //      animating, so it LOOKS like the wave works.
-        //
-        //   2) Alternating between two cached effects (A/B/A/B/...).
-        //      The pointer differs each frame, but the framework still appears to cache
-        //      per-effect output and the displacement does not visibly update. The ring
-        //      animates and GPU time drops, but if you crank baseDistortionAmplitude up,
-        //      no morph is visible — only the ring.
-        //
-        // Allocating a fresh RenderEffect every frame is the only approach that has been
-        // observed to actually re-run the distortion shader against the latest uniforms.
-        // Yes, it costs ~1ms/frame in allocation overhead. That is the price of a
-        // correct morph. If you "optimize" this, verify visually with a tap on a primitive
-        // row at peak amplitude — the content under the ring MUST visibly displace.
+        // Recreate after uniform changes; AOSP's RuntimeShader+RenderEffect sample:
+        // https://android.googlesource.com/platform/frameworks/base/+/master/tests/graphics/HwAccelerationTest/src/com/android/test/hwui/RenderEffectViewActivity.kt#70
         target.setRenderEffect(RenderEffect.createRuntimeShaderEffect(s, "content"))
         distortionActive = true
     }
@@ -309,6 +301,30 @@ class WaveOverlayView(context: Context) : View(context), Density {
         if (!distortionActive) return
         distortionTarget?.setRenderEffect(null)
         distortionActive = false
+    }
+
+    private fun registerTargetScrollListener(target: View) {
+        if (targetScrollObserver != null) return
+        val observer = target.viewTreeObserver
+        if (!observer.isAlive) return
+        observer.addOnScrollChangedListener(targetScrollChangeListener)
+        targetScrollObserver = observer
+    }
+
+    private fun unregisterTargetScrollListener() {
+        val observer = targetScrollObserver
+        if (observer?.isAlive == true) {
+            observer.removeOnScrollChangedListener(targetScrollChangeListener)
+        }
+        targetScrollObserver = null
+    }
+
+    private fun updateTargetPosition(target: View) {
+        if (!targetPositionDirty) return
+        target.getLocationOnScreen(targetLocationScratch)
+        targetScreenX = targetLocationScratch[0]
+        targetScreenY = targetLocationScratch[1]
+        targetPositionDirty = false
     }
 
     private fun systemAnimationDurationScale(): Float {
@@ -320,21 +336,15 @@ class WaveOverlayView(context: Context) : View(context), Density {
         return scale.coerceAtLeast(0f)
     }
 
-    private fun scaledElapsedMs(now: Long, wave: Wave, durationScale: Float): Float {
-        return (now - wave.startTime).toFloat() / durationScale.coerceAtLeast(0.001f)
-    }
-
-    private fun drawFallback(canvas: Canvas, now: Long, durationScale: Float) {
+    private fun drawFallback(canvas: Canvas, now: Long) {
         val strokeWidth = 1f.dp
         for (wave in waves) {
-            val elapsed = scaledElapsedMs(now, wave, durationScale)
-            val effectiveElapsed = (elapsed - wave.delayMs).coerceAtLeast(0f)
+            val effectiveElapsed = wave.effectiveElapsedMs(now)
             if (effectiveElapsed <= 0f) continue
 
-            val progress = (effectiveElapsed / wave.durationMs).coerceIn(0f, 1f)
-            val radius = progress * wave.expandSpeed * (wave.durationMs / 1000f)
-            val easeOut = 1f - progress * progress
-            val alpha = (easeOut * wave.intensityMultiplier * 0.8f * 255).toInt().coerceIn(0, 255)
+            val progress = wave.progress(effectiveElapsed)
+            val radius = progress * wave.maxRadius
+            val alpha = (wave.intensity(progress, effectiveElapsed) * 0.8f * 255).toInt().coerceIn(0, 255)
 
             fallbackPaint.color = (waveColor and 0x00FFFFFF) or (alpha shl 24)
             fallbackPaint.strokeWidth = strokeWidth
@@ -350,19 +360,39 @@ class WaveOverlayView(context: Context) : View(context), Density {
         val screenX: Float,
         val screenY: Float,
         val startTime: Long,
+        durationScale: Float,
         strength: Float,
         style: WaveStyle,
     ) {
         val delayMs = style.delayMs
         val durationMs = baseDurationMs * (0.6f + strength * 0.6f) * style.durationMultiplier
         val totalDurationMs = durationMs + delayMs
-        val expandSpeed = baseExpandSpeed * (0.5f + strength * 0.7f) * style.speedMultiplier
+        val animationTimeScale = 1f / durationScale.coerceAtLeast(0.001f)
+        val expandSpeed = (baseExpandSpeed * (0.5f + strength * 0.7f) * style.speedMultiplier).coerceAtLeast(1f)
+        val maxRadius = expandSpeed * (durationMs / 1000f)
         val ringWidth = baseRingWidth * (0.5f + strength * 0.5f) * style.ringWidthMultiplier
         val intensityMultiplier = (0.4f + strength * 0.6f) * style.intensityMultiplier
         val distortionAmplitude = if (style.distortsContent) {
             baseDistortionAmplitude * (0.45f + strength * 0.55f)
         } else {
             0f
+        }
+
+        fun elapsedMs(now: Long): Float {
+            return (now - startTime).toFloat() * animationTimeScale
+        }
+
+        fun effectiveElapsedMs(now: Long): Float {
+            return (elapsedMs(now) - delayMs).coerceAtLeast(0f)
+        }
+
+        fun progress(effectiveElapsedMs: Float): Float {
+            return (effectiveElapsedMs / durationMs).coerceIn(0f, 1f)
+        }
+
+        fun intensity(progress: Float, effectiveElapsedMs: Float): Float {
+            if (effectiveElapsedMs <= 0f) return 0f
+            return (1f - progress * progress) * intensityMultiplier
         }
     }
 
@@ -376,27 +406,12 @@ class WaveOverlayView(context: Context) : View(context), Density {
     ) {
         companion object {
             val DEFAULT = WaveStyle()
-
-            // short taps: quick, thin
             val TICK = WaveStyle(durationMultiplier = 0.7f, speedMultiplier = 1.2f, ringWidthMultiplier = 0.6f)
-
-            // medium impacts
             val CLICK = WaveStyle(ringWidthMultiplier = 0.8f)
-
-            // heavy impacts: thick, intense
             val THUD = WaveStyle(durationMultiplier = 1.4f, speedMultiplier = 0.7f, ringWidthMultiplier = 1.8f, intensityMultiplier = 1.3f, distortsContent = true)
-
-            // spin: wide, medium speed
             val SPIN = WaveStyle(durationMultiplier = 1.2f, speedMultiplier = 0.9f, ringWidthMultiplier = 1.5f, intensityMultiplier = 1.1f, distortsContent = true)
-
-            // quick rise: fast expand, thickening
             val RISE = WaveStyle(durationMultiplier = 1.1f, speedMultiplier = 1.3f, ringWidthMultiplier = 1.4f, intensityMultiplier = 1.2f, distortsContent = true)
-
-            // slow rise: delayed start, slow expand, thick
-            val SLOW_RISE =
-                WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f, distortsContent = true)
-
-            // quick fall: fast shrink feel
+            val SLOW_RISE = WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f, distortsContent = true)
             val FALL = WaveStyle(durationMultiplier = 0.8f, speedMultiplier = 1.4f, ringWidthMultiplier = 1.2f, intensityMultiplier = 0.9f, distortsContent = true)
         }
     }
@@ -461,7 +476,6 @@ class WaveOverlayView(context: Context) : View(context), Density {
         """
 
         private const val WAVE_SHADER = """
-            uniform float2 resolution;
             uniform int waveCount;
             uniform float origins[20];
             uniform float radii[10];
