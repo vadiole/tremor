@@ -14,6 +14,8 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
+import vadiole.tremor.view.BallBoxDebugPanel
+import vadiole.tremor.view.BallBoxView
 import vadiole.tremor.view.DragThresholdView
 import vadiole.tremor.view.TutorialView
 import vadiole.tremor.view.FadeOverlayView
@@ -344,9 +346,26 @@ class TremorActivity : Activity(), Density {
             ))
 
             parent.addView(Space(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
+                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
             ))
         }
+
+        parent.addView(
+            BallBoxView(this, hapticEngine::playPrimitive, hapticEngine::playEffect, supportedPrimitiveIds),
+            LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ),
+        )
+
+            parent.addView(BallBoxDebugPanel(this), LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+            ))
+
+        parent.addView(Space(this), LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
+        ))
     }
 
     private fun buildDeviceInfo(parent: LinearLayout, sectionSpacing: Int) {
