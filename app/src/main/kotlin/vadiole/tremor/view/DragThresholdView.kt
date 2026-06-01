@@ -13,15 +13,14 @@ import android.view.View
 import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
-import vadiole.tremor.UiConstants
 
 class DragThresholdView(context: Context) : View(context), Density {
 
     private val viewHeight = 72.dp
-    private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
-    private val handleWidth = 36f.dp
-    private val handlePadding = 6f.dp
-    private val handleCornerRadius = 8f.dp
+    private val cornerRadius = viewHeight / 2
+    private val handlePadding = 8f.dp
+    private val handleWidth = viewHeight - handlePadding * 2
+    private val handleCornerRadius = cornerRadius - handlePadding
     private val thresholdFraction = 0.75f
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
@@ -191,6 +190,7 @@ class DragThresholdView(context: Context) : View(context), Density {
                     parent?.requestDisallowInterceptTouchEvent(true)
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 if (!isDragging) return true
 
@@ -202,9 +202,9 @@ class DragThresholdView(context: Context) : View(context), Density {
                 val dx = event.x - dragStartX
                 handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
 
-                val handleRight = handleX + handleWidth
+                val handleCenter = handleX + (handleWidth / 2f)
                 val wasActivated = activated
-                activated = handleRight >= thresholdX
+                activated = handleCenter >= thresholdX
 
                 if (activated && !wasActivated) {
                     performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE)
@@ -216,6 +216,7 @@ class DragThresholdView(context: Context) : View(context), Density {
 
                 invalidate()
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (isDragging) {
                     isDragging = false
