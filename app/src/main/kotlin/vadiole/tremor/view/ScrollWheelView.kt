@@ -8,6 +8,7 @@ import android.os.SystemClock
 import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
@@ -48,6 +49,11 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private val friction = 0.96f
     private val minVelocity = 0.2f.dp
     private val maxVelocity = 50f.dp
+
+    private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
+    private var downX = 0f
+    private var downY = 0f
+    private var claimed = false
 
     private val flingRunnable = object : Runnable {
         override fun run() {
@@ -129,26 +135,39 @@ class ScrollWheelView(context: Context) : View(context), Density {
             MotionEvent.ACTION_DOWN -> {
                 isFlung = false
                 removeCallbacks(flingRunnable)
+                downX = event.x
+                downY = event.y
+                claimed = false
                 lastTouchX = event.x
                 lastMoveTime = SystemClock.uptimeMillis()
                 velocity = 0f
                 lastTickOffset = scrollOffset
                 isPressed = true
-                parent?.requestDisallowInterceptTouchEvent(true)
             }
             MotionEvent.ACTION_MOVE -> {
-                val dx = event.x - lastTouchX
-                val now = SystemClock.uptimeMillis()
-                val dt = (now - lastMoveTime).coerceAtLeast(1)
-                velocity = (dx / dt * 16f).coerceIn(-maxVelocity, maxVelocity)
-                lastMoveTime = now
-                lastTouchX = event.x
-                scrollOffset += dx
-                checkTick()
-                invalidate()
+                if (!claimed) {
+                    val dx = abs(event.x - downX)
+                    val dy = abs(event.y - downY)
+                    if (dx > touchSlop && dx > dy) {
+                        claimed = true
+                        parent?.requestDisallowInterceptTouchEvent(true)
+                        lastTouchX = event.x
+                        lastMoveTime = SystemClock.uptimeMillis()
+                    }
+                } else {
+                    val dx = event.x - lastTouchX
+                    val now = SystemClock.uptimeMillis()
+                    val dt = (now - lastMoveTime).coerceAtLeast(1)
+                    velocity = (dx / dt * 16f).coerceIn(-maxVelocity, maxVelocity)
+                    lastMoveTime = now
+                    lastTouchX = event.x
+                    scrollOffset += dx
+                    checkTick()
+                    invalidate()
+                }
             }
             MotionEvent.ACTION_UP -> {
-                if (abs(velocity) > minVelocity) {
+                if (claimed && abs(velocity) > minVelocity) {
                     isFlung = true
                     postOnAnimation(flingRunnable)
                 }
