@@ -19,6 +19,9 @@ object Floating {
         return (widthDp * context.resources.displayMetrics.density).coerceAtLeast(1f)
     }
 
+    /** Half the border stroke — the inset at which a surface's border is centred on its bounds. */
+    fun surfaceInsetPx(context: Context): Float = borderWidthPx(context) / 2f
+
     private val Configuration.isNightMode: Boolean
         get() = (uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 }

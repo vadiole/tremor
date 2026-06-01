@@ -26,10 +26,7 @@ class PrimitiveRow(
     private val drumMarginStart = 8.dp
     private val textEndMargin = 4.dp
 
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(UiConstants.CORNER_RADIUS_DP.dp.toInt()),
-    )
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, UiConstants.CORNER_RADIUS_DP.dp.toInt())
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -54,6 +51,10 @@ class PrimitiveRow(
     }
 
     private val maxValueWidth = valuePaint.measureText("0.00")
+
+    // text-block geometry depends only on the fixed paints — compute once, not per draw
+    private val textBlockHeight =
+        (labelPaint.descent() - labelPaint.ascent()) + textSpacing + (constantPaint.descent() - constantPaint.ascent())
 
     private val location = IntArray(2)
     private var ellipsizedLabel: CharSequence = label
@@ -85,9 +86,6 @@ class PrimitiveRow(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val width = MeasureSpec.getSize(widthMeasureSpec)
-        val labelHeight = labelPaint.descent() - labelPaint.ascent()
-        val constantHeight = constantPaint.descent() - constantPaint.ascent()
-        val textBlockHeight = labelHeight + textSpacing + constantHeight
         val rowHeight = maxOf(minRowHeight, (textBlockHeight + 2 * padding).toInt())
         drum.measure(
             MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED),
@@ -113,9 +111,6 @@ class PrimitiveRow(
 
     override fun onDraw(canvas: Canvas) {
         val labelX = padding.toFloat()
-        val labelHeight = labelPaint.descent() - labelPaint.ascent()
-        val constantHeight = constantPaint.descent() - constantPaint.ascent()
-        val textBlockHeight = labelHeight + textSpacing + constantHeight
         val textBlockTop = (height - textBlockHeight) / 2f
         val labelY = textBlockTop - labelPaint.ascent()
         val constantY = labelY + labelPaint.descent() + textSpacing - constantPaint.ascent()
@@ -127,10 +122,7 @@ class PrimitiveRow(
         canvas.drawText(cachedValueText, valueX, valueY, valuePaint)
     }
 
-    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {
-        if (isDrumTouch(ev)) return false
-        return true
-    }
+    override fun onInterceptTouchEvent(ev: MotionEvent): Boolean = !isDrumTouch(ev)
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {
@@ -153,9 +145,6 @@ class PrimitiveRow(
         super.onDetachedFromWindow()
     }
 
-    private fun isDrumTouch(ev: MotionEvent): Boolean {
-        val x = ev.x.toInt()
-        val y = ev.y.toInt()
-        return x >= drum.left && x <= drum.right && y >= drum.top && y <= drum.bottom
-    }
+    private fun isDrumTouch(ev: MotionEvent): Boolean =
+        ev.x.toInt() in drum.left..drum.right && ev.y.toInt() in drum.top..drum.bottom
 }

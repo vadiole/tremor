@@ -199,6 +199,10 @@ class FloatingSurfaceDrawable(
     }
 
     companion object {
+        /** Convenience for the ubiquitous "squircle-shaped floating surface" used across views. */
+        fun squircleSurface(context: Context, cornerRadiusPx: Int = Int.MAX_VALUE): FloatingSurfaceDrawable =
+            FloatingSurfaceDrawable(context, squircle(cornerRadiusPx))
+
         fun squircle(cornerRadius: Int = Int.MAX_VALUE): ShapeWithCacheKey {
             val surface = Squircle(cornerRadius)
             val border = Squircle(cornerRadius)

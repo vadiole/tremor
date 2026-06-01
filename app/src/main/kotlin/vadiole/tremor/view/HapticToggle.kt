@@ -17,11 +17,8 @@ class HapticToggle(context: Context) : View(context), Density {
     private val trackHeight = 32.dp
     private val thumbRadius = 12f.dp
     private val thumbPadding = 4f.dp
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(),
-    )
-    private val surfaceInset = Floating.borderWidthPx(context) / 2f
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context)
+    private val surfaceInset = Floating.surfaceInsetPx(context)
 
     private var isOn = false
     private var thumbPosition = 0f

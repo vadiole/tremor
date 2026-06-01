@@ -17,10 +17,7 @@ class KeyButton(
     private val letter: Char,
 ) : View(context), Density {
 
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(UiConstants.CORNER_RADIUS_DP.dp.toInt()),
-    )
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, UiConstants.CORNER_RADIUS_DP.dp.toInt())
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)

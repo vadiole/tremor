@@ -10,11 +10,11 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
 import kotlin.math.abs
-import kotlin.math.sign
 import kotlin.math.sqrt
 import vadiole.tremor.Density
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
+import vadiole.tremor.rubberBand
 
 /**
  * A 2:1 "tray seen from above" with a ball that obeys momentum, friction and walls — but no
@@ -37,11 +37,8 @@ class BallBoxView(
 
     // geometry / surface
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
-    )
-    private val surfaceInset = Floating.borderWidthPx(context) / 2f
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
+    private val surfaceInset = Floating.surfaceInsetPx(context)
     private val ballRadius = 11f.dp
     private val ringRadius = ballRadius + 6f.dp
     private val density = resources.displayMetrics.density
@@ -507,16 +504,6 @@ class BallBoxView(
         fun expDecay(rate: Float, dt: Float): Float {
             val x = rate * dt
             return 1f / (1f + x + 0.5f * x * x)
-        }
-
-        // identical curve to TouchEffect.rubberBand: resistance rises with distance, asymptotes at max
-        fun rubberBand(offset: Float, maxDistance: Float, damping: Float): Float {
-            val distance = maxDistance.coerceAtLeast(1f)
-            val constant = damping.coerceAtLeast(0.001f)
-            val absOffset = abs(offset)
-            if (absOffset < 0.01f) return 0f
-            val dampened = (1f - 1f / (absOffset * constant / distance + 1f)) * distance
-            return sign(offset) * dampened
         }
     }
 }

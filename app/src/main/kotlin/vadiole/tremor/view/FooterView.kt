@@ -47,6 +47,7 @@ class FooterView(
     private val linkWidth = textPaint.measureText(link)
     private val suffixWidth = textPaint.measureText(suffix)
     private val totalTextWidth = prefixWidth + linkWidth + suffixWidth
+    private val fontMetrics = textPaint.fontMetrics
 
     private val handler = Handler(Looper.getMainLooper())
     private var longPressTriggered = false
@@ -64,8 +65,7 @@ class FooterView(
 
     override fun onDraw(canvas: Canvas) {
         val cx = width / 2f
-        val fm = textPaint.fontMetrics
-        val textY = topPadding + (height - topPadding - bottomPadding) / 2f - (fm.ascent + fm.descent) / 2f
+        val textY = topPadding + (height - topPadding - bottomPadding) / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f
         val startX = cx - totalTextWidth / 2f
 
         val saved = textPaint.color

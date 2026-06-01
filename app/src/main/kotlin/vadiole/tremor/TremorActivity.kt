@@ -99,41 +99,26 @@ class TremorActivity : Activity(), Density {
             clipChildren = false
             clipToPadding = false
         }
-        contentLayer.addView(scrollView, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT,
-        ))
+        contentLayer.addView(scrollView, frameFill())
         contentLayer.addView(
             FadeOverlayView(this, scrollView, getColor(R.color.background), 48.dp),
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT,
-            ),
+            frameFill(),
         )
 
-        root.addView(contentLayer, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT,
-        ))
+        root.addView(contentLayer, frameFill())
 
         waveOverlay = WaveOverlayView(this).apply {
             setDistortionTarget(contentLayer)
             isClickable = false
             isFocusable = false
         }
-        root.addView(waveOverlay, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT,
-        ))
+        root.addView(waveOverlay, frameFill())
 
         heartOverlay = HeartParticleView(this, hapticEngine::playPrimitive, supportedPrimitiveIds).apply {
             isClickable = false
             isFocusable = false
         }
-        root.addView(heartOverlay, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT,
-        ))
+        root.addView(heartOverlay, frameFill())
 
         buildBanner(root)
 
@@ -176,14 +161,8 @@ class TremorActivity : Activity(), Density {
             }
             flow.addView(button)
         }
-        parent.addView(flow, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
-
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
+        parent.addView(flow, matchWrap())
+        parent.addSpacer(sectionSpacing)
     }
 
     private fun buildPredefinedEffectsSection(
@@ -209,14 +188,8 @@ class TremorActivity : Activity(), Density {
             }
             flow.addView(button)
         }
-        parent.addView(flow, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
-
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
+        parent.addView(flow, matchWrap())
+        parent.addSpacer(sectionSpacing)
     }
 
     private fun buildPrimitivesSection(
@@ -235,17 +208,12 @@ class TremorActivity : Activity(), Density {
                 hapticEngine.playPrimitive(info.primitiveId, scale)
                 waveOverlay.spawnWave(screenX, screenY, scale, waveStyle)
             }
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            )
+            val lp = matchWrap()
             if (index > 0) lp.topMargin = itemSpacing
             parent.addView(row, lp)
         }
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
+        parent.addSpacer(sectionSpacing)
     }
 
     private fun buildExamplesSection(
@@ -278,105 +246,49 @@ class TremorActivity : Activity(), Density {
                 0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f,
             ))
             toggleRow.addView(toggle)
-            parent.addView(toggleRow, LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ))
-
-            parent.addView(Space(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-            ))
+            parent.addView(toggleRow, matchWrap())
+            parent.addSpacer(itemSpacing)
         }
 
-        parent.addView(LongPressButton(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        parent.addView(LongPressButton(this), matchWrap())
+        parent.addSpacer(itemSpacing)
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
+        parent.addView(HapticCounter(this), matchWrap())
+        parent.addSpacer(itemSpacing)
 
-        parent.addView(HapticCounter(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
-
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
-
-        parent.addView(KeyboardRowView(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
-
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-        ))
+        parent.addView(KeyboardRowView(this), matchWrap())
+        parent.addSpacer(itemSpacing)
 
         if ("SEGMENT_FREQUENT_TICK" in availableConstantNames) {
-            parent.addView(ScrollWheelView(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ))
-
-            parent.addView(Space(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-            ))
+            parent.addView(ScrollWheelView(this), matchWrap())
+            parent.addSpacer(itemSpacing)
         }
 
         val riseFallSupported = VibrationEffect.Composition.PRIMITIVE_QUICK_RISE in supportedPrimitiveIds &&
             VibrationEffect.Composition.PRIMITIVE_QUICK_FALL in supportedPrimitiveIds
         if (riseFallSupported) {
-            parent.addView(RiseFallButton(this, hapticEngine::playPrimitive), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ))
-
-            parent.addView(Space(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-            ))
+            parent.addView(RiseFallButton(this, hapticEngine::playPrimitive), matchWrap())
+            parent.addSpacer(itemSpacing)
         }
 
         if ("DRAG_START" in availableConstantNames) {
-            parent.addView(DragThresholdView(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ))
-
-            parent.addView(Space(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT, itemSpacing,
-            ))
+            parent.addView(DragThresholdView(this), matchWrap())
+            parent.addSpacer(itemSpacing)
         }
 
         parent.addView(
             BallBoxView(this, hapticEngine::playPrimitive, hapticEngine::playEffect, supportedPrimitiveIds),
-            LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ),
+            matchWrap(),
         )
 
-            parent.addView(BallBoxDebugPanel(this), LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            ))
+        parent.addView(BallBoxDebugPanel(this), matchWrap())
 
-        parent.addView(Space(this), LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT, sectionSpacing,
-        ))
+        parent.addSpacer(sectionSpacing)
     }
 
     private fun buildDeviceInfo(parent: LinearLayout, sectionSpacing: Int) {
-        val unavailable = mutableListOf<String>()
-
-        for (info in hapticEngine.getUnavailableHapticConstants()) {
-            unavailable.add(info.constantName)
-        }
-        for (info in unsupportedPrimitives) {
-            unavailable.add(info.constantName)
-        }
+        val unavailable = hapticEngine.getUnavailableHapticConstants().map { it.constantName } +
+            unsupportedPrimitives.map { it.constantName }
 
         if (unavailable.isEmpty()) return
 
@@ -388,10 +300,7 @@ class TremorActivity : Activity(), Density {
             typeface = Typeface.MONOSPACE
             setLineSpacing(0f, 1.2f)
         }
-        val lp = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        )
+        val lp = matchWrap()
         lp.topMargin = 8.dp
         lp.bottomMargin = sectionSpacing
         parent.addView(textView, lp)
@@ -401,10 +310,7 @@ class TremorActivity : Activity(), Density {
         val footer = FooterView(this) { screenX, screenY ->
             heartOverlay.launchHearts(screenX, screenY)
         }
-        parent.addView(footer, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT,
-        ))
+        parent.addView(footer, matchWrap())
     }
 
     private fun buildBanner(root: FrameLayout) {
@@ -443,19 +349,26 @@ class TremorActivity : Activity(), Density {
         }
     }
 
-    private fun createSectionLabel(text: String): TextView {
-        return TextView(this).apply {
-            this.text = text.uppercase()
-            setTextColor(getColor(R.color.text_muted))
-            textSize = 11f
-            typeface = Typeface.MONOSPACE
-            letterSpacing = 0.05f
-            val lp = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-            )
-            lp.bottomMargin = 12.dp
-            layoutParams = lp
-        }
+    private fun createSectionLabel(text: String) = TextView(this).apply {
+        this.text = text.uppercase()
+        setTextColor(getColor(R.color.text_muted))
+        textSize = 11f
+        typeface = Typeface.MONOSPACE
+        letterSpacing = 0.05f
+        layoutParams = matchWrap().apply { bottomMargin = 12.dp }
+    }
+
+    private fun matchWrap() = LinearLayout.LayoutParams(
+        LinearLayout.LayoutParams.MATCH_PARENT,
+        LinearLayout.LayoutParams.WRAP_CONTENT,
+    )
+
+    private fun frameFill() = FrameLayout.LayoutParams(
+        FrameLayout.LayoutParams.MATCH_PARENT,
+        FrameLayout.LayoutParams.MATCH_PARENT,
+    )
+
+    private fun LinearLayout.addSpacer(height: Int) {
+        addView(Space(this@TremorActivity), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height))
     }
 }

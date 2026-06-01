@@ -23,11 +23,8 @@ class DragThresholdView(context: Context) : View(context), Density {
     private val handlePadding = 6f.dp
     private val handleCornerRadius = 8f.dp
     private val thresholdFraction = 0.75f
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
-    )
-    private val surfaceInset = Floating.borderWidthPx(context) / 2f
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
+    private val surfaceInset = Floating.surfaceInsetPx(context)
 
     private val thresholdPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.text_muted)
@@ -65,6 +62,11 @@ class DragThresholdView(context: Context) : View(context), Density {
     private var handleStartX = 0f
     private var activated = false
     private var gestureStarted = false
+
+    // threshold dashed line — geometry depends only on size, so it's resolved in onSizeChanged
+    private var thresholdX = 0f
+    private var thresholdLineTop = 0f
+    private var thresholdLineBottom = 0f
 
     // handle scale animation on threshold crossing
     private var handleScale = 1f
@@ -117,22 +119,23 @@ class DragThresholdView(context: Context) : View(context), Density {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         handleX = handlePadding
-    }
 
-    override fun onDraw(canvas: Canvas) {
-        val halfStroke = surfaceInset
-        rect.set(0f, 0f, width.toFloat(), height.toFloat())
-
-        // threshold line (centered vertically)
-        val thresholdX = width * thresholdFraction
+        // a whole number of dashes, vertically centred within the surface inset
+        thresholdX = w * thresholdFraction
         val dashLen = 4f.dp
         val gapLen = 4f.dp
         val cycle = dashLen + gapLen
-        val lineLength = height - halfStroke * 2
+        val lineLength = h - surfaceInset * 2
         val n = ((lineLength + gapLen) / cycle).toInt()
         val patternLen = n * dashLen + (n - 1) * gapLen
-        val padding = (lineLength - patternLen) / 2f
-        canvas.drawLine(thresholdX, halfStroke + padding, thresholdX, halfStroke + padding + patternLen, thresholdPaint)
+        thresholdLineTop = surfaceInset + (lineLength - patternLen) / 2f
+        thresholdLineBottom = thresholdLineTop + patternLen
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        rect.set(0f, 0f, width.toFloat(), height.toFloat())
+
+        canvas.drawLine(thresholdX, thresholdLineTop, thresholdX, thresholdLineBottom, thresholdPaint)
 
         // handle
         val handleLeft = handleX

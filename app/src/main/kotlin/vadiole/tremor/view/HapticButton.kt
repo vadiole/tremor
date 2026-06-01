@@ -27,10 +27,7 @@ class HapticButton(
     private val horizontalPadding = 8f.dp
     private val verticalPadding = 8f.dp
 
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(UiConstants.CORNER_RADIUS_DP.dp.toInt()),
-    )
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, UiConstants.CORNER_RADIUS_DP.dp.toInt())
 
     private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)

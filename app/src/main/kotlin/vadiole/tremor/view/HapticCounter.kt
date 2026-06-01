@@ -19,14 +19,11 @@ class HapticCounter(context: Context) : View(context), Density {
     private val viewHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
 
-    private val prefs = context.getSharedPreferences("tremor", Context.MODE_PRIVATE)
-    private var count = prefs.getInt("counter", 0)
+    private val prefs = context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+    private var count = prefs.getInt(KEY_COUNT, 0)
 
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
-    )
-    private val surfaceInset = Floating.borderWidthPx(context) / 2f
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
+    private val surfaceInset = Floating.surfaceInsetPx(context)
 
     private val textPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
@@ -116,23 +113,14 @@ class HapticCounter(context: Context) : View(context), Density {
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 val thirdW = width / 3f
-                when {
-                    event.x < thirdW -> {
-                        count--
-                        prefs.edit().putInt("counter", count).apply()
-                        pressedZone = -1
-                        isPressed = true
-                        performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        invalidate()
-                    }
-                    event.x > thirdW * 2 -> {
-                        count++
-                        prefs.edit().putInt("counter", count).apply()
-                        pressedZone = 1
-                        isPressed = true
-                        performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-                        invalidate()
-                    }
+                val zone = if (event.x < thirdW) -1 else if (event.x > thirdW * 2) 1 else 0
+                if (zone != 0) {
+                    count += zone
+                    prefs.edit().putInt(KEY_COUNT, count).apply()
+                    pressedZone = zone
+                    isPressed = true
+                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    invalidate()
                 }
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
@@ -147,5 +135,10 @@ class HapticCounter(context: Context) : View(context), Density {
     override fun onDetachedFromWindow() {
         surfaceDrawable.cancelAnimations()
         super.onDetachedFromWindow()
+    }
+
+    private companion object {
+        const val PREFS = "tremor"
+        const val KEY_COUNT = "counter"
     }
 }

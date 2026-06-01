@@ -33,10 +33,7 @@ class DrumRollerView(
     private val touchHeight = 64.dp
     private val lineSpacing = 8f.dp
     private val borderRadius = 4f.dp
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(borderRadius.toInt()),
-    )
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, borderRadius.toInt())
     private val tickHapticConstant = if (Build.VERSION.SDK_INT >= 34) {
         HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
     } else {
@@ -67,21 +64,7 @@ class DrumRollerView(
             velocity *= friction
             scrollOffset += velocity
 
-            while (scrollOffset >= 1f && currentStep > 0) {
-                scrollOffset -= 1f
-                currentStep--
-                updateValue()
-                performHapticFeedback(tickHapticConstant)
-            }
-            while (scrollOffset <= -1f && currentStep < totalSteps) {
-                scrollOffset += 1f
-                currentStep++
-                updateValue()
-                performHapticFeedback(tickHapticConstant)
-            }
-
-            if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
-            if (currentStep == totalSteps && scrollOffset < 0f) scrollOffset = 0f
+            advanceSteps()
 
             invalidate()
             if (abs(velocity) > minVelocity) {
@@ -96,7 +79,25 @@ class DrumRollerView(
 
     init {
         isClickable = true
-        surfaceDrawable.callback = this
+    }
+
+    // Convert accumulated scroll into discrete steps — one tick per step crossed — and clamp at the
+    // ends. Shared by drag (ACTION_MOVE) and fling.
+    private fun advanceSteps() {
+        while (scrollOffset >= 1f && currentStep > 0) {
+            scrollOffset -= 1f
+            currentStep--
+            updateValue()
+            performHapticFeedback(tickHapticConstant)
+        }
+        while (scrollOffset <= -1f && currentStep < totalSteps) {
+            scrollOffset += 1f
+            currentStep++
+            updateValue()
+            performHapticFeedback(tickHapticConstant)
+        }
+        if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
+        if (currentStep == totalSteps && scrollOffset < 0f) scrollOffset = 0f
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -169,21 +170,7 @@ class DrumRollerView(
 
                 scrollOffset += dy / lineSpacing
 
-                while (scrollOffset >= 1f && currentStep > 0) {
-                    scrollOffset -= 1f
-                    currentStep--
-                    updateValue()
-                    performHapticFeedback(tickHapticConstant)
-                }
-                while (scrollOffset <= -1f && currentStep < totalSteps) {
-                    scrollOffset += 1f
-                    currentStep++
-                    updateValue()
-                    performHapticFeedback(tickHapticConstant)
-                }
-
-                if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
-                if (currentStep == totalSteps && scrollOffset < 0f) scrollOffset = 0f
+                advanceSteps()
 
                 invalidate()
             }

@@ -59,12 +59,6 @@ class HapticEngine(context: Context) {
         return allPrimitives.filterIndexed { index, _ -> support[index] }
     }
 
-    fun getUnsupportedPrimitives(): List<PrimitiveInfo> {
-        val ids = allPrimitives.map { it.primitiveId }.toIntArray()
-        val support = vibrator.arePrimitivesSupported(*ids)
-        return allPrimitives.filterIndexed { index, _ -> !support[index] }
-    }
-
     fun playEffect(effectId: Int) {
         val effect = VibrationEffect.createPredefined(effectId)
         vibrator.vibrate(effect)

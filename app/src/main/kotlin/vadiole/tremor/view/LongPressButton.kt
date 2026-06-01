@@ -22,11 +22,8 @@ class LongPressButton(context: Context) : View(context), Density {
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val longPressDelay = 500L
 
-    private val surfaceDrawable = FloatingSurfaceDrawable(
-        context = context,
-        pathProvider = FloatingSurfaceDrawable.squircle(cornerRadius.toInt()),
-    )
-    private val surfaceInset = Floating.borderWidthPx(context) / 2f
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
+    private val surfaceInset = Floating.surfaceInsetPx(context)
 
     private val progressPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)

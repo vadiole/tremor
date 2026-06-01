@@ -43,6 +43,7 @@ class DebugSlider(
     private val touchSlop = ViewConfiguration.get(context).scaledTouchSlop
 
     private var value = default
+    private var valueText = format(default)
     private var claimed = false
     private var startX = 0f
     private var startY = 0f
@@ -86,6 +87,7 @@ class DebugSlider(
 
     fun resetToDefault() {
         value = default
+        valueText = format(value)
         onChange(value)
         invalidate()
     }
@@ -99,8 +101,7 @@ class DebugSlider(
         val right = width - trackInset
         val trackY = height - 13f.dp
 
-        // value (right-aligned)
-        val valueText = format(value)
+        // value (right-aligned) — formatted only on change, not per frame
         canvas.drawText(valueText, width - trackInset, baseline, valuePaint)
 
         // name + hint, kept at least valueGap clear of the value
@@ -158,6 +159,7 @@ class DebugSlider(
         val right = width - trackInset
         val frac = ((x - left) / (right - left)).coerceIn(0f, 1f)
         value = min + frac * (max - min)
+        valueText = format(value)
         onChange(value)
         invalidate()
     }
