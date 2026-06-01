@@ -2,8 +2,6 @@ package vadiole.tremor.view
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Typeface
 import android.provider.Settings
 import android.view.Gravity
@@ -11,14 +9,14 @@ import android.view.WindowInsets
 import android.widget.TextView
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 
 class TutorialView(context: Context) : TextView(context), Density {
 
-    private val borderPaint = Paint().apply {
-        color = context.getColor(R.color.border)
-        style = Paint.Style.FILL
-    }
-    private val borderHeight = 1f.dp
+    private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(
+        context,
+        UiConstants.CORNER_RADIUS_DP.dp.toInt(),
+    )
 
     init {
         text = context.getText(R.string.haptic_disabled_message)
@@ -26,7 +24,8 @@ class TutorialView(context: Context) : TextView(context), Density {
         textSize = 12f
         typeface = Typeface.MONOSPACE
         gravity = Gravity.CENTER
-        setBackgroundColor(context.getColor(R.color.surface))
+        background = surfaceDrawable
+        keepFloatingSurfaceShadowOnly()
         setPadding(16.dp, 12.dp, 16.dp, 12.dp)
         setOnApplyWindowInsetsListener { v, insets ->
             val navBar = insets.getInsets(WindowInsets.Type.systemBars() or WindowInsets.Type.displayCutout()).bottom
@@ -50,8 +49,8 @@ class TutorialView(context: Context) : TextView(context), Density {
         visibility = GONE
     }
 
-    override fun onDraw(canvas: Canvas) {
-        super.onDraw(canvas)
-        canvas.drawRect(0f, 0f, width.toFloat(), borderHeight, borderPaint)
+    override fun onDetachedFromWindow() {
+        surfaceDrawable.cancelAnimations()
+        super.onDetachedFromWindow()
     }
 }

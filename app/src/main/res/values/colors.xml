@@ -2,7 +2,6 @@
 <resources>
     <color name="background">#FFFFFFFF</color>
     <color name="foreground">#FF000000</color>
-    <color name="surface">#FFF5F5F5</color>
     <color name="surface_pressed">#FFEBEBEB</color>
     <color name="border">#FFDDDDDD</color>
     <color name="floating_surface">#FFFFFFFF</color>
