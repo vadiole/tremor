@@ -22,7 +22,6 @@ class FooterView(
     private val topPadding = 16.dp
     private val bottomPadding = 8.dp
     private val longPressDelay = 500L
-    private val linkColor = context.getColor(R.color.text_disabled)
     private val textColor = context.getColor(R.color.text_disabled)
 
     private val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -68,7 +67,7 @@ class FooterView(
         val textY = topPadding + (height - topPadding - bottomPadding) / 2f - (fontMetrics.ascent + fontMetrics.descent) / 2f
         val startX = cx - totalTextWidth / 2f
 
-        val saved = textPaint.color
+        val savedColor = textPaint.color
         val savedUnderline = textPaint.isUnderlineText
 
         textPaint.color = textColor
@@ -76,7 +75,7 @@ class FooterView(
         textPaint.isUnderlineText = false
         canvas.drawText(prefix, startX, textY, textPaint)
 
-        textPaint.color = linkColor
+        textPaint.color = textColor
         textPaint.isUnderlineText = true
         if (isLinkPressed) textPaint.alpha = 128
         canvas.drawText(link, startX + prefixWidth, textY, textPaint)
@@ -87,7 +86,7 @@ class FooterView(
         canvas.drawText(suffix, startX + prefixWidth + linkWidth, textY, textPaint)
 
         textPaint.textAlign = Paint.Align.CENTER
-        textPaint.color = saved
+        textPaint.color = savedColor
         textPaint.isUnderlineText = savedUnderline
     }
 

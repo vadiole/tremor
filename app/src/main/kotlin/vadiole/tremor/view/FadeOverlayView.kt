@@ -63,11 +63,11 @@ class FadeOverlayView(
 
     override fun onDraw(canvas: Canvas) {
         if (fadeLengthPx <= 0) return
-        val sy = scrollView.scrollY
-        val range = scrollView.getChildAt(0)?.bottom ?: 0
-        val maxScroll = (range - scrollView.height).coerceAtLeast(0)
-        val topStrength = (sy.toFloat() / fadeLengthPx).coerceIn(0f, 1f)
-        val bottomStrength = ((maxScroll - sy).toFloat() / fadeLengthPx).coerceIn(0f, 1f)
+        val scrollY = scrollView.scrollY
+        val contentBottom = scrollView.getChildAt(0)?.bottom ?: 0
+        val maxScroll = (contentBottom - scrollView.height).coerceAtLeast(0)
+        val topStrength = (scrollY.toFloat() / fadeLengthPx).coerceIn(0f, 1f)
+        val bottomStrength = ((maxScroll - scrollY).toFloat() / fadeLengthPx).coerceIn(0f, 1f)
 
         val topG = topGradient
         if (topStrength > 0.001f && topG != null) {

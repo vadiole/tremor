@@ -27,6 +27,7 @@ class RiseFallButton(
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val riseDurationMs = 400L
     private val fallDurationMs = 300L
+    private val primitiveScale = 0.8f
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
 
@@ -82,11 +83,9 @@ class RiseFallButton(
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = surfaceInset
-
         if (fillProgress > 0f) {
-            val fillHeight = (height - 2 * halfStroke) * fillProgress
-            fillRect.set(halfStroke, height - halfStroke - fillHeight, width - halfStroke, height - halfStroke)
+            val fillHeight = (height - 2 * surfaceInset) * fillProgress
+            fillRect.set(surfaceInset, height - surfaceInset - fillHeight, width - surfaceInset, height - surfaceInset)
 
             canvas.save()
             if (surfaceDrawable.copySurfacePath(clipPath)) {
@@ -119,7 +118,7 @@ class RiseFallButton(
         fallAnimator?.cancel()
         riseAnimator?.cancel()
 
-        playPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, 0.8f)
+        playPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_RISE, primitiveScale)
 
         riseAnimator = ValueAnimator.ofFloat(fillProgress, 1f).apply {
             duration = riseDurationMs
@@ -136,7 +135,7 @@ class RiseFallButton(
         riseAnimator?.cancel()
         fallAnimator?.cancel()
 
-        playPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_FALL, 0.8f)
+        playPrimitive(VibrationEffect.Composition.PRIMITIVE_QUICK_FALL, primitiveScale)
 
         fallAnimator = ValueAnimator.ofFloat(fillProgress, 0f).apply {
             duration = fallDurationMs

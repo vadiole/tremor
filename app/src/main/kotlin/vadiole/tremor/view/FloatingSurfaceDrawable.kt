@@ -66,7 +66,7 @@ class FloatingSurfaceDrawable(
         alpha = 0
     }
     private val pressedOverlayAnimator = ValueAnimator().apply {
-        duration = 120L
+        duration = PRESSED_OVERLAY_DURATION_MS
         addUpdateListener {
             pressedOverlayAlpha = it.animatedValue as Int
             pressedOverlayPaint.alpha = pressedOverlayAlpha
@@ -79,18 +79,10 @@ class FloatingSurfaceDrawable(
     override fun isStateful(): Boolean = true
 
     override fun onStateChange(state: IntArray): Boolean {
-        var pressed = false
-        var focused = false
-        state.forEach {
-            when (it) {
-                android.R.attr.state_pressed -> pressed = true
-                android.R.attr.state_focused -> focused = true
-            }
+        val active = state.any {
+            it == android.R.attr.state_pressed || it == android.R.attr.state_focused
         }
-        val targetAlpha = when {
-            pressed || focused -> pressedOverlayMaxAlpha
-            else -> 0
-        }
+        val targetAlpha = if (active) pressedOverlayMaxAlpha else 0
         pressedOverlayTargetAlpha = targetAlpha
         pressedOverlayAnimator.cancel()
         if (targetAlpha == pressedOverlayAlpha) return false
@@ -199,7 +191,9 @@ class FloatingSurfaceDrawable(
     }
 
     companion object {
-        /** Convenience for the ubiquitous "squircle-shaped floating surface" used across views. */
+        private const val PRESSED_OVERLAY_DURATION_MS = 120L
+
+        /** A squircle-shaped floating surface, used by most rows and buttons. */
         fun squircleSurface(context: Context, cornerRadiusPx: Int = Int.MAX_VALUE): FloatingSurfaceDrawable =
             FloatingSurfaceDrawable(context, squircle(cornerRadiusPx))
 

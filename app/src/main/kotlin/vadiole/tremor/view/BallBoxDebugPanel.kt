@@ -24,7 +24,7 @@ class BallBoxDebugPanel(context: Context) : LinearLayout(context), Density {
 
         header()
 
-        sub("haptics · feel")
+        subhead("haptics · feel")
         slider("grab", "strength 0..1", 0f, 1f, { BallBoxTuning.grabScale }) { BallBoxTuning.grabScale = it }
         slider("drop", "strength 0..1", 0f, 1f, { BallBoxTuning.dropScale }) { BallBoxTuning.dropScale = it }
         slider("settle", "snap-in strength", 0f, 1f, { BallBoxTuning.settleScale }) { BallBoxTuning.settleScale = it }
@@ -39,7 +39,7 @@ class BallBoxDebugPanel(context: Context) : LinearLayout(context), Density {
         slider("bounce floor", "silent below, dp/s", 0f, 400f, { BallBoxTuning.minBounceSpeed }) { BallBoxTuning.minBounceSpeed = it }
         slider("bounce full", "hardest at, dp/s", 500f, 5000f, { BallBoxTuning.bounceRefSpeed }) { BallBoxTuning.bounceRefSpeed = it }
 
-        sub("physics · motion")
+        subhead("physics · motion")
         slider("friction", "slowdown rate", 0f, 4f, { BallBoxTuning.friction }) { BallBoxTuning.friction = it }
         slider("restitution", "wall bounciness 0..1", 0f, 1f, { BallBoxTuning.restitution }) { BallBoxTuning.restitution = it }
         slider("scroll kick", "react to scrolling", 0f, 1.5f, { BallBoxTuning.scrollCoupling }) { BallBoxTuning.scrollCoupling = it }
@@ -55,7 +55,7 @@ class BallBoxDebugPanel(context: Context) : LinearLayout(context), Density {
         slider("escape speed", "break free, dp/s", 0f, 2000f, { BallBoxTuning.escapeSpeed }) { BallBoxTuning.escapeSpeed = it }
         slider("escape dist", "break free, × radius", 1f, 4f, { BallBoxTuning.escapeRadiusMul }) { BallBoxTuning.escapeRadiusMul = it }
 
-        sub("grab · handling")
+        subhead("grab · handling")
         slider("grab radius", "touch margin, dp", 0f, 120f, { BallBoxTuning.grabPadding }) { BallBoxTuning.grabPadding = it }
         slider("grab follow", "glide to finger", 0f, 40f, { BallBoxTuning.grabAttract }) { BallBoxTuning.grabAttract = it }
         slider("grab lift", "above finger, dp", 0f, 120f, { BallBoxTuning.grabLift }) { BallBoxTuning.grabLift = it }
@@ -97,7 +97,7 @@ class BallBoxDebugPanel(context: Context) : LinearLayout(context), Density {
         addView(row, lp)
     }
 
-    private fun sub(text: String) {
+    private fun subhead(text: String) {
         addView(
             TextView(context).apply {
                 this.text = text

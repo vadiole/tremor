@@ -56,20 +56,20 @@ class FlowLayout(
             rowHeights = IntArray(maxRows)
         }
         var rowCount = 0
-        var rh = 0
+        var rowHeight = 0
         var col = 0
         for (i in 0 until childCount) {
             val child = getChildAt(i)
             if (child.visibility == View.GONE) continue
             if (col == columns) {
-                rowHeights[rowCount++] = rh
-                rh = 0
+                rowHeights[rowCount++] = rowHeight
+                rowHeight = 0
                 col = 0
             }
-            rh = maxOf(rh, child.measuredHeight)
+            rowHeight = maxOf(rowHeight, child.measuredHeight)
             col++
         }
-        rowHeights[rowCount] = rh
+        rowHeights[rowCount] = rowHeight
 
         // second pass: layout with equal row heights
         var x = 0

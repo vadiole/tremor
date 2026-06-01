@@ -81,8 +81,7 @@ class DrumRollerView(
         isClickable = true
     }
 
-    // Convert accumulated scroll into discrete steps — one tick per step crossed — and clamp at the
-    // ends. Shared by drag (ACTION_MOVE) and fling.
+    // one haptic tick per step crossed; clamps at both ends. shared by drag and fling
     private fun advanceSteps() {
         while (scrollOffset >= 1f && currentStep > 0) {
             scrollOffset -= 1f
@@ -197,8 +196,7 @@ class DrumRollerView(
     }
 
     private fun updateValue() {
-        val newValue = minValue + currentStep * step
-        value = newValue.coerceIn(minValue, maxValue)
+        value = (minValue + currentStep * step).coerceIn(minValue, maxValue)
         onValueChanged?.invoke(value)
     }
 

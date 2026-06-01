@@ -19,6 +19,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
     private val viewHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val tickSpacing = 12f.dp
+    private val tickInset = 8f.dp
     private val tickHapticConstant = HapticFeedbackConstants.SEGMENT_FREQUENT_TICK
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
@@ -39,6 +40,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
 
     private val rect = RectF()
     private var scrollOffset = 0f
+    private var lastTickOffset = 0f
     private var lastTouchX = 0f
     private var velocity = 0f
     private var lastMoveTime = 0L
@@ -91,8 +93,8 @@ class ScrollWheelView(context: Context) : View(context), Density {
         while (x < 0) x += tickSpacing
         x -= tickSpacing
 
-        val topY = 8f.dp
-        val bottomY = height - 8f.dp
+        val topY = tickInset
+        val bottomY = height - tickInset
         val halfWidth = width / 2f
 
         val absVelocity = abs(velocity)
@@ -124,8 +126,6 @@ class ScrollWheelView(context: Context) : View(context), Density {
 
         canvas.restore()
     }
-
-    private var lastTickOffset = 0f
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.action) {

@@ -6,8 +6,7 @@ import kotlin.math.min
 /**
  * iOS-like rounded rectangle with continuous curvature (squircle).
  *
- * Optimized version: precomputed constants (no pow/sqrt at runtime),
- * zero per-call heap allocations, bounds caching, and translation offset.
+ * Precomputed constants (no runtime pow/sqrt), zero per-call allocations, and bounds caching.
  *
  * [Read more about Squircle](https://www.figma.com/blog/desperately-seeking-squircles)
  */
@@ -31,8 +30,8 @@ class Squircle(
     private val smoothing = smoothing.coerceIn(0f, 1f)
     private val isUniform = r0 == r1 && r1 == r2 && r2 == r3
 
-    // Workspace for clamped radii (non-uniform path only)
-    private val cr = FloatArray(4)
+    // per-corner radii after clamping, reused by the non-uniform path
+    private val clampedRadii = FloatArray(4)
 
     // Per-corner bezier control point offsets
     private val pa = FloatArray(4)
@@ -108,27 +107,27 @@ class Squircle(
     }
 
     private fun computeNonUniform(w: Float, h: Float) {
-        cr[0] = r0; cr[1] = r1; cr[2] = r2; cr[3] = r3
+        clampedRadii[0] = r0; clampedRadii[1] = r1; clampedRadii[2] = r2; clampedRadii[3] = r3
         var scale = 1f
-        val ts = cr[0] + cr[1]
+        val ts = clampedRadii[0] + clampedRadii[1]
         if (ts > 0f) scale = min(scale, w / ts)
-        val rs = cr[1] + cr[2]
+        val rs = clampedRadii[1] + clampedRadii[2]
         if (rs > 0f) scale = min(scale, h / rs)
-        val bs = cr[2] + cr[3]
+        val bs = clampedRadii[2] + clampedRadii[3]
         if (bs > 0f) scale = min(scale, w / bs)
-        val ls = cr[3] + cr[0]
+        val ls = clampedRadii[3] + clampedRadii[0]
         if (ls > 0f) scale = min(scale, h / ls)
         if (scale < 1f) {
-            cr[0] *= scale; cr[1] *= scale; cr[2] *= scale; cr[3] *= scale
+            clampedRadii[0] *= scale; clampedRadii[1] *= scale; clampedRadii[2] *= scale; clampedRadii[3] *= scale
         }
 
-        val s01 = cr[0] + cr[1]
+        val s01 = clampedRadii[0] + clampedRadii[1]
         val eTop = if (s01 > 0f) ((w / s01) - 1f).coerceIn(0f, this.smoothing) else this.smoothing
-        val s12 = cr[1] + cr[2]
+        val s12 = clampedRadii[1] + clampedRadii[2]
         val eRight = if (s12 > 0f) ((h / s12) - 1f).coerceIn(0f, this.smoothing) else this.smoothing
-        val s23 = cr[2] + cr[3]
+        val s23 = clampedRadii[2] + clampedRadii[3]
         val eBottom = if (s23 > 0f) ((w / s23) - 1f).coerceIn(0f, this.smoothing) else this.smoothing
-        val s30 = cr[3] + cr[0]
+        val s30 = clampedRadii[3] + clampedRadii[0]
         val eLeft = if (s30 > 0f) ((h / s30) - 1f).coerceIn(0f, this.smoothing) else this.smoothing
 
         val s0 = min(eTop, eLeft)
@@ -137,7 +136,7 @@ class Squircle(
         val s3 = min(eBottom, eLeft)
 
         for (i in 0..3) {
-            val ri = cr[i]
+            val ri = clampedRadii[i]
             if (ri <= 0f) {
                 pa[i] = 0f; pb[i] = 0f; pc[i] = 0f; pd[i] = 0f
             } else {

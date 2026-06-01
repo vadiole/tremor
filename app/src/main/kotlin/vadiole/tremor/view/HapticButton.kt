@@ -52,10 +52,10 @@ class HapticButton(
         isSubpixelText = true
     } else null
 
-    private val constantFm = constantPaint.fontMetrics
-    private val constantTextHeight = constantFm.descent - constantFm.ascent
-    private val fallbackFm = fallbackPaint?.fontMetrics
-    private val fallbackTextHeight = fallbackFm?.let { it.descent - it.ascent } ?: 0f
+    private val constantMetrics = constantPaint.fontMetrics
+    private val constantTextHeight = constantMetrics.descent - constantMetrics.ascent
+    private val fallbackMetrics = fallbackPaint?.fontMetrics
+    private val fallbackTextHeight = fallbackMetrics?.let { it.descent - it.ascent } ?: 0f
     private val gap = 3f.dp
     private val fallbackGap = 1f.dp
     private val fallbackText = if (isFallback) context.getString(R.string.effect_fallback_label) else ""
@@ -106,21 +106,18 @@ class HapticButton(
         val fallbackExtra = if (isFallback) fallbackGap + fallbackTextHeight else 0f
         val totalContentHeight = layout.height + gap + constantTextHeight + fallbackExtra
 
-        // label (StaticLayout, centered)
         val labelTop = (height - totalContentHeight) / 2f
         canvas.save()
         canvas.translate(centerX - maxTextWidth / 2f, labelTop)
         layout.draw(canvas)
         canvas.restore()
 
-        // constant name (single line, baseline from font metrics)
-        val constantY = labelTop + layout.height + gap - constantFm.ascent
+        val constantY = labelTop + layout.height + gap - constantMetrics.ascent
         canvas.drawText(truncatedConstant, centerX, constantY, constantPaint)
 
-        // fallback label below constant name
-        if (isFallback && fallbackFm != null) {
-            val fbY = constantY + constantFm.descent + fallbackGap - fallbackFm.ascent
-            canvas.drawText(fallbackText, centerX, fbY, fallbackPaint!!)
+        if (isFallback && fallbackMetrics != null) {
+            val fallbackY = constantY + constantMetrics.descent + fallbackGap - fallbackMetrics.ascent
+            canvas.drawText(fallbackText, centerX, fallbackY, fallbackPaint!!)
         }
     }
 

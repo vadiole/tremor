@@ -20,7 +20,8 @@ class LongPressButton(context: Context) : View(context), Density {
 
     private val minHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
-    private val longPressDelay = 500L
+    private val longPressDurationMs = 500L
+    private val progressAlpha = (255 * 0.15f).toInt()
 
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
@@ -71,7 +72,7 @@ class LongPressButton(context: Context) : View(context), Density {
 
     override fun onDraw(canvas: Canvas) {
         if (isHolding && !triggered && progress > 0f) {
-            progressPaint.alpha = (255 * 0.15f).toInt()
+            progressPaint.alpha = progressAlpha
             progressRect.set(
                 surfaceInset,
                 surfaceInset,
@@ -121,7 +122,7 @@ class LongPressButton(context: Context) : View(context), Density {
     private fun startProgressAnimation() {
         cancelProgressAnimation()
         progressAnimator = ValueAnimator.ofFloat(0f, 1f).apply {
-            duration = longPressDelay
+            duration = longPressDurationMs
             interpolator = LinearInterpolator()
             addUpdateListener {
                 progress = it.animatedValue as Float

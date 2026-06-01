@@ -51,10 +51,7 @@ class PrimitiveRow(
     }
 
     private val maxValueWidth = valuePaint.measureText("0.00")
-
-    // text-block geometry depends only on the fixed paints — compute once, not per draw
-    private val textBlockHeight =
-        (labelPaint.descent() - labelPaint.ascent()) + textSpacing + (constantPaint.descent() - constantPaint.ascent())
+    private val textBlockHeight = (labelPaint.descent() - labelPaint.ascent()) + textSpacing + (constantPaint.descent() - constantPaint.ascent())
 
     private val location = IntArray(2)
     private var ellipsizedLabel: CharSequence = label
@@ -133,6 +130,7 @@ class PrimitiveRow(
                 val screenY = location[1] + event.y
                 onTrigger(drum.value, screenX, screenY)
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
             }

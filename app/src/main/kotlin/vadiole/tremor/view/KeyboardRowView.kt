@@ -8,7 +8,7 @@ class KeyboardRowView(context: Context) : ViewGroup(context), Density {
 
     private val keys = charArrayOf('Q', 'W', 'E', 'R', 'T', 'Y')
     private val keyGap = 6.dp
-    private val viewHeight = 56.dp
+    private val rowHeight = 56.dp
 
     init {
         clipChildren = false
@@ -23,12 +23,12 @@ class KeyboardRowView(context: Context) : ViewGroup(context), Density {
         val totalGaps = (keys.size - 1) * keyGap
         val keyWidth = (width - totalGaps) / keys.size
         val keyWidthSpec = MeasureSpec.makeMeasureSpec(keyWidth, MeasureSpec.EXACTLY)
-        val keyHeightSpec = MeasureSpec.makeMeasureSpec(viewHeight, MeasureSpec.EXACTLY)
+        val keyHeightSpec = MeasureSpec.makeMeasureSpec(rowHeight, MeasureSpec.EXACTLY)
 
         for (i in 0 until childCount) {
             getChildAt(i).measure(keyWidthSpec, keyHeightSpec)
         }
-        setMeasuredDimension(width, viewHeight)
+        setMeasuredDimension(width, rowHeight)
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -38,7 +38,7 @@ class KeyboardRowView(context: Context) : ViewGroup(context), Density {
 
         for (i in 0 until childCount) {
             val child = getChildAt(i)
-            child.layout(x, 0, x + keyWidth, viewHeight)
+            child.layout(x, 0, x + keyWidth, rowHeight)
             x += keyWidth + keyGap
         }
     }

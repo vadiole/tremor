@@ -63,16 +63,14 @@ class DragThresholdView(context: Context) : View(context), Density {
     private var activated = false
     private var gestureStarted = false
 
-    // threshold dashed line — geometry depends only on size, so it's resolved in onSizeChanged
     private var thresholdX = 0f
     private var thresholdLineTop = 0f
     private var thresholdLineBottom = 0f
 
-    // handle scale animation on threshold crossing
     private var handleScale = 1f
     private var scaleAnimator: ValueAnimator? = null
+    private val scaleAnimDurationMs = 250L
 
-    // spring return animation
     private var springVelocity = 0f
     private var isAnimating = false
     private var lastSpringTime = 0L
@@ -137,24 +135,20 @@ class DragThresholdView(context: Context) : View(context), Density {
 
         canvas.drawLine(thresholdX, thresholdLineTop, thresholdX, thresholdLineBottom, thresholdPaint)
 
-        // handle
         val handleLeft = handleX
         val handleTop = handlePadding
         val handleBottom = height.toFloat() - handlePadding
         handleRect.set(handleLeft, handleTop, handleLeft + handleWidth, handleBottom)
 
-        // clip to container bounds
         canvas.save()
         if (surfaceDrawable.copySurfacePath(clipPath)) {
             canvas.clipPath(clipPath)
         }
 
-        // apply scale around handle center
         if (handleScale != 1f) {
             canvas.scale(handleScale, handleScale, handleRect.centerX(), handleRect.centerY())
         }
 
-        // fully rounded corners
         canvas.drawRoundRect(handleRect, handleCornerRadius, handleCornerRadius, handlePaint)
         canvas.drawRoundRect(handleRect, handleCornerRadius, handleCornerRadius, handleBorderPaint)
 
@@ -171,7 +165,7 @@ class DragThresholdView(context: Context) : View(context), Density {
     private fun animateScaleTo(targetScale: Float) {
         scaleAnimator?.cancel()
         scaleAnimator = ValueAnimator.ofFloat(handleScale, targetScale).apply {
-            duration = 250
+            duration = scaleAnimDurationMs
             interpolator = OvershootInterpolator(3f)
             addUpdateListener {
                 handleScale = it.animatedValue as Float
@@ -208,7 +202,6 @@ class DragThresholdView(context: Context) : View(context), Density {
                 val dx = event.x - dragStartX
                 handleX = (handleStartX + dx).coerceIn(handlePadding, width - handleWidth - handlePadding)
 
-                val thresholdX = width * thresholdFraction
                 val handleRight = handleX + handleWidth
                 val wasActivated = activated
                 activated = handleRight >= thresholdX

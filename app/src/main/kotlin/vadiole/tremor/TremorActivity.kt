@@ -156,7 +156,7 @@ class TremorActivity : Activity(), Density {
                 performHapticFeedback(info.value)
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.value == HapticFeedbackConstants.REJECT) {
-                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, 100)
+                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
                 }
             }
             flow.addView(button)
@@ -183,7 +183,7 @@ class TremorActivity : Activity(), Density {
                 hapticEngine.playEffect(info.effectId)
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.effectId == VibrationEffect.EFFECT_DOUBLE_CLICK) {
-                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, 100)
+                    waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
                 }
             }
             flow.addView(button)
@@ -331,10 +331,10 @@ class TremorActivity : Activity(), Density {
         val banner = bannerView ?: return
         banner.removeCallbacks(hideBannerRunnable)
         if (Build.VERSION.SDK_INT >= 35) {
-            // Can't reliably detect disabled vibration — show as temporary hint
+            // API 35+ can't detect disabled vibration (async haptics) — show a temporary hint
             banner.visibility = View.VISIBLE
             if (!hapticEngine.isDndActive()) {
-                banner.postDelayed(hideBannerRunnable, 10_000)
+                banner.postDelayed(hideBannerRunnable, BANNER_AUTO_HIDE_MS)
             }
         } else {
             val enabled = hapticEngine.isHapticEnabled(banner)
@@ -370,5 +370,11 @@ class TremorActivity : Activity(), Density {
 
     private fun LinearLayout.addSpacer(height: Int) {
         addView(Space(this@TremorActivity), LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, height))
+    }
+
+    private companion object {
+        // re-spawn delay for the second wave echoing REJECT / EFFECT_DOUBLE_CLICK's double pulse
+        const val ECHO_WAVE_DELAY_MS = 100L
+        const val BANNER_AUTO_HIDE_MS = 10_000L
     }
 }

@@ -31,7 +31,7 @@ class DebugSlider(
     private val onChange: (Float) -> Unit,
 ) : View(context), Density {
 
-    private val hintText = if (hint.isEmpty()) "" else "– $hint" // "– hint"
+    private val hintText = if (hint.isEmpty()) "" else "– $hint"
     private val default = initial.coerceIn(min, max)
 
     private val rowHeight = 42.dp

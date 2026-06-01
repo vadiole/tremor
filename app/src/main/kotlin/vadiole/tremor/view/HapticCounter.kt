@@ -79,34 +79,32 @@ class HapticCounter(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
-        val halfStroke = surfaceInset
         rect.set(0f, 0f, width.toFloat(), height.toFloat())
+        val thirdWidth = width / 3f
 
         if (pressedZone != 0) {
-            val thirdW = width / 3f
             canvas.save()
             if (surfaceDrawable.copySurfacePath(clipPath)) {
                 canvas.clipPath(clipPath)
             }
             if (pressedZone == -1) {
-                pressedRect.set(halfStroke, halfStroke, thirdW, height - halfStroke)
+                pressedRect.set(surfaceInset, surfaceInset, thirdWidth, height - surfaceInset)
             } else {
-                pressedRect.set(thirdW * 2, halfStroke, width - halfStroke, height - halfStroke)
+                pressedRect.set(thirdWidth * 2, surfaceInset, width - surfaceInset, height - surfaceInset)
             }
             canvas.drawRect(pressedRect, pressedPaint)
             canvas.restore()
         }
 
-        val thirdW = width / 3f
         val centerY = height / 2f - (buttonPaint.ascent() + buttonPaint.descent()) / 2f
         val textCenterY = height / 2f - (textPaint.ascent() + textPaint.descent()) / 2f
 
-        canvas.drawLine(thirdW, halfStroke, thirdW, height - halfStroke, dividerPaint)
-        canvas.drawLine(thirdW * 2, halfStroke, thirdW * 2, height - halfStroke, dividerPaint)
+        canvas.drawLine(thirdWidth, surfaceInset, thirdWidth, height - surfaceInset, dividerPaint)
+        canvas.drawLine(thirdWidth * 2, surfaceInset, thirdWidth * 2, height - surfaceInset, dividerPaint)
 
-        canvas.drawText("\u2212", thirdW / 2f, centerY, buttonPaint)
+        canvas.drawText("\u2212", thirdWidth / 2f, centerY, buttonPaint)
         canvas.drawText(count.toString(), width / 2f, textCenterY, textPaint)
-        canvas.drawText("+", thirdW * 2 + thirdW / 2f, centerY, buttonPaint)
+        canvas.drawText("+", thirdWidth * 2 + thirdWidth / 2f, centerY, buttonPaint)
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

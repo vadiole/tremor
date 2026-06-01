@@ -35,7 +35,6 @@ class BallBoxView(
     private val supportedPrimitives: Set<Int> = emptySet(),
 ) : View(context), Density {
 
-    // geometry / surface
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
@@ -43,7 +42,6 @@ class BallBoxView(
     private val ringRadius = ballRadius + 6f.dp
     private val density = resources.displayMetrics.density
 
-    // paints (allocated once, never in onDraw)
     private val ballPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         color = context.getColor(R.color.foreground)
         style = Paint.Style.FILL
@@ -52,44 +50,40 @@ class BallBoxView(
         color = context.getColor(R.color.text_muted)
         style = Paint.Style.STROKE
         strokeWidth = 1.5f.dp
+        strokeCap = Paint.Cap.ROUND
         pathEffect = DashPathEffect(floatArrayOf(3f.dp, 4f.dp), 0f)
     }
-    // scratch (never allocate per-frame)
     private val visibleRect = Rect()
     private val locScratch = IntArray(2)
 
-    // haptic ids
-    private val pLowTick = VibrationEffect.Composition.PRIMITIVE_LOW_TICK
-    private val pTick = VibrationEffect.Composition.PRIMITIVE_TICK
-    private val pClick = VibrationEffect.Composition.PRIMITIVE_CLICK
-    private val softBounce = intArrayOf(pTick, pLowTick)
-    private val hardBounce = intArrayOf(pClick, pTick)
-    private val crackPrims = intArrayOf(pLowTick, pTick)
-    private val grabPrims = intArrayOf(pClick, pTick)
-    private val settlePrims = intArrayOf(pLowTick, pTick)
-    private val popPrims = intArrayOf(pClick, pTick)
-    private val launchPrims = intArrayOf(pClick, pTick)
+    private val primitiveLowTick = VibrationEffect.Composition.PRIMITIVE_LOW_TICK
+    private val primitiveTick = VibrationEffect.Composition.PRIMITIVE_TICK
+    private val primitiveClick = VibrationEffect.Composition.PRIMITIVE_CLICK
+    private val bouncePrimitives = intArrayOf(primitiveClick, primitiveTick)
+    private val crackPrimitives = intArrayOf(primitiveLowTick, primitiveTick)
+    private val grabPrimitives = intArrayOf(primitiveClick, primitiveTick)
+    private val settlePrimitives = intArrayOf(primitiveLowTick, primitiveTick)
+    private val popPrimitives = intArrayOf(primitiveClick, primitiveTick)
+    private val launchPrimitives = intArrayOf(primitiveClick, primitiveTick)
 
-    // ball state (view-local px)
-    private var bx = 0f
-    private var by = 0f
-    private var vx = 0f
-    private var vy = 0f
+    // ball state, view-local px
+    private var ballX = 0f
+    private var ballY = 0f
+    private var viewX = 0f
+    private var viewY = 0f
     private var captured = true
     private var grabbed = false
     private var pendingCatch = false
     private var grabScale = 1f
 
-    // wall bounds for the ball CENTER
-    private var minX = 0f
-    private var maxX = 0f
-    private var minY = 0f
-    private var maxY = 0f
+    private var wallMinX = 0f
+    private var wallMaxX = 0f
+    private var wallMinY = 0f
+    private var wallMaxY = 0f
     private var restX = 0f
     private var restY = 0f
     private var maxStretch = 0f
 
-    // rubber-band drag
     private var grabOffsetX = 0f
     private var grabOffsetY = 0f
     private var stretch = 0f
@@ -98,17 +92,15 @@ class BallBoxView(
     private var lastCrackTime = 0L
     private var fingerVx = 0f
     private var fingerVy = 0f
-    private var prevBx = 0f
-    private var prevBy = 0f
+    private var prevBallX = 0f
+    private var prevBallY = 0f
     private var touchX = 0f
     private var touchY = 0f
 
-    // scroll coupling
     private var lastBoxY = 0f
-    private var boxVel = 0f
-    private var lastBoxVel = 0f
+    private var boxVelocity = 0f
+    private var lastBoxVelocity = 0f
 
-    // frame loop
     private var lastFrameTime = 0L
     private var isRunning = false
 
@@ -118,6 +110,7 @@ class BallBoxView(
         if (getLocalVisibleRect(visibleRect)) startLoop()
     }
 
+    //TODO refactor to choreographer and 120 fps support.
     private val animRunnable = object : Runnable {
         override fun run() {
             if (!isRunning) return
@@ -139,23 +132,23 @@ class BallBoxView(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val w = MeasureSpec.getSize(widthMeasureSpec)
-        setMeasuredDimension(w, w / 2)
+        val width = MeasureSpec.getSize(widthMeasureSpec)
+        setMeasuredDimension(width, width / 2)
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
-        minX = surfaceInset + ballRadius
-        maxX = w - surfaceInset - ballRadius
-        minY = surfaceInset + ballRadius
-        maxY = h - surfaceInset - ballRadius
+        wallMinX = surfaceInset + ballRadius
+        wallMaxX = w - surfaceInset - ballRadius
+        wallMinY = surfaceInset + ballRadius
+        wallMaxY = h - surfaceInset - ballRadius
         restX = w * 0.70f
         restY = h * 0.50f
         maxStretch = h * BallBoxTuning.maxStretchFactor
         if (!grabbed) {
-            bx = restX
-            by = restY
-            vx = 0f
-            vy = 0f
+            ballX = restX
+            ballY = restY
+            viewX = 0f
+            viewY = 0f
             captured = true
             stretch = 0f
             airborne = false
@@ -177,14 +170,12 @@ class BallBoxView(
         surfaceDrawable.cancelAnimations()
     }
 
-    // --- frame loop ---
-
     private fun startLoop() {
         if (isRunning || width == 0) return
         getLocationInWindow(locScratch)
         lastBoxY = locScratch[1].toFloat()
-        boxVel = 0f
-        lastBoxVel = 0f
+        boxVelocity = 0f
+        lastBoxVelocity = 0f
         lastFrameTime = System.nanoTime()
         isRunning = true
         postOnAnimation(animRunnable)
@@ -192,9 +183,9 @@ class BallBoxView(
 
     private fun isActive(): Boolean {
         if (grabbed || airborne || pendingCatch) return true
-        val dist = len(bx - restX, by - restY)
-        val moving = len(vx, vy) > BallBoxTuning.sleepSpeed * density
-        val scrolling = abs(boxVel) > BallBoxTuning.sleepBoxVel * density
+        val dist = length(ballX - restX, ballY - restY)
+        val moving = length(viewX, viewY) > BallBoxTuning.sleepSpeed * density
+        val scrolling = abs(boxVelocity) > BallBoxTuning.sleepBoxVel * density
         val springing = captured && dist > 0.5f
         // a free ball within the socket's local pull (not yet captured) is still being drawn in,
         // even if momentarily slow at a turning point — keep simulating until it settles
@@ -210,9 +201,9 @@ class BallBoxView(
         val rawVel = ((boxY - lastBoxY) / dt)
             .coerceIn(-BallBoxTuning.maxBoxVel * density, BallBoxTuning.maxBoxVel * density)
         lastBoxY = boxY
-        boxVel += (rawVel - boxVel) * BallBoxTuning.scrollSmooth
-        val dBoxVel = boxVel - lastBoxVel
-        lastBoxVel = boxVel
+        boxVelocity += (rawVel - boxVelocity) * BallBoxTuning.scrollSmooth
+        val dBoxVel = boxVelocity - lastBoxVelocity
+        lastBoxVelocity = boxVelocity
 
         // smoothly grow the ball while held
         val targetScale = if (grabbed) BallBoxTuning.grabGrow else 1f
@@ -226,105 +217,113 @@ class BallBoxView(
             grabOffsetY += (-lift - grabOffsetY) * ease
             positionGrabbed()
             // track the ball's velocity for a flick-release
-            fingerVx += ((bx - prevBx) / dt - fingerVx) * 0.4f
-            fingerVy += ((by - prevBy) / dt - fingerVy) * 0.4f
-            prevBx = bx
-            prevBy = by
+            fingerVx += ((ballX - prevBallX) / dt - fingerVx) * 0.4f
+            fingerVy += ((ballY - prevBallY) / dt - fingerVy) * 0.4f
+            prevBallX = ballX
+            prevBallY = ballY
             return
         }
 
         // inertial pseudo-force: ball lags the tray's acceleration (only while on screen)
         if (getLocalVisibleRect(visibleRect)) {
-            vy += -BallBoxTuning.scrollCoupling * dBoxVel
+            viewY += -BallBoxTuning.scrollCoupling * dBoxVel
         }
 
         if (captured) {
-            val dx = bx - restX
-            val dy = by - restY
+            val dx = ballX - restX
+            val dy = ballY - restY
             // underdamped spring hold — lets rhythmic scrolling build resonance
-            vx += (-BallBoxTuning.holdStiffness * dx - BallBoxTuning.holdDamping * vx) * dt
-            vy += (-BallBoxTuning.holdStiffness * dy - BallBoxTuning.holdDamping * vy) * dt
+            viewX += (-BallBoxTuning.holdStiffness * dx - BallBoxTuning.holdDamping * viewX) * dt
+            viewY += (-BallBoxTuning.holdStiffness * dy - BallBoxTuning.holdDamping * viewY) * dt
             val escapeRadius = ringRadius * BallBoxTuning.escapeRadiusMul
-            if (len(dx, dy) > escapeRadius || len(vx, vy) > BallBoxTuning.escapeSpeed * density) {
+            if (length(dx, dy) > escapeRadius || length(viewX, viewY) > BallBoxTuning.escapeSpeed * density) {
                 captured = false
-                if (isVisibleY(restY)) playPrim(popPrims, BallBoxTuning.popScale, EFFECT_CLICK)
+                if (isVisibleY(restY)) playPrim(popPrimitives, BallBoxTuning.popScale, EFFECT_CLICK)
             }
         } else {
             // weak magnet felt only NEAR the socket and only at LOW speed
-            val dx = restX - bx
-            val dy = restY - by
-            val dist = len(dx, dy)
+            val dx = restX - ballX
+            val dy = restY - ballY
+            val dist = length(dx, dy)
             if (dist < BallBoxTuning.attractionRadius * density &&
-                len(vx, vy) < BallBoxTuning.attractionMaxSpeed * density
+                length(viewX, viewY) < BallBoxTuning.attractionMaxSpeed * density
             ) {
                 var ax = BallBoxTuning.attractK * dx
                 var ay = BallBoxTuning.attractK * dy
-                val am = len(ax, ay)
+                val am = length(ax, ay)
                 val cap = BallBoxTuning.attractMax * density
                 if (am > cap) {
                     val s = cap / am
                     ax *= s
                     ay *= s
                 }
-                vx += ax * dt
-                vy += ay * dt
+                viewX += ax * dt
+                viewY += ay * dt
             }
         }
 
-        // friction (frame-rate independent exponential decay)
-        val decay = expDecay(BallBoxTuning.friction, dt)
-        vx *= decay
-        vy *= decay
+        // frame-rate-independent exponential decay
+        val decay = exponentialDecay(BallBoxTuning.friction, dt)
+        viewX *= decay
+        viewY *= decay
 
-        val speed = len(vx, vy)
+        val speed = length(viewX, viewY)
         val maxSpeed = BallBoxTuning.maxSpeed * density
         if (speed > maxSpeed) {
             val s = maxSpeed / speed
-            vx *= s
-            vy *= s
+            viewX *= s
+            viewY *= s
         }
 
-        bx += vx * dt
-        by += vy * dt
+        ballX += viewX * dt
+        ballY += viewY * dt
 
         if (airborne) {
             // launched from outside the box — let it fly back in without snapping to a wall
-            if (bx in minX..maxX && by in minY..maxY) airborne = false
+            if (ballX in wallMinX..wallMaxX && ballY in wallMinY..wallMaxY) airborne = false
         } else {
             collide()
         }
 
         // latch into the socket when arriving slow & close
         if (!captured) {
-            if (len(bx - restX, by - restY) < ringRadius &&
-                len(vx, vy) < BallBoxTuning.captureSpeed * density
+            if (length(ballX - restX, ballY - restY) < ringRadius &&
+                length(viewX, viewY) < BallBoxTuning.captureSpeed * density
             ) {
                 captured = true
-                if (isVisibleY(restY)) playPrim(settlePrims, BallBoxTuning.settleScale, EFFECT_TICK)
+                if (isVisibleY(restY)) playPrim(settlePrimitives, BallBoxTuning.settleScale, EFFECT_TICK)
             }
         }
 
         // a held finger that missed the ball catches it if it drifts near
-        if (pendingCatch && len(bx - touchX, by - touchY) <= grabRadius()) {
+        if (pendingCatch && length(ballX - touchX, ballY - touchY) <= grabRadius()) {
             beginGrab()
         }
     }
 
     private fun collide() {
         val e = BallBoxTuning.restitution
-        if (bx < minX) {
-            bx = minX
-            if (vx < 0f) { bounce(-vx, minX, by); vx = -vx * e }
-        } else if (bx > maxX) {
-            bx = maxX
-            if (vx > 0f) { bounce(vx, maxX, by); vx = -vx * e }
+        if (ballX < wallMinX) {
+            ballX = wallMinX
+            if (viewX < 0f) {
+                bounce(-viewX, wallMinX, ballY); viewX = -viewX * e
+            }
+        } else if (ballX > wallMaxX) {
+            ballX = wallMaxX
+            if (viewX > 0f) {
+                bounce(viewX, wallMaxX, ballY); viewX = -viewX * e
+            }
         }
-        if (by < minY) {
-            by = minY
-            if (vy < 0f) { bounce(-vy, bx, minY); vy = -vy * e }
-        } else if (by > maxY) {
-            by = maxY
-            if (vy > 0f) { bounce(vy, bx, maxY); vy = -vy * e }
+        if (ballY < wallMinY) {
+            ballY = wallMinY
+            if (viewY < 0f) {
+                bounce(-viewY, ballX, wallMinY); viewY = -viewY * e
+            }
+        } else if (ballY > wallMaxY) {
+            ballY = wallMaxY
+            if (viewY > 0f) {
+                bounce(viewY, ballX, wallMaxY); viewY = -viewY * e
+            }
         }
     }
 
@@ -333,20 +332,17 @@ class BallBoxView(
         if (impactSpeed < minSpeed) return
         if (!isVisibleY(py)) return
         val refSpeed = BallBoxTuning.bounceRefSpeed * density
-        val p = ((impactSpeed - minSpeed) / (refSpeed - minSpeed)).coerceIn(0f, 1f)
-        val scale = BallBoxTuning.bounceMinScale + p * (BallBoxTuning.bounceMaxScale - BallBoxTuning.bounceMinScale)
-        if (p < 0.5f) playPrim(softBounce, scale, EFFECT_TICK)
-        else playPrim(hardBounce, scale, EFFECT_CLICK)
+        val impact = ((impactSpeed - minSpeed) / (refSpeed - minSpeed)).coerceIn(0f, 1f)
+        val scale = BallBoxTuning.bounceMinScale + impact * (BallBoxTuning.bounceMaxScale - BallBoxTuning.bounceMinScale)
+        playPrim(bouncePrimitives, scale, EFFECT_CLICK)
     }
-
-    // --- touch ---
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         when (event.actionMasked) {
             MotionEvent.ACTION_DOWN -> {
                 touchX = event.x
                 touchY = event.y
-                if (len(event.x - bx, event.y - by) <= grabRadius()) {
+                if (length(event.x - ballX, event.y - ballY) <= grabRadius()) {
                     beginGrab()
                 } else {
                     // missed the ball — keep watching; if it drifts under the finger, catch it.
@@ -371,26 +367,26 @@ class BallBoxView(
                 parent?.requestDisallowInterceptTouchEvent(false)
                 if (stretch > BallBoxTuning.launchMinStretch.dp) {
                     // shoot toward the box centre and fly there via physics (no snap/teleport)
-                    val dx = width * 0.5f - bx
-                    val dy = height * 0.5f - by
-                    val d = len(dx, dy)
+                    val dx = width * 0.5f - ballX
+                    val dy = height * 0.5f - ballY
+                    val d = length(dx, dy)
                     if (d > 0.001f) {
                         val cap = BallBoxTuning.launchMaxSpeed * density
                         val sp = (stretch * BallBoxTuning.launchGain).coerceAtMost(cap)
-                        vx = dx / d * sp
-                        vy = dy / d * sp
+                        viewX = dx / d * sp
+                        viewY = dy / d * sp
                     }
                     airborne = true
                     val prog = (stretch / maxStretch).coerceIn(0f, 1f)
-                    if (isVisibleY(by)) {
-                        if (prog > 0.66f) playPrim(launchPrims, 0.5f + 0.5f * prog, EFFECT_HEAVY_CLICK)
-                        else playPrim(launchPrims, 0.4f + 0.5f * prog, EFFECT_CLICK)
+                    if (isVisibleY(ballY)) {
+                        if (prog > 0.66f) playPrim(launchPrimitives, 0.5f + 0.5f * prog, EFFECT_HEAVY_CLICK)
+                        else playPrim(launchPrimitives, 0.4f + 0.5f * prog, EFFECT_CLICK)
                     }
                 } else {
                     val maxSpeed = BallBoxTuning.maxSpeed * density
-                    vx = fingerVx.coerceIn(-maxSpeed, maxSpeed)
-                    vy = fingerVy.coerceIn(-maxSpeed, maxSpeed)
-                    if (isVisibleY(by)) playPrim(crackPrims, BallBoxTuning.dropScale, EFFECT_TICK)
+                    viewX = fingerVx.coerceIn(-maxSpeed, maxSpeed)
+                    viewY = fingerVy.coerceIn(-maxSpeed, maxSpeed)
+                    if (isVisibleY(ballY)) playPrim(crackPrimitives, BallBoxTuning.dropScale, EFFECT_TICK)
                 }
                 stretch = 0f
                 startLoop()
@@ -406,41 +402,41 @@ class BallBoxView(
         grabbed = true
         captured = false
         isPressed = true
-        grabOffsetX = bx - touchX
-        grabOffsetY = by - touchY
-        vx = 0f
-        vy = 0f
+        grabOffsetX = ballX - touchX
+        grabOffsetY = ballY - touchY
+        viewX = 0f
+        viewY = 0f
         stretch = 0f
         airborne = false
         lastCrackLevel = 0
         lastCrackTime = 0L
-        prevBx = bx
-        prevBy = by
+        prevBallX = ballX
+        prevBallY = ballY
         fingerVx = 0f
         fingerVy = 0f
         pendingCatch = false
         parent?.requestDisallowInterceptTouchEvent(true)
-        playPrim(grabPrims, BallBoxTuning.grabScale, EFFECT_CLICK)
+        playPrim(grabPrimitives, BallBoxTuning.grabScale, EFFECT_CLICK)
         startLoop()
     }
 
     private fun positionGrabbed() {
         val tx = touchX + grabOffsetX
         val ty = touchY + grabOffsetY
-        val ex = tx.coerceIn(minX, maxX)
-        val ey = ty.coerceIn(minY, maxY)
+        val ex = tx.coerceIn(wallMinX, wallMaxX)
+        val ey = ty.coerceIn(wallMinY, wallMaxY)
         val ox = tx - ex
         val oy = ty - ey
-        val om = len(ox, oy)
+        val om = length(ox, oy)
         if (om < 0.5f) {
-            bx = ex
-            by = ey
+            ballX = ex
+            ballY = ey
             stretch = 0f
             lastCrackLevel = 0
         } else {
             val mag = rubberBand(om, maxStretch, BallBoxTuning.dragDamping)
-            bx = ex + ox / om * mag
-            by = ey + oy / om * mag
+            ballX = ex + ox / om * mag
+            ballY = ey + oy / om * mag
             stretch = mag
             // a crack each time the visual stretch advances a notch — rate-limited so each lands
             // as a distinct, feelable pulse instead of a superseded blur. No visibility gate: the
@@ -458,30 +454,26 @@ class BallBoxView(
         }
     }
 
-    // --- draw ---
-
     override fun onDraw(canvas: Canvas) {
         canvas.drawCircle(restX, restY, ringRadius, ringPaint)
-        canvas.drawCircle(bx, by, ballRadius * grabScale, ballPaint)
+        canvas.drawCircle(ballX, ballY, ballRadius * grabScale, ballPaint)
     }
-
-    // --- helpers ---
 
     private fun playCrack(scale: Float) {
         val prim = when ((BallBoxTuning.crackPrimitive + 0.5f).toInt()) {
-            0 -> pLowTick
-            2 -> pClick
-            else -> pTick
+            0 -> primitiveLowTick
+            2 -> primitiveClick
+            else -> primitiveTick
         }
         val s = scale.coerceIn(0.01f, 1f)
         if (prim in supportedPrimitives) playPrimitive(prim, s) else playEffect(EFFECT_TICK)
     }
 
-    private fun playPrim(prefs: IntArray, scale: Float, fallbackEffect: Int) {
-        val s = scale.coerceIn(0.01f, 1f)
-        for (p in prefs) {
+    private fun playPrim(primitives: IntArray, scale: Float, fallbackEffect: Int) {
+        val safeScale = scale.coerceIn(0.01f, 1f)
+        for (p in primitives) {
             if (p in supportedPrimitives) {
-                playPrimitive(p, s)
+                playPrimitive(p, safeScale)
                 return
             }
         }
@@ -493,15 +485,15 @@ class BallBoxView(
         return y >= visibleRect.top && y <= visibleRect.bottom
     }
 
-    private fun len(x: Float, y: Float): Float = sqrt(x * x + y * y)
+    private fun length(x: Float, y: Float): Float = sqrt(x * x + y * y)
 
     private companion object {
         val EFFECT_TICK = VibrationEffect.EFFECT_TICK
         val EFFECT_CLICK = VibrationEffect.EFFECT_CLICK
         val EFFECT_HEAVY_CLICK = VibrationEffect.EFFECT_HEAVY_CLICK
 
-        // approximate e^(-rate*dt) without kotlin.math.exp import noise
-        fun expDecay(rate: Float, dt: Float): Float {
+        // 2nd-order Padé approximant of e^(-rate*dt)
+        fun exponentialDecay(rate: Float, dt: Float): Float {
             val x = rate * dt
             return 1f / (1f + x + 0.5f * x * x)
         }
@@ -570,5 +562,5 @@ object BallBoxTuning {
     var dropScale = 0.74f
     var settleScale = 1.0f
     var popScale = 0.49f
-    var grabGrow = 1.10f           // visual ball scale while held
+    var grabGrow = 1.20f           // visual ball scale while held
 }

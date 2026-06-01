@@ -196,7 +196,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             shaderInnerSq[i] = if (innerEdge <= 0f) 0f else innerEdge * innerEdge
             shaderOuterSq[i] = outerEdge * outerEdge
 
-            if (intensity > 0.001f) {
+            if (intensity > MIN_VISIBLE_INTENSITY) {
                 val outer = radius + ringW * 0.75f
                 if (wave.x - outer < minX) minX = wave.x - outer
                 if (wave.x + outer > maxX) maxX = wave.x + outer
@@ -263,7 +263,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             distortionIntensities[i] = intensity
             distortionReachSq[i] = reach * reach
 
-            if (intensity > 0.001f && wave.distortionAmplitude > 0.001f && reach > 0f) {
+            if (intensity > MIN_VISIBLE_INTENSITY && wave.distortionAmplitude > 0.001f && reach > 0f) {
                 hasVisibleWave = true
                 if (originX - reach < bboxMinX) bboxMinX = originX - reach
                 if (originX + reach > bboxMaxX) bboxMaxX = originX + reach
@@ -417,6 +417,9 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     companion object {
+        // below this a wave contributes nothing visible — skip its bbox/draw work
+        private const val MIN_VISIBLE_INTENSITY = 0.001f
+
         private const val DISTORTION_SHADER = """
             uniform shader content;
             uniform float2 resolution;

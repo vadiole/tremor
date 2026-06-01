@@ -32,12 +32,13 @@ class HapticToggle(context: Context) : View(context), Density {
         style = Paint.Style.FILL
     }
 
-    private val onColor = context.getColor(R.color.foreground)
+    private val trackOnColor = context.getColor(R.color.foreground)
     private val thumbOnColor = context.getColor(R.color.background)
     private val thumbOffColor = context.getColor(R.color.foreground)
 
     private val rect = RectF()
     private var thumbAnimator: ValueAnimator? = null
+    private val thumbAnimDurationMs = 200L
 
     init {
         isClickable = true
@@ -58,7 +59,7 @@ class HapticToggle(context: Context) : View(context), Density {
         thumbAnimator?.cancel()
         val target = if (isOn) 1f else 0f
         thumbAnimator = ValueAnimator.ofFloat(thumbPosition, target).apply {
-            duration = 200
+            duration = thumbAnimDurationMs
             interpolator = thumbInterpolator
             addUpdateListener {
                 thumbPosition = it.animatedValue as Float
@@ -74,17 +75,16 @@ class HapticToggle(context: Context) : View(context), Density {
 
     override fun onDraw(canvas: Canvas) {
         val cornerRadius = height / 2f
-        val halfStroke = surfaceInset
 
-        trackPaint.color = blendColor(TRANSPARENT, onColor, thumbPosition)
+        trackPaint.color = blendColor(TRANSPARENT, trackOnColor, thumbPosition)
         thumbPaint.color = blendColor(thumbOffColor, thumbOnColor, thumbPosition)
 
-        rect.set(halfStroke, halfStroke, width - halfStroke, height - halfStroke)
+        rect.set(surfaceInset, surfaceInset, width - surfaceInset, height - surfaceInset)
         canvas.drawRoundRect(rect, cornerRadius, cornerRadius, trackPaint)
 
         val centerY = height / 2f
-        val offX = thumbPadding + thumbRadius + halfStroke
-        val onX = width - thumbPadding - thumbRadius - halfStroke
+        val offX = thumbPadding + thumbRadius + surfaceInset
+        val onX = width - thumbPadding - thumbRadius - surfaceInset
         val thumbX = offX + (onX - offX) * thumbPosition
         canvas.drawCircle(thumbX, centerY, thumbRadius, thumbPaint)
     }
