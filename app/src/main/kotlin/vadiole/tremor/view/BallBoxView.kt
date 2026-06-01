@@ -38,7 +38,7 @@ class BallBoxView(
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
-    private val ballRadius = 11f.dp
+    private val ballRadius = 12f.dp
     private val ringRadius = ballRadius + 6f.dp
     private val density = resources.displayMetrics.density
 
@@ -50,7 +50,6 @@ class BallBoxView(
         color = context.getColor(R.color.text_muted)
         style = Paint.Style.STROKE
         strokeWidth = 1.5f.dp
-        strokeCap = Paint.Cap.ROUND
         pathEffect = DashPathEffect(floatArrayOf(3f.dp, 4f.dp), 0f)
     }
     private val visibleRect = Rect()
@@ -129,6 +128,7 @@ class BallBoxView(
         isClickable = true
         background = surfaceDrawable
         keepFloatingSurfaceShadowOnly()
+        z = 1f
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -395,7 +395,6 @@ class BallBoxView(
         return true
     }
 
-    // grab radius is computed live — grabPadding can change at runtime via a slider
     private fun grabRadius(): Float = ballRadius + BallBoxTuning.grabPadding.dp
 
     private fun beginGrab() {
@@ -509,19 +508,19 @@ class BallBoxView(
 object BallBoxTuning {
     // motion
     var friction = 0.0f            // velocity e-folding rate per second (higher = stops sooner)
-    var restitution = 0.85f        // wall bounce energy kept (0..1)
+    var restitution = 0.90f        // wall bounce energy kept (0..1)
     var maxSpeed = 5000f           // (dp/s) hard velocity clamp
 
     // resting-spot magnet (felt only near the socket and only at low speed)
     var attractionRadius = 60f     // (dp) pull is felt only within this distance of the socket
-    var attractionMaxSpeed = 700f  // (dp/s) pull is felt only when slower than this
+    var attractionMaxSpeed = 1000f  // (dp/s) pull is felt only when slower than this
     var attractK = 3.0f            // pull stiffness near the socket (1/s^2)
     var attractMax = 600f          // (dp/s^2) cap on the pull
     var captureSpeed = 130f        // (dp/s) latch into the socket only below this speed
-    var holdStiffness = 220f       // socket spring stiffness (1/s^2)
+    var holdStiffness = 120f       // socket spring stiffness (1/s^2)
     var holdDamping = 9f           // socket spring damping (underdamped -> can resonate)
     var escapeRadiusMul = 1.8f     // escape when displacement > ringRadius * this
-    var escapeSpeed = 900f         // (dp/s) escape when shaken faster than this
+    var escapeSpeed = 1100f         // (dp/s) escape when shaken faster than this
 
     // scroll coupling (tray inertia)
     var scrollCoupling = 1.01f     // how hard the ball reacts to the tray's acceleration
@@ -536,9 +535,9 @@ object BallBoxTuning {
     var launchMinStretch = 6f      // (dp) below this a release is a drop, not a launch
 
     // grab
-    var grabPadding = 48f          // (dp) extra touch radius beyond the ball (bigger = easier to grab)
+    var grabPadding = 64f          // (dp) extra touch radius beyond the ball (bigger = easier to grab)
     var grabAttract = 20f          // how fast a grabbed ball glides to the finger (per second)
-    var grabLift = 36f             // (dp) the ball rides this far above the finger
+    var grabLift = 8f             // (dp) the ball rides this far above the finger
 
     // sleep thresholds
     var sleepSpeed = 6f            // (dp/s) ball is considered still below this
@@ -562,5 +561,5 @@ object BallBoxTuning {
     var dropScale = 0.74f
     var settleScale = 1.0f
     var popScale = 0.49f
-    var grabGrow = 1.20f           // visual ball scale while held
+    var grabGrow = 1.70f           // visual ball scale while held
 }

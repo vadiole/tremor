@@ -264,6 +264,13 @@ class TremorActivity : Activity(), Density {
             parent.addSpacer(itemSpacing)
         }
 
+        parent.addView(
+            BallBoxView(this, hapticEngine::playPrimitive, hapticEngine::playEffect, supportedPrimitiveIds),
+            matchWrap(),
+        )
+        parent.addSpacer(itemSpacing)
+        //  parent.addView(BallBoxDebugPanel(this), matchWrap())
+
         val riseFallSupported = VibrationEffect.Composition.PRIMITIVE_QUICK_RISE in supportedPrimitiveIds &&
             VibrationEffect.Composition.PRIMITIVE_QUICK_FALL in supportedPrimitiveIds
         if (riseFallSupported) {
@@ -275,13 +282,6 @@ class TremorActivity : Activity(), Density {
             parent.addView(DragThresholdView(this), matchWrap())
             parent.addSpacer(itemSpacing)
         }
-
-        parent.addView(
-            BallBoxView(this, hapticEngine::playPrimitive, hapticEngine::playEffect, supportedPrimitiveIds),
-            matchWrap(),
-        )
-
-        parent.addView(BallBoxDebugPanel(this), matchWrap())
 
         parent.addSpacer(sectionSpacing)
     }
