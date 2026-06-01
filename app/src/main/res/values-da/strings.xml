@@ -5,7 +5,7 @@
     <string name="section_primitives">Primitiver</string>
     <string name="section_examples">Eksempler</string>
     <string name="not_available_on_device">Ikke tilgængelig på denne enhed:\n%s</string>
-    <string name="haptic_disabled_message">Sørg for, at vibration er aktiveret i <u>systemindstillinger</u>, og at Forstyr ikke-tilstand er slået fra.</string>
+    <string name="haptic_disabled_message">Sørg for, at haptisk feedback er aktiveret i <u>systemindstillinger</u>.</string>
     <string name="footer_by_with_love">af %s med &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

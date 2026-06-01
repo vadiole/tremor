@@ -1,13 +1,13 @@
 package vadiole.tremor
 
-import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
+import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
+import android.provider.Settings
 import android.view.HapticFeedbackConstants
-import android.view.View
 
 class HapticEngine(context: Context) {
 
@@ -18,19 +18,13 @@ class HapticEngine(context: Context) {
         manager.defaultVibrator
     }
 
-    fun isHapticEnabled(view: View): Boolean {
-        if (isDndActive()) return false
-        // On API 35+ ViewRootImpl uses async haptic feedback which always returns true,
-        // so performHapticFeedback can't detect disabled vibration. Only DND is checkable.
-        if (Build.VERSION.SDK_INT >= 35) return true
-        // Must be called when the view is attached (e.g. from onWindowFocusChanged),
-        // because performHapticFeedback returns false when mAttachInfo is null.
-        return view.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
-    }
-
-    fun isDndActive(): Boolean {
-        val nm = appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        return nm.currentInterruptionFilter != NotificationManager.INTERRUPTION_FILTER_ALL
+    @Suppress("DEPRECATION")
+    fun isHapticEnabled(): Boolean {
+        val resolver = appContext.contentResolver
+        // performHapticFeedback is suppressed unless the master VIBRATE_ON and HAPTIC_FEEDBACK_ENABLED are on.
+        val masterOn = Settings.System.getInt(resolver, Settings.System.VIBRATE_ON, 1) != 0
+        val touchFeedbackOn = Settings.System.getInt(resolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0
+        return masterOn && touchFeedbackOn
     }
 
     fun getAvailableHapticConstants(): List<HapticConstantInfo> {
@@ -59,9 +53,27 @@ class HapticEngine(context: Context) {
         return allPrimitives.filterIndexed { index, _ -> support[index] }
     }
 
+    // USAGE_ACCESSIBILITY is the one usage the vibrator plays even when the master
+    // "Use vibration & haptics" (VIBRATE_ON) switch is off
+    private val accessibilityAttributes: VibrationAttributes? = if (Build.VERSION.SDK_INT >= 33) {
+        VibrationAttributes.Builder()
+            .setUsage(VibrationAttributes.USAGE_ACCESSIBILITY)
+            .build()
+    } else {
+        null
+    }
+
+    private fun vibrate(effect: VibrationEffect) {
+        if (Build.VERSION.SDK_INT >= 33) {
+            vibrator.vibrate(effect, accessibilityAttributes!!)
+        } else {
+            vibrator.vibrate(effect)
+        }
+    }
+
     fun playEffect(effectId: Int) {
         val effect = VibrationEffect.createPredefined(effectId)
-        vibrator.vibrate(effect)
+        vibrate(effect)
     }
 
     fun playPrimitive(primitiveId: Int, scale: Float) {
@@ -69,7 +81,7 @@ class HapticEngine(context: Context) {
             val effect = VibrationEffect.startComposition()
                 .addPrimitive(primitiveId, scale)
                 .compose()
-            vibrator.vibrate(effect)
+            vibrate(effect)
         } catch (_: Exception) {
         }
     }

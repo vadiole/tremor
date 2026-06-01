@@ -2,7 +2,6 @@ package vadiole.tremor
 
 import android.app.Activity
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
 import android.view.HapticFeedbackConstants
@@ -42,7 +41,6 @@ class TremorActivity : Activity(), Density {
     private lateinit var supportedPrimitiveIds: Set<Int>
     private lateinit var unsupportedPrimitives: List<HapticEngine.PrimitiveInfo>
     private var bannerView: TutorialView? = null
-    private var bannerShown = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,10 +125,7 @@ class TremorActivity : Activity(), Density {
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus && !bannerShown) {
-            bannerShown = true
-            updateBanner()
-        }
+        if (hasFocus) updateBanner()
     }
 
     override fun onPause() {
@@ -153,7 +148,7 @@ class TremorActivity : Activity(), Density {
         for (info in constants) {
             val strength = hapticConstantStrength(info.value)
             val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
-                performHapticFeedback(info.value)
+                waveOverlay.performHapticFeedback(info.value)
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.value == HapticFeedbackConstants.REJECT) {
                     waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
@@ -323,30 +318,9 @@ class TremorActivity : Activity(), Density {
         root.addView(bannerView, lp)
     }
 
-    private val hideBannerRunnable = Runnable {
-        bannerView?.visibility = View.GONE
-    }
-
     private fun updateBanner() {
         val banner = bannerView ?: return
-        banner.removeCallbacks(hideBannerRunnable)
-        if (Build.VERSION.SDK_INT >= 35) {
-            // API 35+ can't detect disabled vibration (async haptics) — show a temporary hint
-            banner.visibility = View.VISIBLE
-            if (!hapticEngine.isDndActive()) {
-                banner.postDelayed(hideBannerRunnable, BANNER_AUTO_HIDE_MS)
-            }
-        } else {
-            val enabled = hapticEngine.isHapticEnabled(banner)
-            banner.visibility = if (enabled) View.GONE else View.VISIBLE
-        }
-    }
-
-    private fun performHapticFeedback(constant: Int) {
-        val played = waveOverlay.performHapticFeedback(constant)
-        if (!played && bannerView?.visibility != View.VISIBLE) {
-            bannerView?.visibility = View.VISIBLE
-        }
+        banner.visibility = if (hapticEngine.isHapticEnabled()) View.GONE else View.VISIBLE
     }
 
     private fun createSectionLabel(text: String) = TextView(this).apply {
@@ -375,6 +349,5 @@ class TremorActivity : Activity(), Density {
     private companion object {
         // re-spawn delay for the second wave echoing REJECT / EFFECT_DOUBLE_CLICK's double pulse
         const val ECHO_WAVE_DELAY_MS = 100L
-        const val BANNER_AUTO_HIDE_MS = 10_000L
     }
 }

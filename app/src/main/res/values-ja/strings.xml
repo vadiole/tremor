@@ -5,7 +5,7 @@
     <string name="section_primitives">プリミティブ</string>
     <string name="section_examples">使用例</string>
     <string name="not_available_on_device">このデバイスでは利用できません:\n%s</string>
-    <string name="haptic_disabled_message">バイブレーションが<u>システム設定</u>で有効になっていること、おやすみモードがオフになっていることを確認してください。</string>
+    <string name="haptic_disabled_message">触覚フィードバックが<u>システム設定</u>で有効になっているか確認してください。</string>
     <string name="footer_by_with_love">%s が &lt;3 を込めて</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>
