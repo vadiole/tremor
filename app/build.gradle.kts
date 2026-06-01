@@ -39,6 +39,9 @@ android {
         }
     }
     packaging {
+        dex {
+            useLegacyPackaging = true
+        }
         resources {
             excludes += "kotlin/**"
             excludes += "DebugProbesKt.bin"
