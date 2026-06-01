@@ -17,15 +17,16 @@ import kotlin.math.max
 import kotlin.math.min
 import vadiole.tremor.Density
 import vadiole.tremor.R
+import vadiole.tremor.UiConstants
 
 class WaveOverlayView(context: Context) : View(context), Density {
 
     private val waves = mutableListOf<Wave>()
-    private val maxWaves = 10
-    private val baseDurationMs = 600f
-    private val baseExpandSpeed = 800f.dp
-    private val baseRingWidth = 40f.dp
-    private val baseDistortionAmplitude = 4f.dp
+    private val maxWaves = UiConstants.WaveOverlay.MAX_WAVES
+    private val baseDurationMs = UiConstants.WaveOverlay.BASE_DURATION_MS
+    private val baseExpandSpeed = UiConstants.WaveOverlay.BASE_EXPAND_SPEED_DP.dp
+    private val baseRingWidth = UiConstants.WaveOverlay.BASE_RING_WIDTH_DP.dp
+    private val baseDistortionAmplitude = UiConstants.WaveOverlay.BASE_DISTORTION_AMPLITUDE_DP.dp
 
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
@@ -196,7 +197,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
             shaderInnerSq[i] = if (innerEdge <= 0f) 0f else innerEdge * innerEdge
             shaderOuterSq[i] = outerEdge * outerEdge
 
-            if (intensity > MIN_VISIBLE_INTENSITY) {
+            if (intensity > UiConstants.WaveOverlay.MIN_VISIBLE_INTENSITY) {
                 val outer = radius + ringW * 0.75f
                 if (wave.x - outer < minX) minX = wave.x - outer
                 if (wave.x + outer > maxX) maxX = wave.x + outer
@@ -263,7 +264,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
             distortionIntensities[i] = intensity
             distortionReachSq[i] = reach * reach
 
-            if (intensity > MIN_VISIBLE_INTENSITY && wave.distortionAmplitude > 0.001f && reach > 0f) {
+            if (
+                intensity > UiConstants.WaveOverlay.MIN_VISIBLE_INTENSITY &&
+                wave.distortionAmplitude > 0.001f &&
+                reach > 0f
+            ) {
                 hasVisibleWave = true
                 if (originX - reach < bboxMinX) bboxMinX = originX - reach
                 if (originX + reach > bboxMaxX) bboxMaxX = originX + reach
@@ -417,25 +422,22 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     companion object {
-        // below this a wave contributes nothing visible — skip its bbox/draw work
-        private const val MIN_VISIBLE_INTENSITY = 0.001f
-
-        private const val DISTORTION_SHADER = """
+        private val DISTORTION_SHADER = """
             uniform shader content;
             uniform float2 resolution;
             uniform int waveCount;
-            uniform float origins[20];
-            uniform float ages[10];
-            uniform float amplitudes[10];
-            uniform float speeds[10];
-            uniform float intensities[10];
-            uniform float reachSq[10];
+            uniform float origins[${UiConstants.WaveOverlay.MAX_WAVES * 2}];
+            uniform float ages[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float amplitudes[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float speeds[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float intensities[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float reachSq[${UiConstants.WaveOverlay.MAX_WAVES}];
             uniform float4 bbox;
 
-            const float frequency = 34.0;
-            const float decay = 5.2;
-            const float attackSeconds = 0.045;
-            const float distanceDecay = 1800.0;
+            const float frequency = ${UiConstants.WaveOverlay.DISTORTION_FREQUENCY};
+            const float decay = ${UiConstants.WaveOverlay.DISTORTION_DECAY};
+            const float attackSeconds = ${UiConstants.WaveOverlay.DISTORTION_ATTACK_SECONDS};
+            const float distanceDecay = ${UiConstants.WaveOverlay.DISTORTION_DISTANCE_DECAY};
 
             half4 main(float2 fragCoord) {
                 if (fragCoord.x < bbox.x || fragCoord.x > bbox.z ||
@@ -445,11 +447,11 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
                 float2 sampleCoord = fragCoord;
 
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < ${UiConstants.WaveOverlay.MAX_WAVES}; i++) {
                     if (i >= waveCount) break;
 
                     float intensity = intensities[i];
-                    if (intensity <= 0.001) continue;
+                    if (intensity <= ${UiConstants.WaveOverlay.MIN_VISIBLE_INTENSITY}) continue;
 
                     float2 origin = float2(origins[i * 2], origins[i * 2 + 1]);
                     float2 delta = fragCoord - origin;
@@ -478,24 +480,24 @@ class WaveOverlayView(context: Context) : View(context), Density {
             }
         """
 
-        private const val WAVE_SHADER = """
+        private val WAVE_SHADER = """
             uniform int waveCount;
-            uniform float origins[20];
-            uniform float radii[10];
-            uniform float intensities[10];
-            uniform float ringWidths[10];
-            uniform float innerSq[10];
-            uniform float outerSq[10];
+            uniform float origins[${UiConstants.WaveOverlay.MAX_WAVES * 2}];
+            uniform float radii[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float intensities[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float ringWidths[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float innerSq[${UiConstants.WaveOverlay.MAX_WAVES}];
+            uniform float outerSq[${UiConstants.WaveOverlay.MAX_WAVES}];
             uniform float3 waveColor;
 
             half4 main(float2 fragCoord) {
                 float brightness = 0.0;
 
-                for (int i = 0; i < 10; i++) {
+                for (int i = 0; i < ${UiConstants.WaveOverlay.MAX_WAVES}; i++) {
                     if (i >= waveCount) break;
 
                     float intensity = intensities[i];
-                    if (intensity <= 0.001) continue;
+                    if (intensity <= ${UiConstants.WaveOverlay.MIN_VISIBLE_INTENSITY}) continue;
 
                     float2 origin = float2(origins[i * 2], origins[i * 2 + 1]);
                     float2 delta = fragCoord - origin;
@@ -512,7 +514,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
                     float ringShape = smoothstep(inner - halfRing * 0.5, r, dist)
                                     * smoothstep(outer + halfRing * 0.5, r, dist);
 
-                    brightness += ringShape * intensity * 0.1;
+                    brightness += ringShape * intensity * ${UiConstants.WaveOverlay.RING_BRIGHTNESS_SCALE};
                 }
 
                 brightness = clamp(brightness, 0.0, 1.0);
