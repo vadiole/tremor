@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.Space
 import android.widget.TextView
-import vadiole.tremor.view.BallBoxDebugPanel
 import vadiole.tremor.view.BallBoxView
 import vadiole.tremor.view.DragThresholdView
 import vadiole.tremor.view.TutorialView
@@ -40,7 +39,7 @@ class TremorActivity : Activity(), Density {
     private lateinit var supportedPrimitives: List<HapticEngine.PrimitiveInfo>
     private lateinit var supportedPrimitiveIds: Set<Int>
     private lateinit var unsupportedPrimitives: List<HapticEngine.PrimitiveInfo>
-    private var bannerView: TutorialView? = null
+    private var tutorialView: TutorialView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -120,14 +119,14 @@ class TremorActivity : Activity(), Density {
         }
         root.addView(heartOverlay, frameFill())
 
-        buildBanner(root)
+        buildTutorial(root)
 
         setContentView(root)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) updateBanner()
+        if (hasFocus) updateTutorial()
     }
 
     override fun onPause() {
@@ -315,18 +314,18 @@ class TremorActivity : Activity(), Density {
         parent.addView(footer, matchWrap())
     }
 
-    private fun buildBanner(root: FrameLayout) {
-        bannerView = TutorialView(this)
+    private fun buildTutorial(root: FrameLayout) {
+        tutorialView = TutorialView(this)
         val lp = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,
             Gravity.BOTTOM,
         )
-        root.addView(bannerView, lp)
+        root.addView(tutorialView, lp)
     }
 
-    private fun updateBanner() {
-        val banner = bannerView ?: return
+    private fun updateTutorial() {
+        val banner = tutorialView ?: return
         banner.visibility = if (hapticEngine.isHapticEnabled()) View.GONE else View.VISIBLE
     }
 
