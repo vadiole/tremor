@@ -24,7 +24,7 @@ class DragThresholdView(
     private val handlePadding = 8f.dp
     private val handleWidth = viewHeight - handlePadding * 2
     private val handleCornerRadius = cornerRadius - handlePadding
-    private val thresholdFraction = 0.75f
+    private val thresholdFraction = 0.7f
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, cornerRadius.toInt())
     private val surfaceInset = Floating.surfaceInsetPx(context)
 
