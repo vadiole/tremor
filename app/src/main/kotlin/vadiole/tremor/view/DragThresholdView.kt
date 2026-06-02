@@ -14,7 +14,10 @@ import android.view.animation.OvershootInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
-class DragThresholdView(context: Context) : View(context), Density {
+class DragThresholdView(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : View(context), Density {
 
     private val viewHeight = 72.dp
     private val cornerRadius = viewHeight / 2
@@ -196,7 +199,7 @@ class DragThresholdView(context: Context) : View(context), Density {
 
                 if (!gestureStarted) {
                     gestureStarted = true
-                    performHapticFeedback(HapticFeedbackConstants.DRAG_START)
+                    onHapticFeedback(HapticFeedbackConstants.DRAG_START)
                 }
 
                 val dx = event.x - dragStartX
@@ -207,10 +210,10 @@ class DragThresholdView(context: Context) : View(context), Density {
                 activated = handleCenter >= thresholdX
 
                 if (activated && !wasActivated) {
-                    performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE)
+                    onHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_ACTIVATE)
                     animateScaleTo(1.1f)
                 } else if (!activated && wasActivated) {
-                    performHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE)
+                    onHapticFeedback(HapticFeedbackConstants.GESTURE_THRESHOLD_DEACTIVATE)
                     animateScaleTo(1.0f)
                 }
 
@@ -222,7 +225,7 @@ class DragThresholdView(context: Context) : View(context), Density {
                     isDragging = false
                     isPressed = false
                     if (gestureStarted) {
-                        performHapticFeedback(HapticFeedbackConstants.GESTURE_END)
+                        onHapticFeedback(HapticFeedbackConstants.GESTURE_END)
                     }
                     activated = false
 

@@ -17,6 +17,7 @@ class PrimitiveRow(
     context: Context,
     private val label: String,
     private val constantName: String,
+    private val onHapticFeedback: (Int) -> Unit,
     private val onTrigger: (scale: Float, screenX: Float, screenY: Float) -> Unit,
 ) : ViewGroup(context), Density {
 
@@ -57,7 +58,7 @@ class PrimitiveRow(
     private var ellipsizedLabel: CharSequence = label
     private var ellipsizedConstant: CharSequence = constantName
 
-    val drum = DrumRollerView(context).also { addView(it) }
+    val drum = DrumRollerView(context, onHapticFeedback).also { addView(it) }
 
     private var cachedValueText = String.format("%.2f", drum.value)
 

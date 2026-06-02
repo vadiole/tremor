@@ -16,7 +16,10 @@ import vadiole.tremor.R
 import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
 
-class LongPressButton(context: Context) : View(context), Density {
+class LongPressButton(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : View(context), Density {
 
     private val minHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
@@ -109,7 +112,7 @@ class LongPressButton(context: Context) : View(context), Density {
                 isPressed = false
                 cancelProgressAnimation()
                 if (!triggered) {
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    onHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                 }
                 triggered = false
                 progress = 0f
@@ -129,7 +132,7 @@ class LongPressButton(context: Context) : View(context), Density {
                 invalidate()
                 if (progress >= 1f && isHolding && !triggered) {
                     triggered = true
-                    performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
+                    onHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     invalidate()
                 }
             }

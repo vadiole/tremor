@@ -17,6 +17,7 @@ import kotlin.math.roundToInt
 
 class DrumRollerView(
     context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
     private val minValue: Float = 0f,
     private val maxValue: Float = 1f,
     private val step: Float = 0.05f,
@@ -87,13 +88,13 @@ class DrumRollerView(
             scrollOffset -= 1f
             currentStep--
             updateValue()
-            performHapticFeedback(tickHapticConstant)
+            onHapticFeedback(tickHapticConstant)
         }
         while (scrollOffset <= -1f && currentStep < totalSteps) {
             scrollOffset += 1f
             currentStep++
             updateValue()
-            performHapticFeedback(tickHapticConstant)
+            onHapticFeedback(tickHapticConstant)
         }
         if (currentStep == 0 && scrollOffset > 0f) scrollOffset = 0f
         if (currentStep == totalSteps && scrollOffset < 0f) scrollOffset = 0f

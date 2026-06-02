@@ -15,6 +15,7 @@ import vadiole.tremor.UiConstants
 class KeyButton(
     context: Context,
     private val letter: Char,
+    private val onHapticFeedback: (Int) -> Unit,
 ) : View(context), Density {
 
     private val surfaceDrawable = FloatingSurfaceDrawable.squircleSurface(context, UiConstants.CORNER_RADIUS_DP.dp.toInt())
@@ -53,12 +54,12 @@ class KeyButton(
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 isPressed = true
-                performHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
+                onHapticFeedback(HapticFeedbackConstants.KEYBOARD_PRESS)
             }
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 isPressed = false
                 if (event.action == MotionEvent.ACTION_UP) {
-                    performHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
+                    onHapticFeedback(HapticFeedbackConstants.KEYBOARD_RELEASE)
                 }
             }
         }

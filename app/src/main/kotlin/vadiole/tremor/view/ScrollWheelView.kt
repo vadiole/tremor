@@ -14,7 +14,10 @@ import vadiole.tremor.R
 import vadiole.tremor.UiConstants
 import kotlin.math.abs
 
-class ScrollWheelView(context: Context) : View(context), Density {
+class ScrollWheelView(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : View(context), Density {
 
     private val viewHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
@@ -185,7 +188,7 @@ class ScrollWheelView(context: Context) : View(context), Density {
         if (abs(delta) >= tickSpacing) {
             val ticks = (delta / tickSpacing).toInt()
             lastTickOffset += ticks * tickSpacing
-            performHapticFeedback(tickHapticConstant)
+            onHapticFeedback(tickHapticConstant)
         }
     }
 

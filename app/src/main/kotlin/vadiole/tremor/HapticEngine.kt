@@ -9,7 +9,10 @@ import android.os.VibratorManager
 import android.provider.Settings
 import android.view.HapticFeedbackConstants
 
-class HapticEngine(context: Context) {
+class HapticEngine(
+    context: Context,
+    private val viewHapticFeedback: (feedbackConstant: Int, flags: Int) -> Boolean,
+) {
 
     private val appContext: Context = context.applicationContext
 
@@ -21,10 +24,14 @@ class HapticEngine(context: Context) {
     @Suppress("DEPRECATION")
     fun isHapticEnabled(): Boolean {
         val resolver = appContext.contentResolver
-        // performHapticFeedback is suppressed unless the master VIBRATE_ON and HAPTIC_FEEDBACK_ENABLED are on.
         val masterOn = Settings.System.getInt(resolver, Settings.System.VIBRATE_ON, 1) != 0
         val touchFeedbackOn = Settings.System.getInt(resolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0
         return masterOn && touchFeedbackOn
+    }
+
+    @Suppress("DEPRECATION")
+    fun performHapticFeedback(feedbackConstant: Int) {
+        viewHapticFeedback(feedbackConstant, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
     }
 
     fun getAvailableHapticConstants(): List<HapticConstantInfo> {

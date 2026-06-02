@@ -11,7 +11,10 @@ import android.view.animation.DecelerateInterpolator
 import vadiole.tremor.Density
 import vadiole.tremor.R
 
-class HapticToggle(context: Context) : View(context), Density {
+class HapticToggle(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : View(context), Density {
 
     private val trackWidth = 56.dp
     private val trackHeight = 32.dp
@@ -51,7 +54,7 @@ class HapticToggle(context: Context) : View(context), Density {
     fun toggle() {
         isOn = !isOn
         val constant = if (isOn) HapticFeedbackConstants.TOGGLE_ON else HapticFeedbackConstants.TOGGLE_OFF
-        performHapticFeedback(constant)
+        onHapticFeedback(constant)
         animateThumb()
     }
 

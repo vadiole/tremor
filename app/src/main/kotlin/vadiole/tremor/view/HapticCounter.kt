@@ -14,7 +14,10 @@ import vadiole.tremor.R
 import vadiole.tremor.TouchEffect
 import vadiole.tremor.UiConstants
 
-class HapticCounter(context: Context) : View(context), Density {
+class HapticCounter(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : View(context), Density {
 
     private val viewHeight = 56.dp
     private val cornerRadius = UiConstants.CORNER_RADIUS_DP.dp
@@ -117,7 +120,7 @@ class HapticCounter(context: Context) : View(context), Density {
                     prefs.edit().putInt(KEY_COUNT, count).apply()
                     pressedZone = zone
                     isPressed = true
-                    performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
+                    onHapticFeedback(HapticFeedbackConstants.CLOCK_TICK)
                     invalidate()
                 }
             }

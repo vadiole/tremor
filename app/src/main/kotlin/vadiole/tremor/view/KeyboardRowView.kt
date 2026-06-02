@@ -4,7 +4,10 @@ import android.content.Context
 import android.view.ViewGroup
 import vadiole.tremor.Density
 
-class KeyboardRowView(context: Context) : ViewGroup(context), Density {
+class KeyboardRowView(
+    context: Context,
+    private val onHapticFeedback: (Int) -> Unit,
+) : ViewGroup(context), Density {
 
     private val keys = charArrayOf('Q', 'W', 'E', 'R', 'T', 'Y')
     private val keyGap = 6.dp
@@ -14,7 +17,7 @@ class KeyboardRowView(context: Context) : ViewGroup(context), Density {
         clipChildren = false
         clipToPadding = false
         for (key in keys) {
-            addView(KeyButton(context, key))
+            addView(KeyButton(context, key, onHapticFeedback))
         }
     }
 

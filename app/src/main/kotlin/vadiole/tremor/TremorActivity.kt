@@ -48,7 +48,9 @@ class TremorActivity : Activity(), Density {
         @Suppress("DEPRECATION")
         window.setDecorFitsSystemWindows(false)
 
-        hapticEngine = HapticEngine(this)
+        hapticEngine = HapticEngine(this) { feedbackConstant, flags ->
+            window.decorView.performHapticFeedback(feedbackConstant, flags)
+        }
         fallbackEffectIds = hapticEngine.getFallbackEffectIds()
         supportedPrimitives = hapticEngine.getSupportedPrimitives()
         supportedPrimitiveIds = supportedPrimitives.map { it.primitiveId }.toSet()
@@ -148,7 +150,7 @@ class TremorActivity : Activity(), Density {
         for (info in constants) {
             val strength = hapticConstantStrength(info.value)
             val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
-                waveOverlay.performHapticFeedback(info.value)
+                hapticEngine.performHapticFeedback(info.value)
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.value == HapticFeedbackConstants.REJECT) {
                     waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
@@ -199,7 +201,12 @@ class TremorActivity : Activity(), Density {
 
         for ((index, info) in primitives.withIndex()) {
             val waveStyle = primitiveWaveStyle(info.primitiveId)
-            val row = PrimitiveRow(this, getString(info.nameResId), info.constantName) { scale, screenX, screenY ->
+            val row = PrimitiveRow(
+                this,
+                getString(info.nameResId),
+                info.constantName,
+                hapticEngine::performHapticFeedback,
+            ) { scale, screenX, screenY ->
                 hapticEngine.playPrimitive(info.primitiveId, scale)
                 waveOverlay.spawnWave(screenX, screenY, scale, waveStyle)
             }
@@ -221,7 +228,7 @@ class TremorActivity : Activity(), Density {
         val availableConstantNames = hapticEngine.getAvailableHapticConstants().map { it.constantName }.toSet()
 
         if ("TOGGLE_ON" in availableConstantNames) {
-            val toggle = HapticToggle(this)
+            val toggle = HapticToggle(this, hapticEngine::performHapticFeedback)
             val toggleRow = LinearLayout(this).apply {
                 orientation = LinearLayout.HORIZONTAL
                 gravity = Gravity.CENTER_VERTICAL
@@ -245,17 +252,17 @@ class TremorActivity : Activity(), Density {
             parent.addSpacer(itemSpacing)
         }
 
-        parent.addView(LongPressButton(this), matchWrap())
+        parent.addView(LongPressButton(this, hapticEngine::performHapticFeedback), matchWrap())
         parent.addSpacer(itemSpacing)
 
-        parent.addView(HapticCounter(this), matchWrap())
+        parent.addView(HapticCounter(this, hapticEngine::performHapticFeedback), matchWrap())
         parent.addSpacer(itemSpacing)
 
-        parent.addView(KeyboardRowView(this), matchWrap())
+        parent.addView(KeyboardRowView(this, hapticEngine::performHapticFeedback), matchWrap())
         parent.addSpacer(itemSpacing)
 
         if ("SEGMENT_FREQUENT_TICK" in availableConstantNames) {
-            parent.addView(ScrollWheelView(this), matchWrap())
+            parent.addView(ScrollWheelView(this, hapticEngine::performHapticFeedback), matchWrap())
             parent.addSpacer(itemSpacing)
         }
 
@@ -274,7 +281,7 @@ class TremorActivity : Activity(), Density {
         }
 
         if ("DRAG_START" in availableConstantNames) {
-            parent.addView(DragThresholdView(this), matchWrap())
+            parent.addView(DragThresholdView(this, hapticEngine::performHapticFeedback), matchWrap())
             parent.addSpacer(itemSpacing)
         }
 
