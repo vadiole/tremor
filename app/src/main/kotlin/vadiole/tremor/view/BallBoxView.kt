@@ -5,7 +5,9 @@ import android.graphics.Canvas
 import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.graphics.Rect
+import android.os.Build
 import android.os.VibrationEffect
+import android.view.Choreographer
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
@@ -103,24 +105,33 @@ class BallBoxView(
     private var lastFrameTime = 0L
     private var isRunning = false
 
-    // only react to scrolling while the box is actually on screen — scrolling elsewhere in the
-    // page shouldn't silently agitate a ball the user can't even see
+    // Only animate while the box is actually on screen — scrolling elsewhere in the page
+    // shouldn't silently agitate a ball the user can't even see.
     private val scrollListener = ViewTreeObserver.OnScrollChangedListener {
-        if (getLocalVisibleRect(visibleRect)) startLoop()
+        if (isOnScreen()) startLoop() else stopLoop()
     }
 
-    //TODO refactor to choreographer and 120 fps support.
-    private val animRunnable = object : Runnable {
-        override fun run() {
+    private val frameCallback = object : Choreographer.FrameCallback {
+        override fun doFrame(frameTimeNanos: Long) {
             if (!isRunning) return
-            val now = System.nanoTime()
-            val dt = ((now - lastFrameTime) / 1_000_000_000f).coerceAtMost(0.05f)
-            lastFrameTime = now
+            if (!isOnScreen()) {
+                stopLoop()
+                return
+            }
+            val elapsedNanos = frameTimeNanos - lastFrameTime
+            lastFrameTime = frameTimeNanos
 
-            step(dt)
-            invalidate()
+            if (elapsedNanos > 0L) {
+                val dt = (elapsedNanos.toFloat() / NANOS_PER_SECOND).coerceAtMost(MAX_FRAME_DT_SECONDS)
+                step(dt)
+                invalidate()
+            }
 
-            if (isActive()) postOnAnimation(this) else isRunning = false
+            if (isActive() || elapsedNanos <= 0L) {
+                Choreographer.getInstance().postFrameCallback(this)
+            } else {
+                stopLoop()
+            }
         }
     }
 
@@ -163,22 +174,47 @@ class BallBoxView(
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         viewTreeObserver.removeOnScrollChangedListener(scrollListener)
-        isRunning = false
+        stopLoop()
         grabbed = false
         isPressed = false
-        removeCallbacks(animRunnable)
         surfaceDrawable.cancelAnimations()
     }
 
+    override fun onVisibilityAggregated(isVisible: Boolean) {
+        super.onVisibilityAggregated(isVisible)
+        if (isVisible) resumeLoopIfActiveAndVisible() else stopLoop()
+    }
+
     private fun startLoop() {
-        if (isRunning || width == 0) return
+        if (isRunning || width == 0 || !isOnScreen()) return
         getLocationInWindow(locScratch)
         lastBoxY = locScratch[1].toFloat()
         boxVelocity = 0f
         lastBoxVelocity = 0f
         lastFrameTime = System.nanoTime()
         isRunning = true
-        postOnAnimation(animRunnable)
+        requestHighFrameRate(true)
+        Choreographer.getInstance().postFrameCallback(frameCallback)
+    }
+
+    private fun stopLoop() {
+        isRunning = false
+        requestHighFrameRate(false)
+        Choreographer.getInstance().removeFrameCallback(frameCallback)
+    }
+
+    private fun resumeLoopIfActiveAndVisible() {
+        if (isActive() && isOnScreen()) startLoop()
+    }
+
+    private fun isOnScreen(): Boolean = isShown && getLocalVisibleRect(visibleRect)
+
+    private fun requestHighFrameRate(requested: Boolean) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.VANILLA_ICE_CREAM) return
+        setRequestedFrameRate(
+            if (requested) View.REQUESTED_FRAME_RATE_CATEGORY_HIGH
+            else View.REQUESTED_FRAME_RATE_CATEGORY_NO_PREFERENCE,
+        )
     }
 
     private fun isActive(): Boolean {
@@ -351,12 +387,14 @@ class BallBoxView(
                     startLoop()
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 if (grabbed || pendingCatch) {
                     touchX = event.x
                     touchY = event.y
                 }
             }
+
             MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                 if (!grabbed) {
                     pendingCatch = false
@@ -487,6 +525,9 @@ class BallBoxView(
     private fun length(x: Float, y: Float): Float = sqrt(x * x + y * y)
 
     private companion object {
+        private const val NANOS_PER_SECOND = 1_000_000_000f
+        private const val MAX_FRAME_DT_SECONDS = 0.05f
+
         val EFFECT_TICK = VibrationEffect.EFFECT_TICK
         val EFFECT_CLICK = VibrationEffect.EFFECT_CLICK
         val EFFECT_HEAVY_CLICK = VibrationEffect.EFFECT_HEAVY_CLICK
