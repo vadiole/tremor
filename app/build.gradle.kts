@@ -17,7 +17,35 @@ android {
         base.archivesName.set("tremor-v$versionName")
     }
     androidResources {
-        localeFilters += setOf("en", "cs", "da", "de", "el", "es", "fr", "hi", "it", "ja", "ka", "nb", "nl", "pl", "ru", "sl", "sv", "tr", "uk", "zh-rCN")
+        localeFilters += setOf(
+            "en",
+            "bn",
+            "cs",
+            "da",
+            "de",
+            "el",
+            "es",
+            "fr",
+            "hi",
+            "id",
+            "in",
+            "it",
+            "ja",
+            "ka",
+            "nb",
+            "nl",
+            "pl",
+            "pt-rBR",
+            "ro",
+            "ru",
+            "sl",
+            "sv",
+            "th",
+            "tr",
+            "uk",
+            "vi",
+            "zh-rCN"
+        )
     }
 
     buildTypes {

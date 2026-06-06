@@ -1,0 +1,53 @@
+<resources>
+    <string name="app_name">tremor</string>
+    <string name="section_haptic_feedback_constants">ค่าคงที่ haptic</string>
+    <string name="section_predefined_effects">เอฟเฟกต์สำเร็จรูป</string>
+    <string name="section_primitives">พรีมิทีฟ</string>
+    <string name="section_examples">ตัวอย่าง</string>
+    <string name="not_available_on_device">ไม่มีบนอุปกรณ์นี้:\n%s</string>
+    <string name="haptic_disabled_message">ตรวจสอบว่าเปิดใช้งานการตอบสนองแบบสัมผัสใน<u>การตั้งค่าระบบ</u>แล้ว</string>
+    <string name="footer_by_with_love">โดย %s ด้วย &lt;3</string>
+    <string name="footer_vadiole">vadiole</string>
+    <string name="effect_fallback_label">fallback</string>
+    <string name="example_toggle">สวิตช์</string>
+    <string name="example_hold_me">กดค้างไว้</string>
+    <string name="example_hold_me_done">กดค้างไว้ 🤗</string>
+    <string name="example_rise_fall">ขึ้นและลง</string>
+
+    <!-- Haptic feedback constants -->
+    <string name="haptic_confirm">ยืนยัน</string>
+    <string name="haptic_reject">ปฏิเสธ</string>
+    <string name="haptic_toggle_on">เปิดสวิตช์</string>
+    <string name="haptic_toggle_off">ปิดสวิตช์</string>
+    <string name="haptic_long_press">กดค้าง</string>
+    <string name="haptic_keyboard_press">กดแป้นพิมพ์</string>
+    <string name="haptic_keyboard_release">ปล่อยแป้นพิมพ์</string>
+    <string name="haptic_clock_tick">เสียงเดินนาฬิกา</string>
+    <string name="haptic_context_click">คลิกเมนูบริบท</string>
+    <string name="haptic_gesture_start">เริ่มท่าทาง</string>
+    <string name="haptic_gesture_end">จบท่าทาง</string>
+    <string name="haptic_gesture_threshold_activate">เปิดใช้งานเกณฑ์ท่าทาง</string>
+    <string name="haptic_gesture_threshold_deactivate">ปิดใช้งานเกณฑ์ท่าทาง</string>
+    <string name="haptic_text_handle_move">เลื่อนตัวจับข้อความ</string>
+    <string name="haptic_virtual_key">ปุ่มเสมือน</string>
+    <string name="haptic_virtual_key_release">ปล่อยปุ่มเสมือน</string>
+    <string name="haptic_drag_start">เริ่มลาก</string>
+    <string name="haptic_segment_tick">ติกเซกเมนต์</string>
+    <string name="haptic_segment_frequent_tick">ติกเซกเมนต์ถี่</string>
+
+    <!-- Predefined effects -->
+    <string name="effect_click">คลิก</string>
+    <string name="effect_double_click">ดับเบิลคลิก</string>
+    <string name="effect_tick">ติก</string>
+    <string name="effect_heavy_click">คลิกหนัก</string>
+
+    <!-- Primitives -->
+    <string name="primitive_click">คลิก</string>
+    <string name="primitive_tick">ติก</string>
+    <string name="primitive_low_tick">ติกต่ำ</string>
+    <string name="primitive_quick_rise">ขึ้นเร็ว</string>
+    <string name="primitive_slow_rise">ขึ้นช้า</string>
+    <string name="primitive_quick_fall">ลงเร็ว</string>
+    <string name="primitive_spin">หมุน</string>
+    <string name="primitive_thud">ตึง</string>
+</resources>
