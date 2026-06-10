@@ -2,6 +2,7 @@ package vadiole.tremor
 
 import android.content.Context
 import android.os.Build
+import android.os.PowerManager
 import android.os.VibrationAttributes
 import android.os.VibrationEffect
 import android.os.Vibrator
@@ -11,27 +12,56 @@ import android.view.HapticFeedbackConstants
 
 class HapticEngine(
     context: Context,
-    private val viewHapticFeedback: (feedbackConstant: Int, flags: Int) -> Boolean,
+    private val viewHapticFeedback: (feedbackConstant: Int) -> Unit,
 ) {
 
     private val appContext: Context = context.applicationContext
+
+    private val powerManager = appContext.getSystemService(Context.POWER_SERVICE) as PowerManager
 
     private val vibrator: Vibrator = run {
         val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
         manager.defaultVibrator
     }
 
+    class GateState(
+        val systemHapticsOn: Boolean,
+        val powerSaveOn: Boolean,
+        val constantsMuted: Boolean,
+        val effectsMuted: Boolean,
+    )
+
+    // Every gate that can mute this app, by playback path (fail open — predict "muted"
+    // only on gates the service is known to enforce; verified on API 31 & 35):
+    // - VIBRATE_ON: master switch; gates the constants path on API 33+ only.
+    // - HAPTIC_FEEDBACK_ENABLED: gates the constants path (View.performHapticFeedback).
+    // - haptic_feedback_intensity: touch-intensity slider; gates the constants path on
+    //   every API and the effects path on 31/32 (no public constant; absent = enabled).
+    // - USAGE_ACCESSIBILITY: effects/primitives bypass all three keys on API 33+; on
+    //   31/32 effects fall back to the intensity slider and primitives stay ungated.
+    // - Battery saver: may mute everything incl. the bypass, but only via an unreadable
+    //   policy flag — surfaced as a hedged banner cause, never a per-tap prediction.
     @Suppress("DEPRECATION")
-    fun isHapticEnabled(): Boolean {
+    fun readGateState(): GateState {
         val resolver = appContext.contentResolver
         val masterOn = Settings.System.getInt(resolver, Settings.System.VIBRATE_ON, 1) != 0
-        val touchFeedbackOn = Settings.System.getInt(resolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0
-        return masterOn && touchFeedbackOn
+        val touchOn = Settings.System.getInt(resolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0
+        val intensityOn = Settings.System.getInt(resolver, "haptic_feedback_intensity", 1) != 0
+        val systemOn = if (Build.VERSION.SDK_INT >= 33) {
+            masterOn && touchOn && intensityOn
+        } else {
+            touchOn && intensityOn
+        }
+        return GateState(
+            systemHapticsOn = systemOn,
+            powerSaveOn = powerManager.isPowerSaveMode,
+            constantsMuted = !systemOn,
+            effectsMuted = Build.VERSION.SDK_INT < 33 && !intensityOn,
+        )
     }
 
-    @Suppress("DEPRECATION")
     fun performHapticFeedback(feedbackConstant: Int) {
-        viewHapticFeedback(feedbackConstant, HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING)
+        viewHapticFeedback(feedbackConstant)
     }
 
     fun getAvailableHapticConstants(): List<HapticConstantInfo> {

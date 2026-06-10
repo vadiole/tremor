@@ -2,11 +2,15 @@ package vadiole.tremor
 
 import android.app.Activity
 import android.graphics.Typeface
+import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.ForegroundColorSpan
+import android.text.style.RelativeSizeSpan
 import android.view.HapticFeedbackConstants
 import android.view.Gravity
-import android.view.View
 import android.view.WindowInsets
 import android.widget.FrameLayout
 import android.widget.LinearLayout
@@ -15,7 +19,7 @@ import android.widget.Space
 import android.widget.TextView
 import vadiole.tremor.view.BallBoxView
 import vadiole.tremor.view.DragThresholdView
-import vadiole.tremor.view.TutorialView
+import vadiole.tremor.view.HapticStatusView
 import vadiole.tremor.view.FadeOverlayView
 import vadiole.tremor.view.FlowLayout
 import vadiole.tremor.view.FooterView
@@ -39,7 +43,12 @@ class TremorActivity : Activity(), Density {
     private lateinit var supportedPrimitives: List<HapticEngine.PrimitiveInfo>
     private lateinit var supportedPrimitiveIds: Set<Int>
     private lateinit var unsupportedPrimitives: List<HapticEngine.PrimitiveInfo>
-    private var tutorialView: TutorialView? = null
+    private lateinit var statusView: HapticStatusView
+    private lateinit var gateState: HapticEngine.GateState
+
+    private enum class GateTag { RESPECTS, BYPASSES }
+    private class TaggedSection(val view: TextView, val baseText: String, val tag: GateTag)
+    private val taggedSections = mutableListOf<TaggedSection>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,9 +56,10 @@ class TremorActivity : Activity(), Density {
         @Suppress("DEPRECATION")
         window.setDecorFitsSystemWindows(false)
 
-        hapticEngine = HapticEngine(this) { feedbackConstant, flags ->
-            window.decorView.performHapticFeedback(feedbackConstant, flags)
+        hapticEngine = HapticEngine(this) { feedbackConstant ->
+            window.decorView.performHapticFeedback(feedbackConstant)
         }
+        gateState = hapticEngine.readGateState()
         fallbackEffectIds = hapticEngine.getFallbackEffectIds()
         supportedPrimitives = hapticEngine.getSupportedPrimitives()
         supportedPrimitiveIds = supportedPrimitives.map { it.primitiveId }.toSet()
@@ -119,14 +129,18 @@ class TremorActivity : Activity(), Density {
         }
         root.addView(heartOverlay, frameFill())
 
-        buildTutorial(root)
+        buildStatus(root)
+        updateGateUi(previous = null)
 
         setContentView(root)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
         super.onWindowFocusChanged(hasFocus)
-        if (hasFocus) updateTutorial()
+        if (!hasFocus) return
+        val previous = gateState
+        gateState = hapticEngine.readGateState()
+        updateGateUi(previous)
     }
 
     override fun onPause() {
@@ -143,13 +157,17 @@ class TremorActivity : Activity(), Density {
         val constants = hapticEngine.getAvailableHapticConstants()
         if (constants.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants)))
+        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants), GateTag.RESPECTS))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
             val strength = hapticConstantStrength(info.value)
             val button = HapticButton(this, getString(info.nameResId), info.constantName) { screenX, screenY ->
                 hapticEngine.performHapticFeedback(info.value)
+                if (gateState.constantsMuted) {
+                    spawnMutedWave(screenX, screenY)
+                    return@HapticButton
+                }
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.value == HapticFeedbackConstants.REJECT) {
                     waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
@@ -169,7 +187,7 @@ class TremorActivity : Activity(), Density {
         val effects = hapticEngine.getAllEffects()
         if (effects.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects)))
+        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects), GateTag.BYPASSES))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
@@ -177,6 +195,10 @@ class TremorActivity : Activity(), Density {
             val strength = effectStrength(info.effectId)
             val button = HapticButton(this, getString(info.nameResId), info.constantName, isFallback) { screenX, screenY ->
                 hapticEngine.playEffect(info.effectId)
+                if (gateState.effectsMuted) {
+                    spawnMutedWave(screenX, screenY)
+                    return@HapticButton
+                }
                 waveOverlay.spawnWave(screenX, screenY, strength)
                 if (info.effectId == VibrationEffect.EFFECT_DOUBLE_CLICK) {
                     waveOverlay.postDelayed({ waveOverlay.spawnWave(screenX, screenY, strength) }, ECHO_WAVE_DELAY_MS)
@@ -196,7 +218,7 @@ class TremorActivity : Activity(), Density {
         val primitives = supportedPrimitives
         if (primitives.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_primitives)))
+        parent.addView(createSectionLabel(getString(R.string.section_primitives), GateTag.BYPASSES))
 
         for ((index, info) in primitives.withIndex()) {
             val waveStyle = primitiveWaveStyle(info.primitiveId)
@@ -222,7 +244,7 @@ class TremorActivity : Activity(), Density {
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        parent.addView(createSectionLabel(getString(R.string.section_examples)))
+        parent.addView(createSectionLabel(getString(R.string.section_examples), GateTag.RESPECTS))
 
         val availableConstantNames = hapticEngine.getAvailableHapticConstants().map { it.constantName }.toSet()
 
@@ -314,28 +336,68 @@ class TremorActivity : Activity(), Density {
         parent.addView(footer, matchWrap())
     }
 
-    private fun buildTutorial(root: FrameLayout) {
-        tutorialView = TutorialView(this)
+    private fun buildStatus(root: FrameLayout) {
+        statusView = HapticStatusView(this)
         val lp = FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
             FrameLayout.LayoutParams.WRAP_CONTENT,
             Gravity.BOTTOM,
         )
-        root.addView(tutorialView, lp)
+        root.addView(statusView, lp)
     }
 
-    private fun updateTutorial() {
-        val banner = tutorialView ?: return
-        banner.visibility = if (hapticEngine.isHapticEnabled()) View.GONE else View.VISIBLE
+    private fun updateGateUi(previous: HapticEngine.GateState?) {
+        val state = gateState
+        if (bannerNeeded(state)) {
+            statusView.bind(systemHapticsOff = !state.systemHapticsOn, powerSaveOn = state.powerSaveOn)
+            statusView.show()
+        } else if (previous != null && bannerNeeded(previous)) {
+            hapticEngine.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
+            statusView.dismissAnimated()
+        } else {
+            statusView.hide()
+        }
+        updateSectionTags()
     }
 
-    private fun createSectionLabel(text: String) = TextView(this).apply {
-        this.text = text.uppercase()
+    private fun bannerNeeded(state: HapticEngine.GateState): Boolean {
+        return !state.systemHapticsOn || state.powerSaveOn
+    }
+
+    private fun updateSectionTags() {
+        val show = Build.VERSION.SDK_INT >= 33 && !gateState.systemHapticsOn && !gateState.powerSaveOn
+        for (section in taggedSections) {
+            section.view.text = if (show) taggedLabel(section) else section.baseText
+        }
+    }
+
+    private fun taggedLabel(section: TaggedSection): CharSequence {
+        val tagRes = when (section.tag) {
+            GateTag.RESPECTS -> R.string.tag_respects_system
+            GateTag.BYPASSES -> R.string.tag_bypasses_system
+        }
+        val builder = SpannableStringBuilder(section.baseText).append("\n")
+        val start = builder.length
+        builder.append(getString(tagRes))
+        builder.setSpan(RelativeSizeSpan(0.9f), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        builder.setSpan(ForegroundColorSpan(getColor(R.color.text_disabled)), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        return builder
+    }
+
+    private fun spawnMutedWave(screenX: Float, screenY: Float) {
+        waveOverlay.spawnWave(screenX, screenY, MUTED_WAVE_STRENGTH, WaveOverlayView.WaveStyle.MUTED, getString(R.string.muted_by_system))
+        statusView.pulse()
+    }
+
+    private fun createSectionLabel(text: String, gateTag: GateTag? = null) = TextView(this).apply {
+        val upper = text.uppercase()
+        this.text = upper
         setTextColor(getColor(R.color.text_muted))
         textSize = 11f
         typeface = Typeface.MONOSPACE
         letterSpacing = 0.05f
         layoutParams = matchWrap().apply { bottomMargin = 12.dp }
+        if (gateTag != null) taggedSections.add(TaggedSection(this, upper, gateTag))
     }
 
     private fun matchWrap() = LinearLayout.LayoutParams(
@@ -355,5 +417,6 @@ class TremorActivity : Activity(), Density {
     private companion object {
         // re-spawn delay for the second wave echoing REJECT / EFFECT_DOUBLE_CLICK's double pulse
         const val ECHO_WAVE_DELAY_MS = 100L
+        const val MUTED_WAVE_STRENGTH = 0.5f
     }
 }

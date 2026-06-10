@@ -6,9 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.RenderEffect
 import android.graphics.RuntimeShader
+import android.graphics.Typeface
 import android.os.Build
 import android.os.SystemClock
 import android.provider.Settings
+import android.text.TextPaint
 import android.view.View
 import android.view.ViewTreeObserver
 import kotlin.math.ceil
@@ -58,6 +60,17 @@ class WaveOverlayView(context: Context) : View(context), Density {
         style = Paint.Style.STROKE
         color = waveColor
     }
+
+    private val labelPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        color = waveColor
+        textSize = 10f.sp
+        typeface = Typeface.MONOSPACE
+        textAlign = Paint.Align.CENTER
+        isSubpixelText = true
+    }
+    private val labelOffset = 28f.dp
+    private val labelRise = 8f.dp
+    private val labelDedupRadius = 64f.dp
 
     private val locationScratch = IntArray(2)
     private val targetLocationScratch = IntArray(2)
@@ -112,7 +125,13 @@ class WaveOverlayView(context: Context) : View(context), Density {
         }
     }
 
-    fun spawnWave(screenX: Float, screenY: Float, strength: Float = 0.5f, style: WaveStyle = WaveStyle.DEFAULT) {
+    fun spawnWave(
+        screenX: Float,
+        screenY: Float,
+        strength: Float = 0.5f,
+        style: WaveStyle = WaveStyle.DEFAULT,
+        label: String? = null,
+    ) {
         getLocationOnScreen(locationScratch)
         val localX = screenX - locationScratch[0]
         val localY = screenY - locationScratch[1]
@@ -126,7 +145,14 @@ class WaveOverlayView(context: Context) : View(context), Density {
             return
         }
         val now = SystemClock.elapsedRealtime()
-        waves.add(Wave(localX, localY, screenX, screenY, now, durationScale, strength.coerceIn(0f, 1f), style))
+        val dedupedLabel = label?.takeIf { text ->
+            waves.none { wave ->
+                wave.label == text &&
+                    wave.elapsedMs(now) < LABEL_DEDUP_WINDOW_MS &&
+                    sqDistance(wave.x, wave.y, localX, localY) < labelDedupRadius * labelDedupRadius
+            }
+        }
+        waves.add(Wave(localX, localY, screenX, screenY, now, durationScale, strength.coerceIn(0f, 1f), style, dedupedLabel))
         updateDistortionEffect(now)
         postInvalidateOnAnimation()
     }
@@ -159,8 +185,29 @@ class WaveOverlayView(context: Context) : View(context), Density {
         } else {
             drawFallback(canvas, now)
         }
+        drawLabels(canvas, now)
 
         postInvalidateOnAnimation()
+    }
+
+    private fun drawLabels(canvas: Canvas, now: Long) {
+        for (i in waves.indices) {
+            val wave = waves[i]
+            val label = wave.label ?: continue
+            val effectiveElapsed = wave.effectiveElapsedMs(now)
+            val progress = wave.progress(effectiveElapsed)
+            val fade = ((1f - progress) / LABEL_FADE_PORTION).coerceIn(0f, 1f)
+            val alpha = (fade * 255).toInt().coerceIn(0, 255)
+            if (alpha == 0) continue
+            labelPaint.alpha = alpha
+            canvas.drawText(label, wave.x, wave.y - labelOffset - progress * labelRise, labelPaint)
+        }
+    }
+
+    private fun sqDistance(x1: Float, y1: Float, x2: Float, y2: Float): Float {
+        val dx = x1 - x2
+        val dy = y1 - y2
+        return dx * dx + dy * dy
     }
 
     private fun drawWithShader(canvas: Canvas, now: Long) {
@@ -368,6 +415,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         durationScale: Float,
         strength: Float,
         style: WaveStyle,
+        val label: String? = null,
     ) {
         val delayMs = style.delayMs
         val durationMs = baseDurationMs * (0.6f + strength * 0.6f) * style.durationMultiplier
@@ -418,10 +466,14 @@ class WaveOverlayView(context: Context) : View(context), Density {
             val RISE = WaveStyle(durationMultiplier = 1.1f, speedMultiplier = 1.3f, ringWidthMultiplier = 1.4f, intensityMultiplier = 1.2f, distortsContent = true)
             val SLOW_RISE = WaveStyle(durationMultiplier = 1.5f, speedMultiplier = 0.6f, ringWidthMultiplier = 1.6f, intensityMultiplier = 1.1f, delayMs = 150f, distortsContent = true)
             val FALL = WaveStyle(durationMultiplier = 0.8f, speedMultiplier = 1.4f, ringWidthMultiplier = 1.2f, intensityMultiplier = 0.9f, distortsContent = true)
+            val MUTED = WaveStyle(durationMultiplier = 2f, speedMultiplier = 0.25f, ringWidthMultiplier = 0.5f, intensityMultiplier = 0.4f)
         }
     }
 
     companion object {
+        private const val LABEL_DEDUP_WINDOW_MS = 400f
+        private const val LABEL_FADE_PORTION = 0.6f
+
         private val DISTORTION_SHADER = """
             uniform shader content;
             uniform float2 resolution;

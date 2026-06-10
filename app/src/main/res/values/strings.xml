@@ -5,7 +5,16 @@
     <string name="section_primitives">Primitives</string>
     <string name="section_examples">Examples</string>
     <string name="not_available_on_device">Not available on this device:\n%s</string>
-    <string name="haptic_disabled_message">Make sure haptic feedback is enabled in <u>system settings</u>.</string>
+
+    <string name="haptics_off_title">system haptics are off — a setting, not your hardware</string>
+    <string name="haptics_off_fix_pixel">fix: <u>Settings</u> → Sound &amp; vibration → Vibration &amp; haptics</string>
+    <string name="haptics_off_fix_pixel_12">fix: <u>Settings</u> → Accessibility → Vibration &amp; haptic strength</string>
+    <string name="haptics_off_fix_samsung">fix: <u>Settings</u> → Sounds and vibration → System vibration</string>
+    <string name="haptics_off_fix_generic">fix: open <u>Settings</u> and search for “vibration”</string>
+    <string name="battery_saver_muting">battery saver may be muting vibration</string>
+    <string name="muted_by_system">muted by system</string>
+    <string name="tag_respects_system">respects system setting</string>
+    <string name="tag_bypasses_system">bypasses system setting (USAGE_ACCESSIBILITY)</string>
     <string name="footer_by_with_love">by %s with &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>
