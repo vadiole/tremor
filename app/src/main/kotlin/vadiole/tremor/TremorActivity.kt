@@ -2,13 +2,8 @@ package vadiole.tremor
 
 import android.app.Activity
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.RelativeSizeSpan
 import android.view.HapticFeedbackConstants
 import android.view.Gravity
 import android.view.WindowInsets
@@ -45,10 +40,6 @@ class TremorActivity : Activity(), Density {
     private lateinit var unsupportedPrimitives: List<HapticEngine.PrimitiveInfo>
     private lateinit var statusView: HapticStatusView
     private lateinit var gateState: HapticEngine.GateState
-
-    private enum class GateTag { RESPECTS, BYPASSES }
-    private class TaggedSection(val view: TextView, val baseText: String, val tag: GateTag)
-    private val taggedSections = mutableListOf<TaggedSection>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -157,7 +148,7 @@ class TremorActivity : Activity(), Density {
         val constants = hapticEngine.getAvailableHapticConstants()
         if (constants.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants), GateTag.RESPECTS))
+        parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants)))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in constants) {
@@ -187,7 +178,7 @@ class TremorActivity : Activity(), Density {
         val effects = hapticEngine.getAllEffects()
         if (effects.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects), GateTag.BYPASSES))
+        parent.addView(createSectionLabel(getString(R.string.section_predefined_effects)))
 
         val flow = FlowLayout(this, columns = 2, horizontalGap = itemSpacing, verticalGap = itemSpacing)
         for (info in effects) {
@@ -218,7 +209,7 @@ class TremorActivity : Activity(), Density {
         val primitives = supportedPrimitives
         if (primitives.isEmpty()) return
 
-        parent.addView(createSectionLabel(getString(R.string.section_primitives), GateTag.BYPASSES))
+        parent.addView(createSectionLabel(getString(R.string.section_primitives)))
 
         for ((index, info) in primitives.withIndex()) {
             val waveStyle = primitiveWaveStyle(info.primitiveId)
@@ -244,7 +235,7 @@ class TremorActivity : Activity(), Density {
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        parent.addView(createSectionLabel(getString(R.string.section_examples), GateTag.RESPECTS))
+        parent.addView(createSectionLabel(getString(R.string.section_examples)))
 
         val availableConstantNames = hapticEngine.getAvailableHapticConstants().map { it.constantName }.toSet()
 
@@ -349,7 +340,7 @@ class TremorActivity : Activity(), Density {
     private fun updateGateUi(previous: HapticEngine.GateState?) {
         val state = gateState
         if (bannerNeeded(state)) {
-            statusView.bind(systemHapticsOff = !state.systemHapticsOn, powerSaveOn = state.powerSaveOn)
+            statusView.bind(offCause = state.offCause, powerSaveOn = state.powerSaveOn)
             statusView.show()
         } else if (previous != null && bannerNeeded(previous)) {
             hapticEngine.performHapticFeedback(HapticFeedbackConstants.CONFIRM)
@@ -357,31 +348,10 @@ class TremorActivity : Activity(), Density {
         } else {
             statusView.hide()
         }
-        updateSectionTags()
     }
 
     private fun bannerNeeded(state: HapticEngine.GateState): Boolean {
         return !state.systemHapticsOn || state.powerSaveOn
-    }
-
-    private fun updateSectionTags() {
-        val show = Build.VERSION.SDK_INT >= 33 && !gateState.systemHapticsOn && !gateState.powerSaveOn
-        for (section in taggedSections) {
-            section.view.text = if (show) taggedLabel(section) else section.baseText
-        }
-    }
-
-    private fun taggedLabel(section: TaggedSection): CharSequence {
-        val tagRes = when (section.tag) {
-            GateTag.RESPECTS -> R.string.tag_respects_system
-            GateTag.BYPASSES -> R.string.tag_bypasses_system
-        }
-        val builder = SpannableStringBuilder(section.baseText).append("\n")
-        val start = builder.length
-        builder.append(getString(tagRes))
-        builder.setSpan(RelativeSizeSpan(0.9f), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        builder.setSpan(ForegroundColorSpan(getColor(R.color.text_disabled)), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        return builder
     }
 
     private fun spawnMutedWave(screenX: Float, screenY: Float) {
@@ -389,15 +359,13 @@ class TremorActivity : Activity(), Density {
         statusView.pulse()
     }
 
-    private fun createSectionLabel(text: String, gateTag: GateTag? = null) = TextView(this).apply {
-        val upper = text.uppercase()
-        this.text = upper
+    private fun createSectionLabel(text: String) = TextView(this).apply {
+        this.text = text.uppercase()
         setTextColor(getColor(R.color.text_muted))
         textSize = 11f
         typeface = Typeface.MONOSPACE
         letterSpacing = 0.05f
         layoutParams = matchWrap().apply { bottomMargin = 12.dp }
-        if (gateTag != null) taggedSections.add(TaggedSection(this, upper, gateTag))
     }
 
     private fun matchWrap() = LinearLayout.LayoutParams(

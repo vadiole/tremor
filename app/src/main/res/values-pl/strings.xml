@@ -5,7 +5,21 @@
     <string name="section_primitives">Prymitywy</string>
     <string name="section_examples">Przykłady</string>
     <string name="not_available_on_device">Niedostępne na tym urządzeniu:\n%s</string>
-    <string name="haptic_disabled_message">Upewnij się, że reakcja dotykowa jest włączona w <u>ustawieniach systemowych</u>.</string>
+
+    <string name="haptics_off_title">reakcja dotykowa jest wyłączona w ustawieniach systemu</string>
+    <string name="haptics_off_title_touch">reakcje na dotyk są wyłączone w ustawieniach systemu</string>
+    <string name="haptics_off_fix_aosp">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Wibracje i reakcje haptyczne</string>
+    <string name="haptics_off_fix_aosp_touch">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Wibracje i reakcje haptyczne → Reakcje na dotyk</string>
+    <string name="haptics_off_fix_aosp_12">napraw: <u>Ustawienia</u> → Ułatwienia dostępu → Siła wibracji i reakcji na dotyk → Reakcja na dotyk</string>
+    <string name="haptics_off_fix_samsung">napraw: <u>Ustawienia</u> → Dźwięki i wibracja → Wibracje systemowe</string>
+    <string name="haptics_off_fix_xiaomi">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Reakcje haptyczne</string>
+    <string name="haptics_off_fix_xiaomi_miui">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Wibracja przy dotknięciu</string>
+    <string name="haptics_off_fix_oppo">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Reakcje haptyczne i dźwięki → Reakcje haptyczne systemu</string>
+    <string name="haptics_off_fix_vivo">napraw: <u>Ustawienia</u> → Dźwięk i wibracje → Reakcje na dotyk</string>
+    <string name="haptics_off_fix_transsion">napraw: <u>Ustawienia</u> → Funkcje specjalne → Ułatwienia dostępu → Wibracje i reakcje haptyczne → Reakcje na dotyk</string>
+    <string name="haptics_off_fix_generic">napraw: <u>Ustawienia</u> → wyszukaj „wibracje”</string>
+    <string name="battery_saver_muting">reakcja dotykowa może nie działać w trybie oszczędzania baterii</string>
+    <string name="muted_by_system">wyłączone w systemie</string>
     <string name="footer_by_with_love">od %s z &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

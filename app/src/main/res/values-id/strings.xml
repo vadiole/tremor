@@ -5,7 +5,21 @@
     <string name="section_primitives">Primitif</string>
     <string name="section_examples">Contoh</string>
     <string name="not_available_on_device">Tidak tersedia di perangkat ini:\n%s</string>
-    <string name="haptic_disabled_message">Pastikan umpan balik haptik aktif di <u>pengaturan sistem</u>.</string>
+
+    <string name="haptics_off_title">haptik dimatikan di pengaturan sistem</string>
+    <string name="haptics_off_title_touch">respons sentuhan dimatikan di pengaturan sistem</string>
+    <string name="haptics_off_fix_aosp">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran &amp; haptik</string>
+    <string name="haptics_off_fix_aosp_touch">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran &amp; haptik → Respons sentuhan</string>
+    <string name="haptics_off_fix_aosp_12">perbaiki: <u>Setelan</u> → Aksesibilitas → Getaran &amp; kekuatan sentuhan → Masukan sentuhan</string>
+    <string name="haptics_off_fix_samsung">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran sistem</string>
+    <string name="haptics_off_fix_xiaomi">perbaiki: <u>Setelan</u> → Suara dan getaran → Umpan balik haptik</string>
+    <string name="haptics_off_fix_xiaomi_miui">perbaiki: <u>Setelan</u> → Suara dan getaran → Getar saat ketuk</string>
+    <string name="haptics_off_fix_oppo">perbaiki: <u>Setelan</u> → Suara dan getaran → Haptik &amp; nada → Haptik sistem</string>
+    <string name="haptics_off_fix_vivo">perbaiki: <u>Setelan</u> → Suara dan getaran → Respons sentuhan</string>
+    <string name="haptics_off_fix_transsion">perbaiki: <u>Setelan</u> → Fungsi Khusus → Aksesibilitas → Getaran &amp; haptik → Respons sentuhan</string>
+    <string name="haptics_off_fix_generic">perbaiki: <u>Setelan</u> → cari “getaran”</string>
+    <string name="battery_saver_muting">haptik mungkin tidak berfungsi dalam mode hemat baterai</string>
+    <string name="muted_by_system">dimatikan di sistem</string>
     <string name="footer_by_with_love">oleh %s dengan &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

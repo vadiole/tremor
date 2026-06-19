@@ -5,7 +5,21 @@
     <string name="section_primitives">プリミティブ</string>
     <string name="section_examples">使用例</string>
     <string name="not_available_on_device">このデバイスでは利用できません:\n%s</string>
-    <string name="haptic_disabled_message">触覚フィードバックが<u>システム設定</u>で有効になっているか確認してください。</string>
+
+    <string name="haptics_off_title">システム設定で触覚フィードバックがオフになっています</string>
+    <string name="haptics_off_title_touch">システム設定で触覚フィードバックがオフになっています</string>
+    <string name="haptics_off_fix_aosp">解決方法: <u>設定</u> → 音とバイブレーション → バイブレーションとハプティクス</string>
+    <string name="haptics_off_fix_aosp_touch">解決方法: <u>設定</u> → 音とバイブレーション → バイブレーションとハプティクス → 触覚フィードバック</string>
+    <string name="haptics_off_fix_aosp_12">解決方法: <u>設定</u> → ユーザー補助 → バイブレーションと触覚フィードバックの強さ → 触覚フィードバック</string>
+    <string name="haptics_off_fix_samsung">解決方法: <u>設定</u> → サウンドとバイブ → システムバイブレーション</string>
+    <string name="haptics_off_fix_xiaomi">解決方法: <u>設定</u> → 音とバイブレーション → 触覚フィードバック</string>
+    <string name="haptics_off_fix_xiaomi_miui">解決方法: <u>設定</u> → 音とバイブレーション → タップ時の振動</string>
+    <string name="haptics_off_fix_oppo">解決方法: <u>設定</u> → 音とバイブレーション → 触覚と着信音 → システム触覚</string>
+    <string name="haptics_off_fix_vivo">解決方法: <u>設定</u> → 音とバイブレーション → 触覚フィードバック</string>
+    <string name="haptics_off_fix_transsion">解決方法: <u>設定</u> → 特別機能 → ユーザー補助 → バイブレーションとハプティクス → 触覚フィードバック</string>
+    <string name="haptics_off_fix_generic">解決方法: <u>設定</u> → 「バイブレーション」を検索</string>
+    <string name="battery_saver_muting">バッテリーセーバー中は触覚フィードバックが動作しないことがあります</string>
+    <string name="muted_by_system">システムでオフ</string>
     <string name="footer_by_with_love">%s が &lt;3 を込めて</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

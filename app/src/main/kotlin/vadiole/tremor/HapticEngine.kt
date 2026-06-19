@@ -24,15 +24,23 @@ class HapticEngine(
         manager.defaultVibrator
     }
 
+    // Which control the user turned off, when distinguishable. MASTER = the "Use vibration
+    // & haptics" switch (VIBRATE_ON); TOUCH = the touch-feedback toggle/slider. Reliable only
+    // on stock Android (Pixel/Motorola): heavy OEM skins don't keep VIBRATE_ON in sync — e.g.
+    // Samsung One UI never writes it (uses SEM_VIBRATION_*), so master-off is invisible here.
+    enum class HapticsOffCause { MASTER, TOUCH }
+
     class GateState(
         val systemHapticsOn: Boolean,
         val powerSaveOn: Boolean,
         val constantsMuted: Boolean,
         val effectsMuted: Boolean,
+        val offCause: HapticsOffCause?,
     )
 
     // Every gate that can mute this app, by playback path (fail open — predict "muted"
-    // only on gates the service is known to enforce; verified on API 31 & 35):
+    // only on gates the service is known to enforce; verified on API 31 & 35, AOSP source
+    // VibrationSettings.java):
     // - VIBRATE_ON: master switch; gates the constants path on API 33+ only.
     // - HAPTIC_FEEDBACK_ENABLED: gates the constants path (View.performHapticFeedback).
     // - haptic_feedback_intensity: touch-intensity slider; gates the constants path on
@@ -47,7 +55,8 @@ class HapticEngine(
         val masterOn = Settings.System.getInt(resolver, Settings.System.VIBRATE_ON, 1) != 0
         val touchOn = Settings.System.getInt(resolver, Settings.System.HAPTIC_FEEDBACK_ENABLED, 1) != 0
         val intensityOn = Settings.System.getInt(resolver, "haptic_feedback_intensity", 1) != 0
-        val systemOn = if (Build.VERSION.SDK_INT >= 33) {
+        val masterGated = Build.VERSION.SDK_INT >= 33
+        val systemOn = if (masterGated) {
             masterOn && touchOn && intensityOn
         } else {
             touchOn && intensityOn
@@ -57,6 +66,11 @@ class HapticEngine(
             powerSaveOn = powerManager.isPowerSaveMode,
             constantsMuted = !systemOn,
             effectsMuted = Build.VERSION.SDK_INT < 33 && !intensityOn,
+            offCause = when {
+                systemOn -> null
+                masterGated && !masterOn -> HapticsOffCause.MASTER
+                else -> HapticsOffCause.TOUCH
+            },
         )
     }
 

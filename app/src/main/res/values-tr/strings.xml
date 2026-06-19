@@ -5,7 +5,21 @@
     <string name="section_primitives">Primitifler</string>
     <string name="section_examples">Örnekler</string>
     <string name="not_available_on_device">Bu cihazda kullanılamıyor:\n%s</string>
-    <string name="haptic_disabled_message">Dokunsal geri bildirimin <u>sistem ayarlarında</u> açık olduğundan emin ol.</string>
+
+    <string name="haptics_off_title">haptikler sistem ayarlarında kapalı</string>
+    <string name="haptics_off_title_touch">dokunma geri bildirimi sistem ayarlarında kapalı</string>
+    <string name="haptics_off_fix_aosp">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Titreşim ve dokunma teknolojisi</string>
+    <string name="haptics_off_fix_aosp_touch">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Titreşim ve dokunma teknolojisi → Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_aosp_12">çözüm: <u>Ayarlar</u> → Erişilebilirlik → Titreşim ve dokunsal geri bildirim gücü → Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_samsung">çözüm: <u>Ayarlar</u> → Sesler ve titreşim → Sistem titreşimi</string>
+    <string name="haptics_off_fix_xiaomi">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Dokunsal geri bildirim</string>
+    <string name="haptics_off_fix_xiaomi_miui">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Dokunulduğunda titret</string>
+    <string name="haptics_off_fix_oppo">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Dokunsal geri bildirim ve sesler → Sistem dokunsal geri bildirimi</string>
+    <string name="haptics_off_fix_vivo">çözüm: <u>Ayarlar</u> → Ses ve titreşim → Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_transsion">çözüm: <u>Ayarlar</u> → Özel İşlev → Erişilebilirlik → Titreşim ve dokunma teknolojisi → Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_generic">çözüm: <u>Ayarlar</u> → “titreşim” araması yap</string>
+    <string name="battery_saver_muting">pil tasarrufu modunda haptikler çalışmayabilir</string>
+    <string name="muted_by_system">sistemde kapalı</string>
     <string name="footer_by_with_love">%s tarafından &lt;3 ile</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

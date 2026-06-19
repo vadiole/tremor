@@ -5,7 +5,21 @@
     <string name="section_primitives">Primitiver</string>
     <string name="section_examples">Eksempler</string>
     <string name="not_available_on_device">Ikke tilgængelig på denne enhed:\n%s</string>
-    <string name="haptic_disabled_message">Sørg for, at haptisk feedback er aktiveret i <u>systemindstillinger</u>.</string>
+
+    <string name="haptics_off_title">haptik er slået fra i systemindstillingerne</string>
+    <string name="haptics_off_title_touch">feedback ved tryk er slået fra i systemindstillingerne</string>
+    <string name="haptics_off_fix_aosp">løsning: <u>Indstillinger</u> → Lyd og vibration → Vibration og haptik</string>
+    <string name="haptics_off_fix_aosp_touch">løsning: <u>Indstillinger</u> → Lyd og vibration → Vibration og haptik → Feedback ved tryk</string>
+    <string name="haptics_off_fix_aosp_12">løsning: <u>Indstillinger</u> → Hjælpefunktioner → Styrke for vibration og feedback ved berøring → Feedback ved tryk</string>
+    <string name="haptics_off_fix_samsung">løsning: <u>Indstillinger</u> → Lyde og vibration → Systemvibration</string>
+    <string name="haptics_off_fix_xiaomi">løsning: <u>Indstillinger</u> → Lyd og vibration → Haptisk feedback</string>
+    <string name="haptics_off_fix_xiaomi_miui">løsning: <u>Indstillinger</u> → Lyd og vibration → Vibrer ved tryk</string>
+    <string name="haptics_off_fix_oppo">løsning: <u>Indstillinger</u> → Lyd og vibration → Haptik og toner → Systemhaptik</string>
+    <string name="haptics_off_fix_vivo">løsning: <u>Indstillinger</u> → Lyd og vibration → Feedback ved tryk</string>
+    <string name="haptics_off_fix_transsion">løsning: <u>Indstillinger</u> → Specialfunktion → Hjælpefunktioner → Vibration og haptik → Feedback ved tryk</string>
+    <string name="haptics_off_fix_generic">løsning: <u>Indstillinger</u> → søg efter “vibration”</string>
+    <string name="battery_saver_muting">haptik virker måske ikke i batterisparetilstand</string>
+    <string name="muted_by_system">slået fra i systemet</string>
     <string name="footer_by_with_love">af %s med &lt;3</string>
     <string name="footer_vadiole">vadiole</string>
     <string name="effect_fallback_label">fallback</string>

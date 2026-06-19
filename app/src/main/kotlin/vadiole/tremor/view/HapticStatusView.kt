@@ -13,6 +13,7 @@ import android.view.Gravity
 import android.view.WindowInsets
 import android.widget.TextView
 import vadiole.tremor.Density
+import vadiole.tremor.HapticEngine.HapticsOffCause
 import vadiole.tremor.R
 import vadiole.tremor.UiConstants
 
@@ -43,23 +44,18 @@ class HapticStatusView(context: Context) : TextView(context), Density {
             insets
         }
         setOnClickListener {
-            val primary = if (opensBatterySaverSettings) {
-                Settings.ACTION_BATTERY_SAVER_SETTINGS
-            } else {
-                Settings.ACTION_SOUND_SETTINGS
-            }
-            if (!openSettings(primary)) openSettings(Settings.ACTION_SETTINGS)
+            if (!openSettings(primarySettingsAction())) openSettings(Settings.ACTION_SETTINGS)
         }
         visibility = GONE
     }
 
-    fun bind(systemHapticsOff: Boolean, powerSaveOn: Boolean) {
-        opensBatterySaverSettings = !systemHapticsOff && powerSaveOn
+    fun bind(offCause: HapticsOffCause?, powerSaveOn: Boolean) {
+        opensBatterySaverSettings = offCause == null && powerSaveOn
         val content = SpannableStringBuilder()
-        if (systemHapticsOff) {
-            content.append(context.getText(R.string.haptics_off_title))
+        if (offCause != null) {
+            content.append(context.getText(titleRes(offCause)))
             content.append("\n")
-            appendDetail(content, fixLineRes())
+            appendDetail(content, fixLineRes(offCause))
         }
         if (powerSaveOn) {
             if (content.isEmpty()) {
@@ -114,13 +110,64 @@ class HapticStatusView(context: Context) : TextView(context), Density {
         builder.setSpan(ForegroundColorSpan(detailColor), start, builder.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
     }
 
-    private fun fixLineRes(): Int {
-        val manufacturer = Build.MANUFACTURER.lowercase()
+    // Settings-path families. AOSP (stock Pixel / near-stock Motorola) reuses the framework
+    // labels verbatim; the rest are top-5 global makers with their own skins (One UI, HyperOS,
+    // ColorOS/OxygenOS, Funtouch/OriginOS, HiOS/XOS).
+    private enum class Profile { AOSP, SAMSUNG, XIAOMI, OPPO, VIVO, TRANSSION, GENERIC }
+
+    private fun deviceProfile(): Profile {
+        val m = Build.MANUFACTURER.lowercase()
         return when {
-            manufacturer == "samsung" -> R.string.haptics_off_fix_samsung
-            manufacturer == "google" && Build.VERSION.SDK_INT >= 33 -> R.string.haptics_off_fix_pixel
-            manufacturer == "google" -> R.string.haptics_off_fix_pixel_12
-            else -> R.string.haptics_off_fix_generic
+            m == "samsung" -> Profile.SAMSUNG
+            m == "google" || m == "motorola" -> Profile.AOSP
+            m == "xiaomi" -> Profile.XIAOMI
+            m == "oppo" || m == "oneplus" || m == "realme" -> Profile.OPPO
+            m == "vivo" -> Profile.VIVO
+            "tecno" in m || "infinix" in m || "itel" in m -> Profile.TRANSSION
+            else -> Profile.GENERIC
+        }
+    }
+
+    // The master vs touch cause is only trustworthy on stock Android, so only it gets the
+    // touch-specific title; every other family shows the neutral "haptics are off" line.
+    private fun titleRes(cause: HapticsOffCause): Int {
+        return if (deviceProfile() == Profile.AOSP && cause == HapticsOffCause.TOUCH) {
+            R.string.haptics_off_title_touch
+        } else {
+            R.string.haptics_off_title
+        }
+    }
+
+    private fun fixLineRes(cause: HapticsOffCause): Int {
+        return when (deviceProfile()) {
+            Profile.AOSP -> when {
+                Build.VERSION.SDK_INT < 33 -> R.string.haptics_off_fix_aosp_12
+                cause == HapticsOffCause.TOUCH -> R.string.haptics_off_fix_aosp_touch
+                else -> R.string.haptics_off_fix_aosp
+            }
+
+            Profile.SAMSUNG -> R.string.haptics_off_fix_samsung
+            Profile.XIAOMI -> if (Build.VERSION.SDK_INT >= 34) {
+                R.string.haptics_off_fix_xiaomi
+            } else {
+                R.string.haptics_off_fix_xiaomi_miui
+            }
+
+            Profile.OPPO -> R.string.haptics_off_fix_oppo
+            Profile.VIVO -> R.string.haptics_off_fix_vivo
+            Profile.TRANSSION -> R.string.haptics_off_fix_transsion
+            Profile.GENERIC -> R.string.haptics_off_fix_generic
+        }
+    }
+
+    private fun primarySettingsAction(): String {
+        return when {
+            opensBatterySaverSettings -> Settings.ACTION_BATTERY_SAVER_SETTINGS
+            // Stock Android 12/12L hosts the vibration screen under Accessibility, not Sound.
+            deviceProfile() == Profile.AOSP && Build.VERSION.SDK_INT < 33 ->
+                Settings.ACTION_ACCESSIBILITY_SETTINGS
+
+            else -> Settings.ACTION_SOUND_SETTINGS
         }
     }
 
