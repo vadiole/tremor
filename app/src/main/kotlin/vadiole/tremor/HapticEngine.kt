@@ -78,16 +78,6 @@ class HapticEngine(
         viewHapticFeedback(feedbackConstant)
     }
 
-    fun getAvailableHapticConstants(): List<HapticConstantInfo> {
-        val api = Build.VERSION.SDK_INT
-        return allHapticConstants.filter { it.minApi <= api }
-    }
-
-    fun getUnavailableHapticConstants(): List<HapticConstantInfo> {
-        val api = Build.VERSION.SDK_INT
-        return allHapticConstants.filter { it.minApi > api }
-    }
-
     fun getAllEffects(): List<EffectInfo> = allEffects
 
     fun getFallbackEffectIds(): Set<Int> {
@@ -183,6 +173,12 @@ class HapticEngine(
             HapticConstantInfo(R.string.haptic_segment_tick, "SEGMENT_TICK", 26, 34),
             HapticConstantInfo(R.string.haptic_segment_frequent_tick, "SEGMENT_FREQUENT_TICK", 27, 34),
         )
+
+        val availableHapticConstants = allHapticConstants.filter { it.minApi <= Build.VERSION.SDK_INT }
+
+        val unavailableHapticConstants = allHapticConstants.filter { it.minApi > Build.VERSION.SDK_INT }
+
+        val availableHapticConstantNames = availableHapticConstants.mapTo(HashSet()) { it.constantName }
 
         val allEffects = listOf(
             EffectInfo(R.string.effect_click, "EFFECT_CLICK", VibrationEffect.EFFECT_CLICK),

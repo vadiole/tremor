@@ -145,7 +145,7 @@ class TremorActivity : Activity(), Density {
         sectionSpacing: Int,
         itemSpacing: Int,
     ) {
-        val constants = hapticEngine.getAvailableHapticConstants()
+        val constants = HapticEngine.availableHapticConstants
         if (constants.isEmpty()) return
 
         parent.addView(createSectionLabel(getString(R.string.section_haptic_feedback_constants)))
@@ -237,7 +237,7 @@ class TremorActivity : Activity(), Density {
     ) {
         parent.addView(createSectionLabel(getString(R.string.section_examples)))
 
-        val availableConstantNames = hapticEngine.getAvailableHapticConstants().map { it.constantName }.toSet()
+        val availableConstantNames = HapticEngine.availableHapticConstantNames
 
         if ("TOGGLE_ON" in availableConstantNames) {
             val toggle = HapticToggle(this, hapticEngine::performHapticFeedback)
@@ -301,7 +301,7 @@ class TremorActivity : Activity(), Density {
     }
 
     private fun buildDeviceInfo(parent: LinearLayout, sectionSpacing: Int) {
-        val unavailable = hapticEngine.getUnavailableHapticConstants().map { it.constantName } +
+        val unavailable = HapticEngine.unavailableHapticConstants.map { it.constantName } +
             unsupportedPrimitives.map { it.constantName }
 
         if (unavailable.isEmpty()) return
