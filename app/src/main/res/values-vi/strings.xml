@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">phản hồi rung đang tắt trong cài đặt hệ thống</string>
     <string name="haptics_off_title_touch">phản hồi khi chạm đang tắt trong cài đặt hệ thống</string>
-    <string name="haptics_off_fix_aosp"><u>Âm thanh và rung</u> → Chế độ rung và phản hồi xúc giác</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Âm thanh và rung</u> → Chế độ rung và phản hồi xúc giác → Phản hồi khi chạm</string>
-    <string name="haptics_off_fix_aosp_12"><u>Hỗ trợ tiếp cận</u> → Cường độ rung và xúc giác → Phản hồi khi chạm</string>
-    <string name="haptics_off_fix_samsung"><u>Âm thanh và rung</u> → Rung hệ thống</string>
-    <string name="haptics_off_fix_xiaomi"><u>Âm thanh và rung</u> → Phản hồi rung</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Âm thanh và rung</u> → Rung khi chạm</string>
-    <string name="haptics_off_fix_oppo"><u>Âm thanh và rung</u> → Phản hồi rung và âm thanh → Phản hồi rung hệ thống</string>
-    <string name="haptics_off_fix_vivo"><u>Âm thanh và rung</u> → Phản hồi chạm</string>
-    <string name="haptics_off_fix_transsion"><u>Hỗ trợ tiếp cận</u> → Chế độ rung và phản hồi xúc giác → Phản hồi khi chạm</string>
-    <string name="haptics_off_fix_generic"><u>Cài đặt</u> → tìm “rung”</string>
+    <string name="haptics_off_fix_aosp"><u>Âm thanh và rung</u> > Chế độ rung và phản hồi xúc giác</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Âm thanh và rung</u> > Chế độ rung và phản hồi xúc giác > Phản hồi khi chạm</string>
+    <string name="haptics_off_fix_aosp_12"><u>Hỗ trợ tiếp cận</u> > Cường độ rung và xúc giác > Phản hồi khi chạm</string>
+    <string name="haptics_off_fix_samsung"><u>Âm thanh và rung</u> > Rung hệ thống</string>
+    <string name="haptics_off_fix_xiaomi"><u>Âm thanh và rung</u> > Phản hồi rung</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Âm thanh và rung</u> > Rung khi chạm</string>
+    <string name="haptics_off_fix_oppo"><u>Âm thanh và rung</u> > Phản hồi rung và âm thanh > Phản hồi rung hệ thống</string>
+    <string name="haptics_off_fix_vivo"><u>Âm thanh và rung</u> > Phản hồi chạm</string>
+    <string name="haptics_off_fix_transsion"><u>Hỗ trợ tiếp cận</u> > Chế độ rung và phản hồi xúc giác > Phản hồi khi chạm</string>
+    <string name="haptics_off_fix_generic"><u>Cài đặt</u> > tìm “rung”</string>
     <string name="battery_saver_muting">phản hồi rung có thể không hoạt động ở chế độ tiết kiệm pin</string>
     <string name="muted_by_system">đã tắt trong hệ thống</string>
     <string name="footer_by_with_love">bởi %s với &lt;3</string>

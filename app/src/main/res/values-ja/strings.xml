@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">システム設定で触覚フィードバックがオフになっています</string>
     <string name="haptics_off_title_touch">システム設定で触覚フィードバックがオフになっています</string>
-    <string name="haptics_off_fix_aosp"><u>音とバイブレーション</u> → バイブレーションとハプティクス</string>
-    <string name="haptics_off_fix_aosp_touch"><u>音とバイブレーション</u> → バイブレーションとハプティクス → 触覚フィードバック</string>
-    <string name="haptics_off_fix_aosp_12"><u>ユーザー補助</u> → バイブレーションと触覚フィードバックの強さ → 触覚フィードバック</string>
-    <string name="haptics_off_fix_samsung"><u>サウンドとバイブ</u> → システムバイブレーション</string>
-    <string name="haptics_off_fix_xiaomi"><u>サウンドとバイブレーション</u> → 触覚フィードバック</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>音とバイブレーション</u> → タップ時の振動</string>
-    <string name="haptics_off_fix_oppo"><u>サウンドとバイブレーション</u> → 触覚 → システムの触覚</string>
-    <string name="haptics_off_fix_vivo"><u>音とバイブレーション</u> → 触覚フィードバック</string>
-    <string name="haptics_off_fix_transsion"><u>ユーザー補助</u> → バイブレーションとハプティクス → 触覚フィードバック</string>
-    <string name="haptics_off_fix_generic"><u>設定</u> → 「バイブレーション」を検索</string>
+    <string name="haptics_off_fix_aosp"><u>音とバイブレーション</u> > バイブレーションとハプティクス</string>
+    <string name="haptics_off_fix_aosp_touch"><u>音とバイブレーション</u> > バイブレーションとハプティクス > 触覚フィードバック</string>
+    <string name="haptics_off_fix_aosp_12"><u>ユーザー補助</u> > バイブレーションと触覚フィードバックの強さ > 触覚フィードバック</string>
+    <string name="haptics_off_fix_samsung"><u>サウンドとバイブ</u> > システムバイブレーション</string>
+    <string name="haptics_off_fix_xiaomi"><u>サウンドとバイブレーション</u> > 触覚フィードバック</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>音とバイブレーション</u> > タップ時の振動</string>
+    <string name="haptics_off_fix_oppo"><u>サウンドとバイブレーション</u> > 触覚 > システムの触覚</string>
+    <string name="haptics_off_fix_vivo"><u>音とバイブレーション</u> > 触覚フィードバック</string>
+    <string name="haptics_off_fix_transsion"><u>ユーザー補助</u> > バイブレーションとハプティクス > 触覚フィードバック</string>
+    <string name="haptics_off_fix_generic"><u>設定</u> > 「バイブレーション」を検索</string>
     <string name="battery_saver_muting">バッテリーセーバー中は触覚フィードバックが動作しないことがあります</string>
     <string name="muted_by_system">システムでオフ</string>
     <string name="footer_by_with_love">%s が &lt;3 を込めて</string>

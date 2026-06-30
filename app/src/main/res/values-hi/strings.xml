@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">सिस्टम सेटिंग्स में हैप्टिक्स बंद हैं</string>
     <string name="haptics_off_title_touch">सिस्टम सेटिंग्स में टच के लिए वाइब्रेशन बंद है</string>
-    <string name="haptics_off_fix_aosp"><u>आवाज़ और वाइब्रेशन</u> → वाइब्रेशन और हैप्टिक</string>
-    <string name="haptics_off_fix_aosp_touch"><u>आवाज़ और वाइब्रेशन</u> → वाइब्रेशन और हैप्टिक → टच के लिए वाइब्रेशन</string>
-    <string name="haptics_off_fix_aosp_12"><u>सुलभता</u> → वाइब्रेशन और हैप्टिक तीव्रता → टच फ़ीडबैक</string>
-    <string name="haptics_off_fix_samsung"><u>ध्वनि और कंपन</u> → सिस्टम कंपन</string>
-    <string name="haptics_off_fix_xiaomi"><u>आवाज़ और वाइब्रेशन</u> → हैप्टिक फ़ीडबैक</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>आवाज़ और वाइब्रेशन</u> → टैप पर वाइब्रेशन</string>
-    <string name="haptics_off_fix_oppo"><u>आवाज़ और वाइब्रेशन</u> → हैप्टिक्स और टोन → सिस्टम हैप्टिक्स</string>
-    <string name="haptics_off_fix_vivo"><u>आवाज़ और वाइब्रेशन</u> → टच के लिए वाइब्रेशन</string>
-    <string name="haptics_off_fix_transsion"><u>सुलभता</u> → वाइब्रेशन और हैप्टिक → टच के लिए वाइब्रेशन</string>
-    <string name="haptics_off_fix_generic"><u>सेटिंग</u> → “कंपन” खोजें</string>
+    <string name="haptics_off_fix_aosp"><u>आवाज़ और वाइब्रेशन</u> > वाइब्रेशन और हैप्टिक</string>
+    <string name="haptics_off_fix_aosp_touch"><u>आवाज़ और वाइब्रेशन</u> > वाइब्रेशन और हैप्टिक > टच के लिए वाइब्रेशन</string>
+    <string name="haptics_off_fix_aosp_12"><u>सुलभता</u> > वाइब्रेशन और हैप्टिक तीव्रता > टच फ़ीडबैक</string>
+    <string name="haptics_off_fix_samsung"><u>ध्वनि और कंपन</u> > सिस्टम कंपन</string>
+    <string name="haptics_off_fix_xiaomi"><u>आवाज़ और वाइब्रेशन</u> > हैप्टिक फ़ीडबैक</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>आवाज़ और वाइब्रेशन</u> > टैप पर वाइब्रेशन</string>
+    <string name="haptics_off_fix_oppo"><u>आवाज़ और वाइब्रेशन</u> > हैप्टिक्स और टोन > सिस्टम हैप्टिक्स</string>
+    <string name="haptics_off_fix_vivo"><u>आवाज़ और वाइब्रेशन</u> > टच के लिए वाइब्रेशन</string>
+    <string name="haptics_off_fix_transsion"><u>सुलभता</u> > वाइब्रेशन और हैप्टिक > टच के लिए वाइब्रेशन</string>
+    <string name="haptics_off_fix_generic"><u>सेटिंग</u> > “कंपन” खोजें</string>
     <string name="battery_saver_muting">बैटरी सेवर मोड में हैप्टिक्स काम नहीं कर सकते</string>
     <string name="muted_by_system">सिस्टम में बंद है</string>
     <string name="footer_by_with_love">%s द्वारा &lt;3 के साथ</string>

@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptiek is uit in de systeeminstellingen</string>
     <string name="haptics_off_title_touch">tikfeedback is uit in de systeeminstellingen</string>
-    <string name="haptics_off_fix_aosp"><u>Geluid en trillen</u> → Trillen en haptische technologie</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Geluid en trillen</u> → Trillen en haptische technologie → Tikfeedback</string>
-    <string name="haptics_off_fix_aosp_12"><u>Toegankelijkheid</u> → Sterkte voor trilling en haptische feedback → Tikfeedback</string>
-    <string name="haptics_off_fix_samsung"><u>Geluiden en trillen</u> → Trilsignaal systeem</string>
-    <string name="haptics_off_fix_xiaomi"><u>Geluid en trillen</u> → Haptische feedback</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Geluid en trillen</u> → Trillen bij tikken</string>
-    <string name="haptics_off_fix_oppo"><u>Geluid en trillen</u> → Haptiek en tonen → Systeemhaptiek</string>
-    <string name="haptics_off_fix_vivo"><u>Geluid en trillen</u> → Tikfeedback</string>
-    <string name="haptics_off_fix_transsion"><u>Toegankelijkheid</u> → Trillen en haptische technologie → Tikfeedback</string>
-    <string name="haptics_off_fix_generic"><u>Instellingen</u> → zoek op “trillingen”</string>
+    <string name="haptics_off_fix_aosp"><u>Geluid en trillen</u> > Trillen en haptische technologie</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Geluid en trillen</u> > Trillen en haptische technologie > Tikfeedback</string>
+    <string name="haptics_off_fix_aosp_12"><u>Toegankelijkheid</u> > Sterkte voor trilling en haptische feedback > Tikfeedback</string>
+    <string name="haptics_off_fix_samsung"><u>Geluiden en trillen</u> > Trilsignaal systeem</string>
+    <string name="haptics_off_fix_xiaomi"><u>Geluid en trillen</u> > Haptische feedback</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Geluid en trillen</u> > Trillen bij tikken</string>
+    <string name="haptics_off_fix_oppo"><u>Geluid en trillen</u> > Haptiek en tonen > Systeemhaptiek</string>
+    <string name="haptics_off_fix_vivo"><u>Geluid en trillen</u> > Tikfeedback</string>
+    <string name="haptics_off_fix_transsion"><u>Toegankelijkheid</u> > Trillen en haptische technologie > Tikfeedback</string>
+    <string name="haptics_off_fix_generic"><u>Instellingen</u> > zoek op “trillingen”</string>
     <string name="battery_saver_muting">haptiek werkt mogelijk niet in batterijbesparingsmodus</string>
     <string name="muted_by_system">uitgeschakeld in het systeem</string>
     <string name="footer_by_with_love">door %s met &lt;3</string>

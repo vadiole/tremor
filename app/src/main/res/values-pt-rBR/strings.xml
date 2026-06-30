@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">o feedback tátil está desativado nas configurações do sistema</string>
     <string name="haptics_off_title_touch">o feedback por toque está desativado nas configurações do sistema</string>
-    <string name="haptics_off_fix_aosp"><u>Som e vibração</u> → Vibração e retorno tátil</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Som e vibração</u> → Vibração e retorno tátil → Feedback por toque</string>
-    <string name="haptics_off_fix_aosp_12"><u>Acessibilidade</u> → Intensidade da vibração e do retorno tátil → Feedback por toque</string>
-    <string name="haptics_off_fix_samsung"><u>Sons e vibração</u> → Vibração do sistema</string>
-    <string name="haptics_off_fix_xiaomi"><u>Som e vibração</u> → Resposta tátil</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Som e vibração</u> → Vibrar ao tocar</string>
-    <string name="haptics_off_fix_oppo"><u>Som e vibração</u> → Resposta tátil e tons → Resposta tátil do sistema</string>
-    <string name="haptics_off_fix_vivo"><u>Som e vibração</u> → Feedback por toque</string>
-    <string name="haptics_off_fix_transsion"><u>Acessibilidade</u> → Vibração e retorno tátil → Feedback por toque</string>
-    <string name="haptics_off_fix_generic"><u>Configurações</u> → pesquise “vibração”</string>
+    <string name="haptics_off_fix_aosp"><u>Som e vibração</u> > Vibração e retorno tátil</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Som e vibração</u> > Vibração e retorno tátil > Feedback por toque</string>
+    <string name="haptics_off_fix_aosp_12"><u>Acessibilidade</u> > Intensidade da vibração e do retorno tátil > Feedback por toque</string>
+    <string name="haptics_off_fix_samsung"><u>Sons e vibração</u> > Vibração do sistema</string>
+    <string name="haptics_off_fix_xiaomi"><u>Som e vibração</u> > Resposta tátil</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Som e vibração</u> > Vibrar ao tocar</string>
+    <string name="haptics_off_fix_oppo"><u>Som e vibração</u> > Resposta tátil e tons > Resposta tátil do sistema</string>
+    <string name="haptics_off_fix_vivo"><u>Som e vibração</u> > Feedback por toque</string>
+    <string name="haptics_off_fix_transsion"><u>Acessibilidade</u> > Vibração e retorno tátil > Feedback por toque</string>
+    <string name="haptics_off_fix_generic"><u>Configurações</u> > pesquise “vibração”</string>
     <string name="battery_saver_muting">o feedback tátil pode não funcionar no modo economia de bateria</string>
     <string name="muted_by_system">desativado no sistema</string>
     <string name="footer_by_with_love">por %s com &lt;3</string>

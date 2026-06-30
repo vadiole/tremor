@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">тактильний відгук вимкнено в налаштуваннях системи</string>
     <string name="haptics_off_title_touch">реакція на дотик вимкнена в налаштуваннях системи</string>
-    <string name="haptics_off_fix_aosp"><u>Звук і вібрація</u> → Вібрація і вібровідгук</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Звук і вібрація</u> → Вібрація і вібровідгук → Реакція на дотик</string>
-    <string name="haptics_off_fix_aosp_12"><u>Спеціальні можливості</u> → Вібровідгук → Реакція на дотик</string>
-    <string name="haptics_off_fix_samsung"><u>Звуки та вібрація</u> → Системна вібрація</string>
-    <string name="haptics_off_fix_xiaomi"><u>Звук та вібрація</u> → Тактильний відгук</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Звук та вібрація</u> → Вібровідгук</string>
-    <string name="haptics_off_fix_oppo"><u>Звук і вібрація</u> → Тактильний відгук і звуки → Системний тактильний відгук</string>
-    <string name="haptics_off_fix_vivo"><u>Звук і вібрація</u> → Реакція на дотик</string>
-    <string name="haptics_off_fix_transsion"><u>Доступність</u> → Вібрація і вібровідгук → Реакція на дотик</string>
-    <string name="haptics_off_fix_generic"><u>Налаштування</u> → пошук «вібрація»</string>
+    <string name="haptics_off_fix_aosp"><u>Звук і вібрація</u> > Вібрація і вібровідгук</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Звук і вібрація</u> > Вібрація і вібровідгук > Реакція на дотик</string>
+    <string name="haptics_off_fix_aosp_12"><u>Спеціальні можливості</u> > Вібровідгук > Реакція на дотик</string>
+    <string name="haptics_off_fix_samsung"><u>Звуки та вібрація</u> > Системна вібрація</string>
+    <string name="haptics_off_fix_xiaomi"><u>Звук та вібрація</u> > Тактильний відгук</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Звук та вібрація</u> > Вібровідгук</string>
+    <string name="haptics_off_fix_oppo"><u>Звук і вібрація</u> > Тактильний відгук і звуки > Системний тактильний відгук</string>
+    <string name="haptics_off_fix_vivo"><u>Звук і вібрація</u> > Реакція на дотик</string>
+    <string name="haptics_off_fix_transsion"><u>Доступність</u> > Вібрація і вібровідгук > Реакція на дотик</string>
+    <string name="haptics_off_fix_generic"><u>Налаштування</u> > пошук «вібрація»</string>
     <string name="battery_saver_muting">тактильний відгук може не працювати в режимі енергозбереження</string>
     <string name="muted_by_system">вимкнено в системі</string>
     <string name="footer_by_with_love">від %s з &lt;3</string>

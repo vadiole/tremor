@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptic ถูกปิดในการตั้งค่าระบบ</string>
     <string name="haptics_off_title_touch">การตอบสนองการสัมผัสถูกปิดในการตั้งค่าระบบ</string>
-    <string name="haptics_off_fix_aosp"><u>เสียงและการสั่น</u> → การสั่นและการโต้ตอบการสัมผัส</string>
-    <string name="haptics_off_fix_aosp_touch"><u>เสียงและการสั่น</u> → การสั่นและการโต้ตอบการสัมผัส → การตอบสนองการสัมผัส</string>
-    <string name="haptics_off_fix_aosp_12"><u>การช่วยเหลือพิเศษ</u> → การสั่นและระดับการโต้ตอบการสัมผัส → การตอบสนองการสัมผัส</string>
-    <string name="haptics_off_fix_samsung"><u>เสียงและการสั่น</u> → การสั่นของระบบ</string>
-    <string name="haptics_off_fix_xiaomi"><u>เสียงและการสั่น</u> → การตอบสนองแบบสั่น</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>เสียงและการสั่นสะเทือน</u> → สั่นเมื่อแตะ</string>
-    <string name="haptics_off_fix_oppo"><u>เสียงและการสั่น</u> → การสั่นและเสียง → การสั่นของระบบ</string>
-    <string name="haptics_off_fix_vivo"><u>เสียงและการสั่น</u> → การตอบสนองการสัมผัส</string>
-    <string name="haptics_off_fix_transsion"><u>การช่วยเหลือพิเศษ</u> → การสั่นและการโต้ตอบการสัมผัส → การตอบสนองการสัมผัส</string>
-    <string name="haptics_off_fix_generic"><u>การตั้งค่า</u> → ค้นหา “การสั่น”</string>
+    <string name="haptics_off_fix_aosp"><u>เสียงและการสั่น</u> > การสั่นและการโต้ตอบการสัมผัส</string>
+    <string name="haptics_off_fix_aosp_touch"><u>เสียงและการสั่น</u> > การสั่นและการโต้ตอบการสัมผัส > การตอบสนองการสัมผัส</string>
+    <string name="haptics_off_fix_aosp_12"><u>การช่วยเหลือพิเศษ</u> > การสั่นและระดับการโต้ตอบการสัมผัส > การตอบสนองการสัมผัส</string>
+    <string name="haptics_off_fix_samsung"><u>เสียงและการสั่น</u> > การสั่นของระบบ</string>
+    <string name="haptics_off_fix_xiaomi"><u>เสียงและการสั่น</u> > การตอบสนองแบบสั่น</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>เสียงและการสั่นสะเทือน</u> > สั่นเมื่อแตะ</string>
+    <string name="haptics_off_fix_oppo"><u>เสียงและการสั่น</u> > การสั่นและเสียง > การสั่นของระบบ</string>
+    <string name="haptics_off_fix_vivo"><u>เสียงและการสั่น</u> > การตอบสนองการสัมผัส</string>
+    <string name="haptics_off_fix_transsion"><u>การช่วยเหลือพิเศษ</u> > การสั่นและการโต้ตอบการสัมผัส > การตอบสนองการสัมผัส</string>
+    <string name="haptics_off_fix_generic"><u>การตั้งค่า</u> > ค้นหา “การสั่น”</string>
     <string name="battery_saver_muting">haptic อาจไม่ทำงานในโหมดประหยัดแบต</string>
     <string name="muted_by_system">ถูกปิดในระบบ</string>
     <string name="footer_by_with_love">โดย %s ด้วย &lt;3</string>

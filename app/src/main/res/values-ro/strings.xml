@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">feedbackul haptic este dezactivat în setările sistemului</string>
     <string name="haptics_off_title_touch">feedbackul la atingere este dezactivat în setările sistemului</string>
-    <string name="haptics_off_fix_aosp"><u>Sunete și vibrații</u> → Vibrații și feedback tactil</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Sunete și vibrații</u> → Vibrații și feedback tactil → Feedback la atingere</string>
-    <string name="haptics_off_fix_aosp_12"><u>Accesibilitate</u> → Vibrațiile și puterea feedbackului haptic → Feedback la atingere</string>
-    <string name="haptics_off_fix_samsung"><u>Sunete și vibrații</u> → Vibrație sistem</string>
-    <string name="haptics_off_fix_xiaomi"><u>Sunete și vibrații</u> → Feedback haptic</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Sunete și vibrații</u> → Vibrare la atingere</string>
-    <string name="haptics_off_fix_oppo"><u>Sunete și vibrații</u> → Vibrații și sunete → Vibrații de sistem</string>
-    <string name="haptics_off_fix_vivo"><u>Sunete și vibrații</u> → Feedback la atingere</string>
-    <string name="haptics_off_fix_transsion"><u>Accesibilitate</u> → Vibrații și feedback tactil → Feedback la atingere</string>
-    <string name="haptics_off_fix_generic"><u>Setări</u> → caută „vibrații”</string>
+    <string name="haptics_off_fix_aosp"><u>Sunete și vibrații</u> > Vibrații și feedback tactil</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Sunete și vibrații</u> > Vibrații și feedback tactil > Feedback la atingere</string>
+    <string name="haptics_off_fix_aosp_12"><u>Accesibilitate</u> > Vibrațiile și puterea feedbackului haptic > Feedback la atingere</string>
+    <string name="haptics_off_fix_samsung"><u>Sunete și vibrații</u> > Vibrație sistem</string>
+    <string name="haptics_off_fix_xiaomi"><u>Sunete și vibrații</u> > Feedback haptic</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Sunete și vibrații</u> > Vibrare la atingere</string>
+    <string name="haptics_off_fix_oppo"><u>Sunete și vibrații</u> > Vibrații și sunete > Vibrații de sistem</string>
+    <string name="haptics_off_fix_vivo"><u>Sunete și vibrații</u> > Feedback la atingere</string>
+    <string name="haptics_off_fix_transsion"><u>Accesibilitate</u> > Vibrații și feedback tactil > Feedback la atingere</string>
+    <string name="haptics_off_fix_generic"><u>Setări</u> > caută „vibrații”</string>
     <string name="battery_saver_muting">feedbackul haptic poate să nu funcționeze în modul economisire a bateriei</string>
     <string name="muted_by_system">dezactivat în sistem</string>
     <string name="footer_by_with_love">de %s cu &lt;3</string>

@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptika je v sistemskih nastavitvah izklopljena</string>
     <string name="haptics_off_title_touch">odziv na dotik je v sistemskih nastavitvah izklopljen</string>
-    <string name="haptics_off_fix_aosp"><u>Zvok in vibriranje</u> → Vibriranje in tipni odziv</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Zvok in vibriranje</u> → Vibriranje in tipni odziv → Odziv na dotik</string>
-    <string name="haptics_off_fix_aosp_12"><u>Funkcije za ljudi s posebnimi potrebami</u> → Moč vibriranja in odziva na dotik → Odziv na dotik</string>
-    <string name="haptics_off_fix_samsung"><u>Zvoki in vibriranje</u> → Sistemsko vibriranje</string>
-    <string name="haptics_off_fix_xiaomi"><u>Zvok in vibriranje</u> → Haptični odziv</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Zvok in vibriranje</u> → Vibriranje ob dotiku</string>
-    <string name="haptics_off_fix_oppo"><u>Zvok in vibriranje</u> → Haptika in toni → Sistemska haptika</string>
-    <string name="haptics_off_fix_vivo"><u>Zvok in vibriranje</u> → Odziv na dotik</string>
-    <string name="haptics_off_fix_transsion"><u>Dostopnost</u> → Vibriranje in tipni odziv → Odziv na dotik</string>
-    <string name="haptics_off_fix_generic"><u>Nastavitve</u> → poišči »vibriranje«</string>
+    <string name="haptics_off_fix_aosp"><u>Zvok in vibriranje</u> > Vibriranje in tipni odziv</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Zvok in vibriranje</u> > Vibriranje in tipni odziv > Odziv na dotik</string>
+    <string name="haptics_off_fix_aosp_12"><u>Funkcije za ljudi s posebnimi potrebami</u> > Moč vibriranja in odziva na dotik > Odziv na dotik</string>
+    <string name="haptics_off_fix_samsung"><u>Zvoki in vibriranje</u> > Sistemsko vibriranje</string>
+    <string name="haptics_off_fix_xiaomi"><u>Zvok in vibriranje</u> > Haptični odziv</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Zvok in vibriranje</u> > Vibriranje ob dotiku</string>
+    <string name="haptics_off_fix_oppo"><u>Zvok in vibriranje</u> > Haptika in toni > Sistemska haptika</string>
+    <string name="haptics_off_fix_vivo"><u>Zvok in vibriranje</u> > Odziv na dotik</string>
+    <string name="haptics_off_fix_transsion"><u>Dostopnost</u> > Vibriranje in tipni odziv > Odziv na dotik</string>
+    <string name="haptics_off_fix_generic"><u>Nastavitve</u> > poišči »vibriranje«</string>
     <string name="battery_saver_muting">haptika morda ne deluje v načinu varčevanja z baterijo</string>
     <string name="muted_by_system">izklopljeno v sistemu</string>
     <string name="footer_by_with_love">od %s z &lt;3</string>

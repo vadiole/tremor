@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">il feedback aptico è disattivato nelle impostazioni di sistema</string>
     <string name="haptics_off_title_touch">il feedback al tocco è disattivato nelle impostazioni di sistema</string>
-    <string name="haptics_off_fix_aosp"><u>Suoni e vibrazione</u> → Vibrazione e feedback aptico</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Suoni e vibrazione</u> → Vibrazione e feedback aptico → Feedback al tocco</string>
-    <string name="haptics_off_fix_aosp_12"><u>Accessibilità</u> → Intensità vibrazione e feedback aptico → Feedback al tocco</string>
-    <string name="haptics_off_fix_samsung"><u>Suoni e vibrazione</u> → Vibrazione di sistema</string>
-    <string name="haptics_off_fix_xiaomi"><u>Suono e vibrazione</u> → Feedback tattile</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Suoni e vibrazione</u> → Vibrazione al tocco</string>
-    <string name="haptics_off_fix_oppo"><u>Suono e vibrazione</u> → Feedback tattile e toni → Feedback tattile di sistema</string>
-    <string name="haptics_off_fix_vivo"><u>Suoni e vibrazione</u> → Feedback al tocco</string>
-    <string name="haptics_off_fix_transsion"><u>Accessibilità</u> → Vibrazione e feedback aptico → Feedback al tocco</string>
-    <string name="haptics_off_fix_generic"><u>Impostazioni</u> → cerca “vibrazione”</string>
+    <string name="haptics_off_fix_aosp"><u>Suoni e vibrazione</u> > Vibrazione e feedback aptico</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Suoni e vibrazione</u> > Vibrazione e feedback aptico > Feedback al tocco</string>
+    <string name="haptics_off_fix_aosp_12"><u>Accessibilità</u> > Intensità vibrazione e feedback aptico > Feedback al tocco</string>
+    <string name="haptics_off_fix_samsung"><u>Suoni e vibrazione</u> > Vibrazione di sistema</string>
+    <string name="haptics_off_fix_xiaomi"><u>Suono e vibrazione</u> > Feedback tattile</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Suoni e vibrazione</u> > Vibrazione al tocco</string>
+    <string name="haptics_off_fix_oppo"><u>Suono e vibrazione</u> > Feedback tattile e toni > Feedback tattile di sistema</string>
+    <string name="haptics_off_fix_vivo"><u>Suoni e vibrazione</u> > Feedback al tocco</string>
+    <string name="haptics_off_fix_transsion"><u>Accessibilità</u> > Vibrazione e feedback aptico > Feedback al tocco</string>
+    <string name="haptics_off_fix_generic"><u>Impostazioni</u> > cerca “vibrazione”</string>
     <string name="battery_saver_muting">il feedback aptico potrebbe non funzionare in modalità risparmio energetico</string>
     <string name="muted_by_system">disattivato nel sistema</string>
     <string name="footer_by_with_love">di %s con &lt;3</string>

@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">тактильный отклик выключен в настройках системы</string>
     <string name="haptics_off_title_touch">вибрация при касании выключена в настройках системы</string>
-    <string name="haptics_off_fix_aosp"><u>Звук и вибрация</u> → Вибрация и виброотклик</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Звук и вибрация</u> → Вибрация и виброотклик → Вибрация при касании</string>
-    <string name="haptics_off_fix_aosp_12"><u>Спец. возможности</u> → Вибрация → Вибрация при касании</string>
-    <string name="haptics_off_fix_samsung"><u>Звуки и вибрация</u> → Системная вибрация</string>
-    <string name="haptics_off_fix_xiaomi"><u>Звук и вибрация</u> → Тактильный отклик</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Звук и вибрация</u> → Вибрация при касании</string>
-    <string name="haptics_off_fix_oppo"><u>Звук и вибрация</u> → Вибрация и звуки → Системная вибрация</string>
-    <string name="haptics_off_fix_vivo"><u>Звук и вибрация</u> → Вибрация при касании</string>
-    <string name="haptics_off_fix_transsion"><u>Спец. возможности</u> → Вибрация и виброотклик → Вибрация при касании</string>
-    <string name="haptics_off_fix_generic"><u>Настройки</u> → поиск «вибрация»</string>
+    <string name="haptics_off_fix_aosp"><u>Звук и вибрация</u> > Вибрация и виброотклик</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Звук и вибрация</u> > Вибрация и виброотклик > Вибрация при касании</string>
+    <string name="haptics_off_fix_aosp_12"><u>Спец. возможности</u> > Вибрация > Вибрация при касании</string>
+    <string name="haptics_off_fix_samsung"><u>Звуки и вибрация</u> > Системная вибрация</string>
+    <string name="haptics_off_fix_xiaomi"><u>Звук и вибрация</u> > Тактильный отклик</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Звук и вибрация</u> > Вибрация при касании</string>
+    <string name="haptics_off_fix_oppo"><u>Звук и вибрация</u> > Вибрация и звуки > Системная вибрация</string>
+    <string name="haptics_off_fix_vivo"><u>Звук и вибрация</u> > Вибрация при касании</string>
+    <string name="haptics_off_fix_transsion"><u>Спец. возможности</u> > Вибрация и виброотклик > Вибрация при касании</string>
+    <string name="haptics_off_fix_generic"><u>Настройки</u> > поиск «вибрация»</string>
     <string name="battery_saver_muting">хаптики могут не работать в режиме энергосбережения</string>
     <string name="muted_by_system">выключено в системе</string>
     <string name="footer_by_with_love">от %s с &lt;3</string>

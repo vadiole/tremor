@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptikler sistem ayarlarında kapalı</string>
     <string name="haptics_off_title_touch">dokunma geri bildirimi sistem ayarlarında kapalı</string>
-    <string name="haptics_off_fix_aosp"><u>Ses ve titreşim</u> → Titreşim ve dokunma teknolojisi</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Ses ve titreşim</u> → Titreşim ve dokunma teknolojisi → Dokunma geri bildirimi</string>
-    <string name="haptics_off_fix_aosp_12"><u>Erişilebilirlik</u> → Titreşim ve dokunsal geri bildirim gücü → Dokunma geri bildirimi</string>
-    <string name="haptics_off_fix_samsung"><u>Sesler ve titreşim</u> → Sistem titreşimi</string>
-    <string name="haptics_off_fix_xiaomi"><u>Ses ve titreşim</u> → Dokunsal geri bildirim</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Ses ve titreşim</u> → Dokunulduğunda titret</string>
-    <string name="haptics_off_fix_oppo"><u>Ses ve titreşim</u> → Dokunsal geri bildirim ve sesler → Sistem dokunsal geri bildirimi</string>
-    <string name="haptics_off_fix_vivo"><u>Ses ve titreşim</u> → Dokunma geri bildirimi</string>
-    <string name="haptics_off_fix_transsion"><u>Erişilebilirlik</u> → Titreşim ve dokunma teknolojisi → Dokunma geri bildirimi</string>
-    <string name="haptics_off_fix_generic"><u>Ayarlar</u> → “titreşim” araması yap</string>
+    <string name="haptics_off_fix_aosp"><u>Ses ve titreşim</u> > Titreşim ve dokunma teknolojisi</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Ses ve titreşim</u> > Titreşim ve dokunma teknolojisi > Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_aosp_12"><u>Erişilebilirlik</u> > Titreşim ve dokunsal geri bildirim gücü > Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_samsung"><u>Sesler ve titreşim</u> > Sistem titreşimi</string>
+    <string name="haptics_off_fix_xiaomi"><u>Ses ve titreşim</u> > Dokunsal geri bildirim</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Ses ve titreşim</u> > Dokunulduğunda titret</string>
+    <string name="haptics_off_fix_oppo"><u>Ses ve titreşim</u> > Dokunsal geri bildirim ve sesler > Sistem dokunsal geri bildirimi</string>
+    <string name="haptics_off_fix_vivo"><u>Ses ve titreşim</u> > Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_transsion"><u>Erişilebilirlik</u> > Titreşim ve dokunma teknolojisi > Dokunma geri bildirimi</string>
+    <string name="haptics_off_fix_generic"><u>Ayarlar</u> > “titreşim” araması yap</string>
     <string name="battery_saver_muting">pil tasarrufu modunda haptikler çalışmayabilir</string>
     <string name="muted_by_system">sistemde kapalı</string>
     <string name="footer_by_with_love">%s tarafından &lt;3 ile</string>

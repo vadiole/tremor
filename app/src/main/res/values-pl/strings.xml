@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">reakcja dotykowa jest wyłączona w ustawieniach systemu</string>
     <string name="haptics_off_title_touch">reakcje na dotyk są wyłączone w ustawieniach systemu</string>
-    <string name="haptics_off_fix_aosp"><u>Dźwięk i wibracje</u> → Wibracje i reakcje haptyczne</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Dźwięk i wibracje</u> → Wibracje i reakcje haptyczne → Reakcje na dotyk</string>
-    <string name="haptics_off_fix_aosp_12"><u>Ułatwienia dostępu</u> → Siła wibracji i reakcji na dotyk → Reakcja na dotyk</string>
-    <string name="haptics_off_fix_samsung"><u>Dźwięki i wibracja</u> → Wibracja systemowa</string>
-    <string name="haptics_off_fix_xiaomi"><u>Dźwięk i wibracje</u> → Haptyczne sprzężenie zwrotne</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Dźwięk i wibracje</u> → Wibracja przy dotknięciu</string>
-    <string name="haptics_off_fix_oppo"><u>Dźwięk i wibracje</u> → Reakcje haptyczne i dźwięki → Reakcje haptyczne systemu</string>
-    <string name="haptics_off_fix_vivo"><u>Dźwięk i wibracje</u> → Reakcje na dotyk</string>
-    <string name="haptics_off_fix_transsion"><u>Ułatwienia dostępu</u> → Wibracje i reakcje haptyczne → Reakcje na dotyk</string>
-    <string name="haptics_off_fix_generic"><u>Ustawienia</u> → wyszukaj „wibracje”</string>
+    <string name="haptics_off_fix_aosp"><u>Dźwięk i wibracje</u> > Wibracje i reakcje haptyczne</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Dźwięk i wibracje</u> > Wibracje i reakcje haptyczne > Reakcje na dotyk</string>
+    <string name="haptics_off_fix_aosp_12"><u>Ułatwienia dostępu</u> > Siła wibracji i reakcji na dotyk > Reakcja na dotyk</string>
+    <string name="haptics_off_fix_samsung"><u>Dźwięki i wibracja</u> > Wibracja systemowa</string>
+    <string name="haptics_off_fix_xiaomi"><u>Dźwięk i wibracje</u> > Haptyczne sprzężenie zwrotne</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Dźwięk i wibracje</u> > Wibracja przy dotknięciu</string>
+    <string name="haptics_off_fix_oppo"><u>Dźwięk i wibracje</u> > Reakcje haptyczne i dźwięki > Reakcje haptyczne systemu</string>
+    <string name="haptics_off_fix_vivo"><u>Dźwięk i wibracje</u> > Reakcje na dotyk</string>
+    <string name="haptics_off_fix_transsion"><u>Ułatwienia dostępu</u> > Wibracje i reakcje haptyczne > Reakcje na dotyk</string>
+    <string name="haptics_off_fix_generic"><u>Ustawienia</u> > wyszukaj „wibracje”</string>
     <string name="battery_saver_muting">reakcja dotykowa może nie działać w trybie oszczędzania baterii</string>
     <string name="muted_by_system">wyłączone w systemie</string>
     <string name="footer_by_with_love">od %s z &lt;3</string>

@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">η απτική ανάδραση είναι απενεργοποιημένη στις ρυθμίσεις</string>
     <string name="haptics_off_title_touch">η ανάδραση αφής είναι απενεργοποιημένη στις ρυθμίσεις συστήματος</string>
-    <string name="haptics_off_fix_aosp"><u>Ήχος και δόνηση</u> → Δόνηση και απτική λειτουργία</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Ήχος και δόνηση</u> → Δόνηση και απτική λειτουργία → Ανάδραση αφής</string>
-    <string name="haptics_off_fix_aosp_12"><u>Προσβασιμότητα</u> → Ισχύς δόνησης και απτικής ανάδρασης → Ανάδραση αφής</string>
-    <string name="haptics_off_fix_samsung"><u>Ήχοι και δόνηση</u> → Δόνηση συστήματος</string>
-    <string name="haptics_off_fix_xiaomi"><u>Ήχος και δόνηση</u> → Απτική ανάδραση</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Ήχος και δόνηση</u> → Απτική ανάδραση</string>
-    <string name="haptics_off_fix_oppo"><u>Ήχος και δόνηση</u> → Τεχνολογία αφής και τόνοι (O-HAPTICS) → Τεχνολογία αφής συστήματος</string>
-    <string name="haptics_off_fix_vivo"><u>Ήχος και δόνηση</u> → Ανάδραση αφής</string>
-    <string name="haptics_off_fix_transsion"><u>Προσβασιμότητα</u> → Δόνηση και απτική λειτουργία → Ανάδραση αφής</string>
-    <string name="haptics_off_fix_generic"><u>Ρυθμίσεις</u> → αναζήτησε «δόνηση»</string>
+    <string name="haptics_off_fix_aosp"><u>Ήχος και δόνηση</u> > Δόνηση και απτική λειτουργία</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Ήχος και δόνηση</u> > Δόνηση και απτική λειτουργία > Ανάδραση αφής</string>
+    <string name="haptics_off_fix_aosp_12"><u>Προσβασιμότητα</u> > Ισχύς δόνησης και απτικής ανάδρασης > Ανάδραση αφής</string>
+    <string name="haptics_off_fix_samsung"><u>Ήχοι και δόνηση</u> > Δόνηση συστήματος</string>
+    <string name="haptics_off_fix_xiaomi"><u>Ήχος και δόνηση</u> > Απτική ανάδραση</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Ήχος και δόνηση</u> > Απτική ανάδραση</string>
+    <string name="haptics_off_fix_oppo"><u>Ήχος και δόνηση</u> > Τεχνολογία αφής και τόνοι (O-HAPTICS) > Τεχνολογία αφής συστήματος</string>
+    <string name="haptics_off_fix_vivo"><u>Ήχος και δόνηση</u> > Ανάδραση αφής</string>
+    <string name="haptics_off_fix_transsion"><u>Προσβασιμότητα</u> > Δόνηση και απτική λειτουργία > Ανάδραση αφής</string>
+    <string name="haptics_off_fix_generic"><u>Ρυθμίσεις</u> > αναζήτησε «δόνηση»</string>
     <string name="battery_saver_muting">η απτική ανάδραση μπορεί να μην λειτουργεί σε λειτουργία εξοικονόμησης μπαταρίας</string>
     <string name="muted_by_system">απενεργοποιημένη στο σύστημα</string>
     <string name="footer_by_with_love">από %s με &lt;3</string>

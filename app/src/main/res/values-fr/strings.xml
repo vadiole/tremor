@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">le retour haptique est désactivé dans les réglages système</string>
     <string name="haptics_off_title_touch">le retour tactile est désactivé dans les réglages système</string>
-    <string name="haptics_off_fix_aosp"><u>Son et vibreur</u> → Vibreur et retour haptique</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Son et vibreur</u> → Vibreur et retour haptique → Retour tactile</string>
-    <string name="haptics_off_fix_aosp_12"><u>Accessibilité</u> → Force des vibrations et du retour haptique → Retour tactile</string>
-    <string name="haptics_off_fix_samsung"><u>Sons et vibrations</u> → Vibration système</string>
-    <string name="haptics_off_fix_xiaomi"><u>Son et vibration</u> → Retour haptique</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Son et vibreur</u> → Vibrer au toucher</string>
-    <string name="haptics_off_fix_oppo"><u>Son et vibreur</u> → Haptique et sonneries → Haptique du système</string>
-    <string name="haptics_off_fix_vivo"><u>Son et vibreur</u> → Retour tactile</string>
-    <string name="haptics_off_fix_transsion"><u>Accessibilité</u> → Vibreur et retour haptique → Retour tactile</string>
-    <string name="haptics_off_fix_generic"><u>Paramètres</u> → rechercher « vibration »</string>
+    <string name="haptics_off_fix_aosp"><u>Son et vibreur</u> > Vibreur et retour haptique</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Son et vibreur</u> > Vibreur et retour haptique > Retour tactile</string>
+    <string name="haptics_off_fix_aosp_12"><u>Accessibilité</u> > Force des vibrations et du retour haptique > Retour tactile</string>
+    <string name="haptics_off_fix_samsung"><u>Sons et vibrations</u> > Vibration système</string>
+    <string name="haptics_off_fix_xiaomi"><u>Son et vibration</u> > Retour haptique</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Son et vibreur</u> > Vibrer au toucher</string>
+    <string name="haptics_off_fix_oppo"><u>Son et vibreur</u> > Haptique et sonneries > Haptique du système</string>
+    <string name="haptics_off_fix_vivo"><u>Son et vibreur</u> > Retour tactile</string>
+    <string name="haptics_off_fix_transsion"><u>Accessibilité</u> > Vibreur et retour haptique > Retour tactile</string>
+    <string name="haptics_off_fix_generic"><u>Paramètres</u> > rechercher « vibration »</string>
     <string name="battery_saver_muting">le retour haptique peut ne pas fonctionner en mode économie d\'énergie</string>
     <string name="muted_by_system">désactivé dans le système</string>
     <string name="footer_by_with_love">par %s avec &lt;3</string>

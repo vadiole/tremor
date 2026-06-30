@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptik er slået fra i systemindstillingerne</string>
     <string name="haptics_off_title_touch">feedback ved tryk er slået fra i systemindstillingerne</string>
-    <string name="haptics_off_fix_aosp"><u>Lyd og vibration</u> → Vibration og haptik</string>
-    <string name="haptics_off_fix_aosp_touch"><u>Lyd og vibration</u> → Vibration og haptik → Feedback ved tryk</string>
-    <string name="haptics_off_fix_aosp_12"><u>Hjælpefunktioner</u> → Styrke for vibration og feedback ved berøring → Feedback ved tryk</string>
-    <string name="haptics_off_fix_samsung"><u>Lyde og vibration</u> → Systemvibration</string>
-    <string name="haptics_off_fix_xiaomi"><u>Lyd og vibrationer</u> → Haptisk feedback</string>
-    <string name="haptics_off_fix_xiaomi_miui"><u>Lyd og vibration</u> → Vibrer ved tryk</string>
-    <string name="haptics_off_fix_oppo"><u>Lyd og vibration</u> → Haptik og toner → Systemhaptik</string>
-    <string name="haptics_off_fix_vivo"><u>Lyd og vibration</u> → Feedback ved tryk</string>
-    <string name="haptics_off_fix_transsion"><u>Hjælpefunktioner</u> → Vibration og haptik → Feedback ved tryk</string>
-    <string name="haptics_off_fix_generic"><u>Indstillinger</u> → søg efter “vibration”</string>
+    <string name="haptics_off_fix_aosp"><u>Lyd og vibration</u> > Vibration og haptik</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Lyd og vibration</u> > Vibration og haptik > Feedback ved tryk</string>
+    <string name="haptics_off_fix_aosp_12"><u>Hjælpefunktioner</u> > Styrke for vibration og feedback ved berøring > Feedback ved tryk</string>
+    <string name="haptics_off_fix_samsung"><u>Lyde og vibration</u> > Systemvibration</string>
+    <string name="haptics_off_fix_xiaomi"><u>Lyd og vibrationer</u> > Haptisk feedback</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Lyd og vibration</u> > Vibrer ved tryk</string>
+    <string name="haptics_off_fix_oppo"><u>Lyd og vibration</u> > Haptik og toner > Systemhaptik</string>
+    <string name="haptics_off_fix_vivo"><u>Lyd og vibration</u> > Feedback ved tryk</string>
+    <string name="haptics_off_fix_transsion"><u>Hjælpefunktioner</u> > Vibration og haptik > Feedback ved tryk</string>
+    <string name="haptics_off_fix_generic"><u>Indstillinger</u> > søg efter “vibration”</string>
     <string name="battery_saver_muting">haptik virker måske ikke i batterisparetilstand</string>
     <string name="muted_by_system">slået fra i systemet</string>
     <string name="footer_by_with_love">af %s med &lt;3</string>
