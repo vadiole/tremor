@@ -30,6 +30,7 @@ internal object FloatingSurfaceBitmapCache {
         val bmpWidth = key.width + key.outsetPx * 2
         val bmpHeight = key.height + key.outsetPx * 2
         val bitmap = Bitmap.createBitmap(bmpWidth, bmpHeight, Bitmap.Config.ARGB_8888)
+        bitmap.density = Bitmap.DENSITY_NONE
         render(Canvas(bitmap))
         cache.put(key, bitmap)
         return bitmap

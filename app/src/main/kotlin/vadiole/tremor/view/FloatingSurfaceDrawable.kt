@@ -12,8 +12,6 @@ import android.graphics.PixelFormat
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.os.Build
-import kotlin.math.abs
-import kotlin.math.ceil
 import vadiole.tremor.R
 
 class FloatingSurfaceDrawable(
@@ -33,21 +31,17 @@ class FloatingSurfaceDrawable(
     }
 
     private val borderWidth = Floating.borderWidthPx(context)
-    private val shadowRadius = Floating.SHADOW_RADIUS_DP.dp(context)
-    private val shadowDy = Floating.SHADOW_DY_DP.dp(context)
-    private val outsetPx: Int = ceil(shadowRadius + abs(shadowDy)).toInt()
+    private val shadowRadius = Floating.shadowRadiusPx(context)
+    private val shadowDy = Floating.shadowDyPx(context)
+    private val outsetPx: Int = Floating.shadowOutsetPx(context)
 
     private val surfacePath = Path()
     private val borderPath = Path()
 
-    private val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        style = Paint.Style.FILL
-        color = surfaceColor
-        setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor)
-    }
     private val surfacePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
         color = surfaceColor
+        setShadowLayer(shadowRadius, 0f, shadowDy, shadowColor)
     }
     private val borderPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
@@ -134,7 +128,6 @@ class FloatingSurfaceDrawable(
         val localBounds = Rect(outsetPx, outsetPx, outsetPx + width, outsetPx + height)
         provider.update(localBounds, borderWidth / 2f, localSurface, localBorder)
         if (localSurface.isEmpty) return
-        canvas.drawPath(localSurface, shadowPaint)
         canvas.drawPath(localSurface, surfacePaint)
         canvas.drawPath(localBorder, borderPaint)
     }
@@ -218,5 +211,3 @@ class FloatingSurfaceDrawable(
 
     }
 }
-
-private fun Float.dp(context: Context): Float = this * context.resources.displayMetrics.density
