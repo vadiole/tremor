@@ -585,9 +585,9 @@ object BallBoxTuning {
     var sleepBoxVel = 40f          // (dp/s) scrolling considered stopped below this
 
     // haptics — bounce
-    var minBounceSpeed = 55f       // (dp/s) below this a bounce is silent (settling)
-    var bounceRefSpeed = 2600f     // (dp/s) speed mapped to the strongest bounce
-    var bounceMinScale = 0.88f     // even gentle bounces are clearly felt
+    var minBounceSpeed = 10f       // (dp/s) below this a bounce is silent (settling)
+    var bounceRefSpeed = 1100f     // (dp/s) speed mapped to the strongest bounce
+    var bounceMinScale = 0.05f     // gentlest bounce is barely felt; force ramps up with impact
     var bounceMaxScale = 1.0f
 
     // haptics — rubber-band cracks (a distinct tick each notch of stretch)
