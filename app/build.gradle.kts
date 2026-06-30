@@ -12,7 +12,7 @@ android {
         applicationId = "vadiole.tremor"
         minSdk = 31
         targetSdk = 36
-        versionCode = 4
+        versionCode = 5
         versionName = "1.3"
         base.archivesName.set("tremor-v$versionName")
     }
