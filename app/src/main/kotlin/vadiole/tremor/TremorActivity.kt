@@ -86,9 +86,6 @@ class TremorActivity : Activity(), Density {
         buildHapticFeedbackSection(content, sectionSpacing, itemSpacing)
         buildPredefinedEffectsSection(content, sectionSpacing, itemSpacing)
         buildPrimitivesSection(content, sectionSpacing, itemSpacing)
-        buildExamplesSection(content, sectionSpacing, itemSpacing)
-        buildDeviceInfo(content, sectionSpacing)
-        buildFooter(content)
 
         scrollView.addView(content, FrameLayout.LayoutParams(
             FrameLayout.LayoutParams.MATCH_PARENT,
@@ -124,6 +121,12 @@ class TremorActivity : Activity(), Density {
         updateGateUi(previous = null)
 
         setContentView(root)
+
+        content.postDelayed({
+            buildExamplesSection(content, sectionSpacing, itemSpacing)
+            buildDeviceInfo(content, sectionSpacing)
+            buildFooter(content)
+        }, DEFERRED_CONTENT_DELAY_MS)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
@@ -386,5 +389,7 @@ class TremorActivity : Activity(), Density {
         // re-spawn delay for the second wave echoing REJECT / EFFECT_DOUBLE_CLICK's double pulse
         const val ECHO_WAVE_DELAY_MS = 100L
         const val MUTED_WAVE_STRENGTH = 0.5f
+        // build below-the-fold sections (examples, device info, footer) off the startup path
+        const val DEFERRED_CONTENT_DELAY_MS = 400L
     }
 }
