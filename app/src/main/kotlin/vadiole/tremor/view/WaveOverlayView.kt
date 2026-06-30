@@ -32,6 +32,8 @@ class WaveOverlayView(context: Context) : View(context), Density {
 
     private var shader: RuntimeShader? = null
     private val shaderPaint = Paint()
+    private var shadersPrewarmed = false
+    private var prewarmScheduled = false
 
     private var distortionTarget: View? = null
     private var distortionShader: RuntimeShader? = null
@@ -100,10 +102,13 @@ class WaveOverlayView(context: Context) : View(context), Density {
     init {
         isClickable = false
         isFocusable = false
-        if (Build.VERSION.SDK_INT >= 33) {
-            shader = RuntimeShader(WAVE_SHADER)
-            distortionShader = RuntimeShader(DISTORTION_SHADER)
-        }
+    }
+
+    private fun ensureShaders() {
+        if (Build.VERSION.SDK_INT < 33 || shadersPrewarmed) return
+        shader = RuntimeShader(WAVE_SHADER)
+        distortionShader = RuntimeShader(DISTORTION_SHADER)
+        shadersPrewarmed = true
     }
 
     fun setDistortionTarget(target: View?) {
@@ -132,6 +137,7 @@ class WaveOverlayView(context: Context) : View(context), Density {
         style: WaveStyle = WaveStyle.DEFAULT,
         label: String? = null,
     ) {
+        ensureShaders()
         getLocationOnScreen(locationScratch)
         val localX = screenX - locationScratch[0]
         val localY = screenY - locationScratch[1]
@@ -164,6 +170,10 @@ class WaveOverlayView(context: Context) : View(context), Density {
     }
 
     override fun onDraw(canvas: Canvas) {
+        if (!shadersPrewarmed && !prewarmScheduled) {
+            prewarmScheduled = true
+            post { ensureShaders() }
+        }
         val now = SystemClock.elapsedRealtime()
         var i = waves.size - 1
         while (i >= 0) {
