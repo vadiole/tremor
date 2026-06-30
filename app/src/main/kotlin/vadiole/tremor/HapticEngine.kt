@@ -24,19 +24,22 @@ class HapticEngine(
         manager.defaultVibrator
     }
 
-    // Which control the user turned off, when distinguishable. MASTER = the "Use vibration
-    // & haptics" switch (VIBRATE_ON); TOUCH = the touch-feedback toggle/slider. Reliable only
-    // on stock Android (Pixel/Motorola): heavy OEM skins don't keep VIBRATE_ON in sync — e.g.
-    // Samsung One UI never writes it (uses SEM_VIBRATION_*), so master-off is invisible here.
+    // Which control the user turned off, when we can tell them apart:
+    //   MASTER = the "Use vibration & haptics" switch (VIBRATE_ON)
+    //   TOUCH  = the touch-feedback toggle/slider
+    //
+    // Only reliable on stock Android (Pixel/Motorola). Heavy OEM skins don't keep VIBRATE_ON
+    // in sync — e.g. Samsung One UI uses SEM_VIBRATION_* instead, so master-off is invisible here.
     enum class HapticsOffCause { MASTER, TOUCH }
 
     class GateState(
         val systemHapticsOn: Boolean,
         val powerSaveOn: Boolean,
-        val constantsMuted: Boolean,
         val effectsMuted: Boolean,
         val offCause: HapticsOffCause?,
-    )
+    ) {
+        val constantsMuted: Boolean get() = !systemHapticsOn
+    }
 
     // Every gate that can mute this app, by playback path (fail open — predict "muted"
     // only on gates the service is known to enforce; verified on API 31 & 35, AOSP source
@@ -64,7 +67,6 @@ class HapticEngine(
         return GateState(
             systemHapticsOn = systemOn,
             powerSaveOn = powerManager.isPowerSaveMode,
-            constantsMuted = !systemOn,
             effectsMuted = Build.VERSION.SDK_INT < 33 && !intensityOn,
             offCause = when {
                 systemOn -> null

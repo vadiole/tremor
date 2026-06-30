@@ -161,12 +161,16 @@ class HapticStatusView(context: Context) : TextView(context), Density {
     }
 
     private fun primarySettingsAction(): String {
-        return when {
-            opensBatterySaverSettings -> Settings.ACTION_BATTERY_SAVER_SETTINGS
+        if (opensBatterySaverSettings) return Settings.ACTION_BATTERY_SAVER_SETTINGS
+        return when (deviceProfile()) {
             // Stock Android 12/12L hosts the vibration screen under Accessibility, not Sound.
-            deviceProfile() == Profile.AOSP && Build.VERSION.SDK_INT < 33 ->
+            Profile.AOSP -> if (Build.VERSION.SDK_INT < 33) {
                 Settings.ACTION_ACCESSIBILITY_SETTINGS
-
+            } else {
+                Settings.ACTION_SOUND_SETTINGS
+            }
+            Profile.TRANSSION -> Settings.ACTION_ACCESSIBILITY_SETTINGS
+            Profile.GENERIC -> Settings.ACTION_SETTINGS
             else -> Settings.ACTION_SOUND_SETTINGS
         }
     }

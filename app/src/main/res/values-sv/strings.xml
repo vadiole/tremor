@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptik är avstängd i systeminställningarna</string>
     <string name="haptics_off_title_touch">tryckåterkoppling är avstängd i systeminställningarna</string>
-    <string name="haptics_off_fix_aosp">lös det: <u>Inställningar</u> → Ljud och vibration → Vibration och haptik</string>
-    <string name="haptics_off_fix_aosp_touch">lös det: <u>Inställningar</u> → Ljud och vibration → Vibration och haptik → Tryckåterkoppling</string>
-    <string name="haptics_off_fix_aosp_12">lös det: <u>Inställningar</u> → Tillgänglighet → Vibration och haptisk styrka → Tryckåterkoppling</string>
-    <string name="haptics_off_fix_samsung">lös det: <u>Inställningar</u> → Ljud och vibration → Systemvibration</string>
-    <string name="haptics_off_fix_xiaomi">lös det: <u>Inställningar</u> → Ljud och vibration → Haptisk återkoppling</string>
-    <string name="haptics_off_fix_xiaomi_miui">lös det: <u>Inställningar</u> → Ljud och vibration → Vibrera vid tryck</string>
-    <string name="haptics_off_fix_oppo">lös det: <u>Inställningar</u> → Ljud och vibration → Haptik och ljud → Systemhaptik</string>
-    <string name="haptics_off_fix_vivo">lös det: <u>Inställningar</u> → Ljud och vibration → Tryckåterkoppling</string>
-    <string name="haptics_off_fix_transsion">lös det: <u>Inställningar</u> → Specialfunktion → Tillgänglighet → Vibration och haptik → Tryckåterkoppling</string>
-    <string name="haptics_off_fix_generic">lös det: <u>Inställningar</u> → sök efter ”vibration”</string>
+    <string name="haptics_off_fix_aosp"><u>Ljud och vibration</u> → Vibration och haptik</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Ljud och vibration</u> → Vibration och haptik → Tryckåterkoppling</string>
+    <string name="haptics_off_fix_aosp_12"><u>Tillgänglighet</u> → Vibration och haptisk styrka → Tryckåterkoppling</string>
+    <string name="haptics_off_fix_samsung"><u>Ljud och vibration</u> → Systemvibration</string>
+    <string name="haptics_off_fix_xiaomi"><u>Ljud och vibration</u> → Haptisk återkoppling</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Ljud och vibration</u> → Vibrera vid tryck</string>
+    <string name="haptics_off_fix_oppo"><u>Ljud och vibration</u> → Haptik och ljud → Systemhaptik</string>
+    <string name="haptics_off_fix_vivo"><u>Ljud och vibration</u> → Tryckåterkoppling</string>
+    <string name="haptics_off_fix_transsion"><u>Tillgänglighet</u> → Vibration och haptik → Tryckåterkoppling</string>
+    <string name="haptics_off_fix_generic"><u>Inställningar</u> → sök efter ”vibration”</string>
     <string name="battery_saver_muting">haptik kanske inte fungerar i batterisparläge</string>
     <string name="muted_by_system">avstängd i systemet</string>
     <string name="footer_by_with_love">av %s med &lt;3</string>

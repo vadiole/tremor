@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptik nonaktif di pengaturan sistem</string>
     <string name="haptics_off_title_touch">respons sentuhan dimatikan di pengaturan sistem</string>
-    <string name="haptics_off_fix_aosp">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran &amp; haptik</string>
-    <string name="haptics_off_fix_aosp_touch">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran &amp; haptik → Respons sentuhan</string>
-    <string name="haptics_off_fix_aosp_12">perbaiki: <u>Setelan</u> → Aksesibilitas → Getaran &amp; kekuatan sentuhan → Masukan sentuhan</string>
-    <string name="haptics_off_fix_samsung">perbaiki: <u>Setelan</u> → Suara dan getaran → Getaran sistem</string>
-    <string name="haptics_off_fix_xiaomi">perbaiki: <u>Setelan</u> → Suara dan getaran → Umpan balik haptik</string>
-    <string name="haptics_off_fix_xiaomi_miui">perbaiki: <u>Setelan</u> → Suara dan getaran → Getar saat ketuk</string>
-    <string name="haptics_off_fix_oppo">perbaiki: <u>Setelan</u> → Suara dan getaran → Haptik &amp; nada → Haptik sistem</string>
-    <string name="haptics_off_fix_vivo">perbaiki: <u>Setelan</u> → Suara dan getaran → Respons sentuhan</string>
-    <string name="haptics_off_fix_transsion">perbaiki: <u>Setelan</u> → Fungsi Khusus → Aksesibilitas → Getaran &amp; haptik → Respons sentuhan</string>
-    <string name="haptics_off_fix_generic">perbaiki: <u>Setelan</u> → cari “getaran”</string>
+    <string name="haptics_off_fix_aosp"><u>Suara dan getaran</u> → Getaran &amp; haptik</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Suara dan getaran</u> → Getaran &amp; haptik → Respons sentuhan</string>
+    <string name="haptics_off_fix_aosp_12"><u>Aksesibilitas</u> → Getaran &amp; kekuatan sentuhan → Masukan sentuhan</string>
+    <string name="haptics_off_fix_samsung"><u>Suara dan getar</u> → Getaran sistem</string>
+    <string name="haptics_off_fix_xiaomi"><u>Suara &amp; getaran</u> → umpan balik Haptic</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Suara dan getaran</u> → Getar saat ketuk</string>
+    <string name="haptics_off_fix_oppo"><u>Suara &amp; getaran</u> → Haptik &amp; nada → Haptik sistem</string>
+    <string name="haptics_off_fix_vivo"><u>Suara dan getaran</u> → Respons sentuhan</string>
+    <string name="haptics_off_fix_transsion"><u>Aksesibilitas</u> → Getaran &amp; haptik → Respons sentuhan</string>
+    <string name="haptics_off_fix_generic"><u>Setelan</u> → cari “getaran”</string>
     <string name="battery_saver_muting">haptik mungkin tidak berfungsi dalam mode hemat baterai</string>
     <string name="muted_by_system">nonaktif di sistem</string>
     <string name="footer_by_with_love">oleh %s dengan &lt;3</string>

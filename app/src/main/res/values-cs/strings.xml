@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptická odezva je v nastavení systému vypnutá</string>
     <string name="haptics_off_title_touch">odezva při klepnutí je v nastavení systému vypnutá</string>
-    <string name="haptics_off_fix_aosp">oprava: <u>Nastavení</u> → Zvuk a vibrace → Vibrace a hmatová odezva</string>
-    <string name="haptics_off_fix_aosp_touch">oprava: <u>Nastavení</u> → Zvuk a vibrace → Vibrace a hmatová odezva → Odezva při klepnutí</string>
-    <string name="haptics_off_fix_aosp_12">oprava: <u>Nastavení</u> → Přístupnost → Síla vibrací a hmatové odezvy → Odezva při klepnutí</string>
-    <string name="haptics_off_fix_samsung">oprava: <u>Nastavení</u> → Zvuky a vibrace → Vibrace systému</string>
-    <string name="haptics_off_fix_xiaomi">oprava: <u>Nastavení</u> → Zvuk a vibrace → Haptická odezva</string>
-    <string name="haptics_off_fix_xiaomi_miui">oprava: <u>Nastavení</u> → Zvuk a vibrace → Vibrace při klepnutí</string>
-    <string name="haptics_off_fix_oppo">oprava: <u>Nastavení</u> → Zvuk a vibrace → Haptika a tóny → Systémová haptika</string>
-    <string name="haptics_off_fix_vivo">oprava: <u>Nastavení</u> → Zvuk a vibrace → Odezva při klepnutí</string>
-    <string name="haptics_off_fix_transsion">oprava: <u>Nastavení</u> → Speciální funkce → Přístupnost → Vibrace a hmatová odezva → Odezva při klepnutí</string>
-    <string name="haptics_off_fix_generic">oprava: <u>Nastavení</u> → vyhledej „vibrace“</string>
+    <string name="haptics_off_fix_aosp"><u>Zvuk a vibrace</u> → Vibrace a hmatová odezva</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Zvuk a vibrace</u> → Vibrace a hmatová odezva → Odezva při klepnutí</string>
+    <string name="haptics_off_fix_aosp_12"><u>Přístupnost</u> → Síla vibrací a hmatové odezvy → Odezva při klepnutí</string>
+    <string name="haptics_off_fix_samsung"><u>Zvuky a vibrace</u> → Vibrace systému</string>
+    <string name="haptics_off_fix_xiaomi"><u>Zvuk a vibrace</u> → Haptická odezva</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Zvuk a vibrace</u> → Vibrace při klepnutí</string>
+    <string name="haptics_off_fix_oppo"><u>Zvuk a vibrace</u> → Haptika a tóny → Systémová haptika</string>
+    <string name="haptics_off_fix_vivo"><u>Zvuk a vibrace</u> → Odezva při klepnutí</string>
+    <string name="haptics_off_fix_transsion"><u>Přístupnost</u> → Vibrace a hmatová odezva → Odezva při klepnutí</string>
+    <string name="haptics_off_fix_generic"><u>Nastavení</u> → vyhledej „vibrace“</string>
     <string name="battery_saver_muting">haptika nemusí fungovat v režimu spořiče baterie</string>
     <string name="muted_by_system">vypnuto v systému</string>
     <string name="footer_by_with_love">od %s s &lt;3</string>

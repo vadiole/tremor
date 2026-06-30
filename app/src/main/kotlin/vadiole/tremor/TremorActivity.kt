@@ -389,7 +389,8 @@ class TremorActivity : Activity(), Density {
         // re-spawn delay for the second wave echoing REJECT / EFFECT_DOUBLE_CLICK's double pulse
         const val ECHO_WAVE_DELAY_MS = 100L
         const val MUTED_WAVE_STRENGTH = 0.5f
-        // build below-the-fold sections (examples, device info, footer) off the startup path
+
+        // defer below-the-fold content off the startup path
         const val DEFERRED_CONTENT_DELAY_MS = 400L
     }
 }

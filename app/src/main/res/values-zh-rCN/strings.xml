@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">触觉反馈已在系统设置中关闭</string>
     <string name="haptics_off_title_touch">按触反馈已在系统设置中关闭</string>
-    <string name="haptics_off_fix_aosp">开启：<u>设置</u> → 提示音和振动 → 振动和触感反馈</string>
-    <string name="haptics_off_fix_aosp_touch">开启：<u>设置</u> → 提示音和振动 → 振动和触感反馈 → 按触反馈</string>
-    <string name="haptics_off_fix_aosp_12">开启：<u>设置</u> → 无障碍 → 震动和触感强度 → 按触反馈</string>
-    <string name="haptics_off_fix_samsung">开启：<u>设置</u> → 声音和振动 → 系统振动</string>
-    <string name="haptics_off_fix_xiaomi">开启：<u>设置</u> → 提示音和振动 → 触感反馈</string>
-    <string name="haptics_off_fix_xiaomi_miui">开启：<u>设置</u> → 提示音和振动 → 点按时振动</string>
-    <string name="haptics_off_fix_oppo">开启：<u>设置</u> → 提示音和振动 → 触感和提示音 → 系统触感</string>
-    <string name="haptics_off_fix_vivo">开启：<u>设置</u> → 提示音和振动 → 按触反馈</string>
-    <string name="haptics_off_fix_transsion">开启：<u>设置</u> → 特殊功能 → 无障碍 → 振动和触感反馈 → 按触反馈</string>
-    <string name="haptics_off_fix_generic">开启：<u>设置</u> → 搜索“振动”</string>
+    <string name="haptics_off_fix_aosp"><u>提示音和振动</u> → 振动和触感反馈</string>
+    <string name="haptics_off_fix_aosp_touch"><u>提示音和振动</u> → 振动和触感反馈 → 按触反馈</string>
+    <string name="haptics_off_fix_aosp_12"><u>无障碍</u> → 震动和触感强度 → 按触反馈</string>
+    <string name="haptics_off_fix_samsung"><u>声音和振动</u> → 系统振动</string>
+    <string name="haptics_off_fix_xiaomi"><u>声音与触感</u> → 系统触感</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>声音与触感</u> → 系统触感</string>
+    <string name="haptics_off_fix_oppo"><u>声音与振动</u> → 触感与提示音 → 系统触感</string>
+    <string name="haptics_off_fix_vivo"><u>声音与振动</u> → 触感反馈</string>
+    <string name="haptics_off_fix_transsion"><u>无障碍功能</u> → 振动和触感反馈 → 按触反馈</string>
+    <string name="haptics_off_fix_generic"><u>设置</u> → 搜索“振动”</string>
     <string name="battery_saver_muting">触觉反馈在省电模式下可能无法正常工作</string>
     <string name="muted_by_system">已在系统中关闭</string>
     <string name="footer_by_with_love">由 %s 用 &lt;3 制作</string>

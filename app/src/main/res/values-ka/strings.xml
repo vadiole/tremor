@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">ჰაპტიკა გამორთულია სისტემის პარამეტრებში</string>
     <string name="haptics_off_title_touch">რეაქცია შეხებაზე გამორთულია სისტემის პარამეტრებში</string>
-    <string name="haptics_off_fix_aosp">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → ვიბრაცია და შეხებისადმი მგრძნობელობა</string>
-    <string name="haptics_off_fix_aosp_touch">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → ვიბრაცია და შეხებისადმი მგრძნობელობა → რეაქცია შეხებაზე</string>
-    <string name="haptics_off_fix_aosp_12">გასწორება: <u>პარამეტრები</u> → მარტივი წვდომა → ვიბრაცია და ტაქტილური სიძლიერე → რეაქცია შეხებაზე</string>
-    <string name="haptics_off_fix_samsung">გასწორება: <u>პარამეტრები</u> → ხმები და ვიბრაცია → სისტემური ვიბრაცია</string>
-    <string name="haptics_off_fix_xiaomi">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → ჰაპტიკური უკუკავშირი</string>
-    <string name="haptics_off_fix_xiaomi_miui">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → ვიბრაცია შეხებისას</string>
-    <string name="haptics_off_fix_oppo">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → ჰაპტიკა და ტონები → სისტემური ჰაპტიკა</string>
-    <string name="haptics_off_fix_vivo">გასწორება: <u>პარამეტრები</u> → ხმა და ვიბრაცია → რეაქცია შეხებაზე</string>
-    <string name="haptics_off_fix_transsion">გასწორება: <u>პარამეტრები</u> → სპეციალური ფუნქცია → მარტივი წვდომა → ვიბრაცია და შეხებისადმი მგრძნობელობა → რეაქცია შეხებაზე</string>
-    <string name="haptics_off_fix_generic">გასწორება: <u>პარამეტრები</u> → მოძებნე „ვიბრაცია“</string>
+    <string name="haptics_off_fix_aosp"><u>ხმა და ვიბრაცია</u> → ვიბრაცია და შეხებისადმი მგრძნობელობა</string>
+    <string name="haptics_off_fix_aosp_touch"><u>ხმა და ვიბრაცია</u> → ვიბრაცია და შეხებისადმი მგრძნობელობა → რეაქცია შეხებაზე</string>
+    <string name="haptics_off_fix_aosp_12"><u>მარტივი წვდომა</u> → ვიბრაცია და ტაქტილური სიძლიერე → რეაქცია შეხებაზე</string>
+    <string name="haptics_off_fix_samsung"><u>ხმები და ვიბრაცია</u> → სისტემური ვიბრაცია</string>
+    <string name="haptics_off_fix_xiaomi"><u>ხმა და ვიბრაცია</u> → ჰაპტიკური უკუკავშირი</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>ხმა და ვიბრაცია</u> → ვიბრაცია შეხებისას</string>
+    <string name="haptics_off_fix_oppo"><u>ხმა და ვიბრაცია</u> → ჰაპტიკა და ტონები → სისტემური ჰაპტიკა</string>
+    <string name="haptics_off_fix_vivo"><u>ხმა და ვიბრაცია</u> → რეაქცია შეხებაზე</string>
+    <string name="haptics_off_fix_transsion"><u>მარტივი წვდომა</u> → ვიბრაცია და შეხებისადმი მგრძნობელობა → რეაქცია შეხებაზე</string>
+    <string name="haptics_off_fix_generic"><u>პარამეტრები</u> → მოძებნე „ვიბრაცია“</string>
     <string name="battery_saver_muting">ჰაპტიკა შესაძლოა არ მუშაობდეს ენერგიის დაზოგვის რეჟიმში</string>
     <string name="muted_by_system">გამორთულია სისტემაში</string>
     <string name="footer_by_with_love">%s-ისგან &lt;3-ით</string>

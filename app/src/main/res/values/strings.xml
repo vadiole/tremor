@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptics are off in system settings</string>
     <string name="haptics_off_title_touch">touch feedback is off in system settings</string>
-    <string name="haptics_off_fix_aosp">fix: <u>Settings</u> → Sound &amp; vibration → Vibration &amp; haptics</string>
-    <string name="haptics_off_fix_aosp_touch">fix: <u>Settings</u> → Sound &amp; vibration → Vibration &amp; haptics → Touch feedback</string>
-    <string name="haptics_off_fix_aosp_12">fix: <u>Settings</u> → Accessibility → Vibration &amp; haptic strength → Touch feedback</string>
-    <string name="haptics_off_fix_samsung">fix: <u>Settings</u> → Sounds and vibration → System vibration</string>
-    <string name="haptics_off_fix_xiaomi">fix: <u>Settings</u> → Sound &amp; vibration → Haptic feedback</string>
-    <string name="haptics_off_fix_xiaomi_miui">fix: <u>Settings</u> → Sound &amp; vibration → Vibrate on tap</string>
-    <string name="haptics_off_fix_oppo">fix: <u>Settings</u> → Sound &amp; vibration → Haptics &amp; tones → System haptics</string>
-    <string name="haptics_off_fix_vivo">fix: <u>Settings</u> → Sound &amp; vibration → Touch feedback</string>
-    <string name="haptics_off_fix_transsion">fix: <u>Settings</u> → Special Function → Accessibility → Vibration &amp; haptics → Touch feedback</string>
-    <string name="haptics_off_fix_generic">fix: <u>Settings</u> → search “vibration”</string>
+    <string name="haptics_off_fix_aosp"><u>Sound &amp; vibration</u> → Vibration &amp; haptics</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Sound &amp; vibration</u> → Vibration &amp; haptics → Touch feedback</string>
+    <string name="haptics_off_fix_aosp_12"><u>Accessibility</u> → Vibration &amp; haptic strength → Touch feedback</string>
+    <string name="haptics_off_fix_samsung"><u>Sounds and vibration</u> → System vibration</string>
+    <string name="haptics_off_fix_xiaomi"><u>Sound &amp; vibration</u> → Haptic feedback</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Sound &amp; vibration</u> → Vibrate on tap</string>
+    <string name="haptics_off_fix_oppo"><u>Sound &amp; vibration</u> → Haptics and tones → System haptics</string>
+    <string name="haptics_off_fix_vivo"><u>Sound and vibration</u> → Touch feedback</string>
+    <string name="haptics_off_fix_transsion"><u>Accessibility</u> → Vibration &amp; haptics → Touch feedback</string>
+    <string name="haptics_off_fix_generic"><u>Settings</u> → search “vibration”</string>
     <string name="battery_saver_muting">battery saver may be muting haptics</string>
     <string name="muted_by_system">muted by system</string>
     <string name="footer_by_with_love">by %s with &lt;3</string>

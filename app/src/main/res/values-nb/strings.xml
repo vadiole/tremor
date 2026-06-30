@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">haptikk er slått av i systeminnstillinger</string>
     <string name="haptics_off_title_touch">tilbakemelding ved berøring er slått av i systeminnstillinger</string>
-    <string name="haptics_off_fix_aosp">løs det: <u>Innstillinger</u> → Lyd og vibrering → Vibrering og fysisk tilbakemelding</string>
-    <string name="haptics_off_fix_aosp_touch">løs det: <u>Innstillinger</u> → Lyd og vibrering → Vibrering og fysisk tilbakemelding → Tilbakemelding ved berøring</string>
-    <string name="haptics_off_fix_aosp_12">løs det: <u>Innstillinger</u> → Tilgjengelighet → Styrke på vibrasjon og fysiske tilbakemeldinger → Tilbakemelding ved berøring</string>
-    <string name="haptics_off_fix_samsung">løs det: <u>Innstillinger</u> → Lyd og vibrering → Systemvibrering</string>
-    <string name="haptics_off_fix_xiaomi">løs det: <u>Innstillinger</u> → Lyd og vibrering → Haptisk tilbakemelding</string>
-    <string name="haptics_off_fix_xiaomi_miui">løs det: <u>Innstillinger</u> → Lyd og vibrering → Vibrer ved trykk</string>
-    <string name="haptics_off_fix_oppo">løs det: <u>Innstillinger</u> → Lyd og vibrering → Haptikk og toner → Systemhaptikk</string>
-    <string name="haptics_off_fix_vivo">løs det: <u>Innstillinger</u> → Lyd og vibrering → Tilbakemelding ved berøring</string>
-    <string name="haptics_off_fix_transsion">løs det: <u>Innstillinger</u> → Spesialfunksjon → Tilgjengelighet → Vibrering og fysisk tilbakemelding → Tilbakemelding ved berøring</string>
-    <string name="haptics_off_fix_generic">løs det: <u>Innstillinger</u> → søk etter «vibrering»</string>
+    <string name="haptics_off_fix_aosp"><u>Lyd og vibrering</u> → Vibrering og fysisk tilbakemelding</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Lyd og vibrering</u> → Vibrering og fysisk tilbakemelding → Tilbakemelding ved berøring</string>
+    <string name="haptics_off_fix_aosp_12"><u>Tilgjengelighet</u> → Styrke på vibrasjon og fysiske tilbakemeldinger → Tilbakemelding ved berøring</string>
+    <string name="haptics_off_fix_samsung"><u>Lyd og vibrering</u> → Systemvibrering</string>
+    <string name="haptics_off_fix_xiaomi"><u>Lyd og vibrering</u> → Haptisk tilbakemelding</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Lyd og vibrering</u> → Vibrer ved trykk</string>
+    <string name="haptics_off_fix_oppo"><u>Lyd og vibrering</u> → Haptikk og toner → Systemhaptikk</string>
+    <string name="haptics_off_fix_vivo"><u>Lyd og vibrering</u> → Tilbakemelding ved berøring</string>
+    <string name="haptics_off_fix_transsion"><u>Tilgjengelighet</u> → Vibrering og fysisk tilbakemelding → Tilbakemelding ved berøring</string>
+    <string name="haptics_off_fix_generic"><u>Innstillinger</u> → søk etter «vibrering»</string>
     <string name="battery_saver_muting">haptikk fungerer kanskje ikke i batterisparingsmodus</string>
     <string name="muted_by_system">slått av i systemet</string>
     <string name="footer_by_with_love">av %s med &lt;3</string>

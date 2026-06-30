@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">সিস্টেম সেটিংসে হ্যাপটিক বন্ধ আছে</string>
     <string name="haptics_off_title_touch">সিস্টেম সেটিংসে টাচ ফিডব্যাক বন্ধ আছে</string>
-    <string name="haptics_off_fix_aosp">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → ভাইব্রেশন ও হ্যাপটিক</string>
-    <string name="haptics_off_fix_aosp_touch">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → ভাইব্রেশন ও হ্যাপটিক → টাচ ফিডব্যাক</string>
-    <string name="haptics_off_fix_aosp_12">ঠিক করো: <u>সেটিংস</u> → অ্যাক্সেসিবিলিটি → ভাইব্রেশন ও হ্যাপটিক মাত্রা → টাচ ফিডব্যাক</string>
-    <string name="haptics_off_fix_samsung">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → সিস্টেম ভাইব্রেশন</string>
-    <string name="haptics_off_fix_xiaomi">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → হ্যাপটিক ফিডব্যাক</string>
-    <string name="haptics_off_fix_xiaomi_miui">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → ট্যাপে ভাইব্রেশন</string>
-    <string name="haptics_off_fix_oppo">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → হ্যাপটিক ও টোন → সিস্টেম হ্যাপটিক</string>
-    <string name="haptics_off_fix_vivo">ঠিক করো: <u>সেটিংস</u> → সাউন্ড ও ভাইব্রেশন → টাচ ফিডব্যাক</string>
-    <string name="haptics_off_fix_transsion">ঠিক করো: <u>সেটিংস</u> → বিশেষ ফিচার → অ্যাক্সেসিবিলিটি → ভাইব্রেশন ও হ্যাপটিক → টাচ ফিডব্যাক</string>
-    <string name="haptics_off_fix_generic">ঠিক করো: <u>সেটিংস</u> → “ভাইব্রেশন” সার্চ করো</string>
+    <string name="haptics_off_fix_aosp"><u>সাউন্ড ও ভাইব্রেশন</u> → ভাইব্রেশন ও হ্যাপটিক</string>
+    <string name="haptics_off_fix_aosp_touch"><u>সাউন্ড ও ভাইব্রেশন</u> → ভাইব্রেশন ও হ্যাপটিক → টাচ ফিডব্যাক</string>
+    <string name="haptics_off_fix_aosp_12"><u>অ্যাক্সেসিবিলিটি</u> → ভাইব্রেশন ও হ্যাপটিক মাত্রা → টাচ ফিডব্যাক</string>
+    <string name="haptics_off_fix_samsung"><u>সাউন্ড ও ভাইব্রেশন</u> → সিস্টেম ভাইব্রেশন</string>
+    <string name="haptics_off_fix_xiaomi"><u>সাউন্ড ও ভাইব্রেশন</u> → হ্যাপটিক ফিডব্যাক</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>সাউন্ড ও ভাইব্রেশন</u> → ট্যাপে ভাইব্রেশন</string>
+    <string name="haptics_off_fix_oppo"><u>সাউন্ড ও ভাইব্রেশন</u> → হ্যাপটিক ও টোন → সিস্টেম হ্যাপটিক</string>
+    <string name="haptics_off_fix_vivo"><u>সাউন্ড ও ভাইব্রেশন</u> → টাচ ফিডব্যাক</string>
+    <string name="haptics_off_fix_transsion"><u>অ্যাক্সেসিবিলিটি</u> → ভাইব্রেশন ও হ্যাপটিক → টাচ ফিডব্যাক</string>
+    <string name="haptics_off_fix_generic"><u>সেটিংস</u> → “ভাইব্রেশন” সার্চ করো</string>
     <string name="battery_saver_muting">ব্যাটারি সেভার মোডে হ্যাপটিক কাজ নাও করতে পারে</string>
     <string name="muted_by_system">সিস্টেমে বন্ধ আছে</string>
     <string name="footer_by_with_love">%s এর তৈরি &lt;3 দিয়ে</string>

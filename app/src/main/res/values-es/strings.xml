@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">la háptica está desactivada en los ajustes del sistema</string>
     <string name="haptics_off_title_touch">la respuesta táctil está desactivada en los ajustes del sistema</string>
-    <string name="haptics_off_fix_aosp">arréglalo: <u>Ajustes</u> → Sonido y vibración → Vibración y vibración al pulsar</string>
-    <string name="haptics_off_fix_aosp_touch">arréglalo: <u>Ajustes</u> → Sonido y vibración → Vibración y vibración al pulsar → Respuesta táctil</string>
-    <string name="haptics_off_fix_aosp_12">arréglalo: <u>Ajustes</u> → Accesibilidad → Intensidad de la respuesta táctil y vibración → Respuesta táctil</string>
-    <string name="haptics_off_fix_samsung">arréglalo: <u>Ajustes</u> → Sonidos y vibración → Vibración del sistema</string>
-    <string name="haptics_off_fix_xiaomi">arréglalo: <u>Ajustes</u> → Sonido y vibración → Respuesta háptica</string>
-    <string name="haptics_off_fix_xiaomi_miui">arréglalo: <u>Ajustes</u> → Sonido y vibración → Vibración al tocar</string>
-    <string name="haptics_off_fix_oppo">arréglalo: <u>Ajustes</u> → Sonido y vibración → Vibración y tonos → Háptica del sistema</string>
-    <string name="haptics_off_fix_vivo">arréglalo: <u>Ajustes</u> → Sonido y vibración → Respuesta táctil</string>
-    <string name="haptics_off_fix_transsion">arréglalo: <u>Ajustes</u> → Función especial → Accesibilidad → Vibración y vibración al pulsar → Respuesta táctil</string>
-    <string name="haptics_off_fix_generic">arréglalo: <u>Ajustes</u> → busca «vibración»</string>
+    <string name="haptics_off_fix_aosp"><u>Sonido y vibración</u> → Vibración y vibración al pulsar</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Sonido y vibración</u> → Vibración y vibración al pulsar → Respuesta táctil</string>
+    <string name="haptics_off_fix_aosp_12"><u>Accesibilidad</u> → Intensidad de la respuesta táctil y vibración → Respuesta táctil</string>
+    <string name="haptics_off_fix_samsung"><u>Sonidos y vibración</u> → Vibración del sistema</string>
+    <string name="haptics_off_fix_xiaomi"><u>Sonido y vibración</u> → Respuesta táctil</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Sonido y vibración</u> → Vibrar al tocar</string>
+    <string name="haptics_off_fix_oppo"><u>Sonido y vibración</u> → Háptica y tonos → Háptica del sistema</string>
+    <string name="haptics_off_fix_vivo"><u>Sonido y vibración</u> → Respuesta táctil</string>
+    <string name="haptics_off_fix_transsion"><u>Accesibilidad</u> → Vibración y vibración al pulsar → Respuesta táctil</string>
+    <string name="haptics_off_fix_generic"><u>Ajustes</u> → busca «vibración»</string>
     <string name="battery_saver_muting">la háptica puede no funcionar en modo ahorro de batería</string>
     <string name="muted_by_system">desactivada en el sistema</string>
     <string name="footer_by_with_love">por %s con &lt;3</string>

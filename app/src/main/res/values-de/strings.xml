@@ -8,16 +8,16 @@
 
     <string name="haptics_off_title">Haptik ist in den Systemeinstellungen aus</string>
     <string name="haptics_off_title_touch">Haptisches Feedback ist in den Systemeinstellungen aus</string>
-    <string name="haptics_off_fix_aosp">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Vibration und haptisches Feedback</string>
-    <string name="haptics_off_fix_aosp_touch">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Vibration und haptisches Feedback → Haptisches Feedback</string>
-    <string name="haptics_off_fix_aosp_12">Lösung: <u>Einstellungen</u> → Bedienungshilfen → Vibration &amp; Stärke des haptischen Feedbacks → Haptisches Feedback</string>
-    <string name="haptics_off_fix_samsung">Lösung: <u>Einstellungen</u> → Töne und Vibration → Systemvibration</string>
-    <string name="haptics_off_fix_xiaomi">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Haptisches Feedback</string>
-    <string name="haptics_off_fix_xiaomi_miui">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Vibrieren bei Berührung</string>
-    <string name="haptics_off_fix_oppo">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Haptik &amp; Töne → System-Haptik</string>
-    <string name="haptics_off_fix_vivo">Lösung: <u>Einstellungen</u> → Ton &amp; Vibration → Haptisches Feedback</string>
-    <string name="haptics_off_fix_transsion">Lösung: <u>Einstellungen</u> → Spezialfunktion → Bedienungshilfen → Vibration und haptisches Feedback → Haptisches Feedback</string>
-    <string name="haptics_off_fix_generic">Lösung: <u>Einstellungen</u> → nach „Vibration“ suchen</string>
+    <string name="haptics_off_fix_aosp"><u>Ton &amp; Vibration</u> → Vibration und haptisches Feedback</string>
+    <string name="haptics_off_fix_aosp_touch"><u>Ton &amp; Vibration</u> → Vibration und haptisches Feedback → Haptisches Feedback</string>
+    <string name="haptics_off_fix_aosp_12"><u>Bedienungshilfen</u> → Vibration &amp; Stärke des haptischen Feedbacks → Haptisches Feedback</string>
+    <string name="haptics_off_fix_samsung"><u>Töne und Vibration</u> → Systemvibration</string>
+    <string name="haptics_off_fix_xiaomi"><u>Ton und Vibration</u> → Haptisches Feedback</string>
+    <string name="haptics_off_fix_xiaomi_miui"><u>Ton und Vibration</u> → Beim Tippen vibrieren</string>
+    <string name="haptics_off_fix_oppo"><u>Ton und Vibration</u> → Haptik und Töne → System-Haptik</string>
+    <string name="haptics_off_fix_vivo"><u>Ton &amp; Vibration</u> → Haptisches Feedback</string>
+    <string name="haptics_off_fix_transsion"><u>Bedienungshilfen</u> → Vibration und haptisches Feedback → Haptisches Feedback</string>
+    <string name="haptics_off_fix_generic"><u>Einstellungen</u> → nach „Vibration“ suchen</string>
     <string name="battery_saver_muting">Haptik funktioniert im Energiesparmodus möglicherweise nicht</string>
     <string name="muted_by_system">im System ausgeschaltet</string>
     <string name="footer_by_with_love">von %s mit &lt;3</string>
