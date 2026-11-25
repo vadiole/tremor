@@ -56,9 +56,9 @@ android {
             proguardFiles("proguard-rules.pro")
         }
 
-        create("beta") {
+        create("alpha") {
             initWith(buildTypes.getByName("debug"))
-            applicationIdSuffix = ".beta"
+            applicationIdSuffix = ".alpha"
             isDebuggable = false
             isMinifyEnabled = true
             isShrinkResources = true
